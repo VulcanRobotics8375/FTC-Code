@@ -1,0 +1,2 @@
+include ':FtcRobotController', ':openCVLibrary3', ':endercv'
+include ':Team8375'
