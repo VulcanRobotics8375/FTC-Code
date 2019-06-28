@@ -51,7 +51,7 @@ public class Drivetrain {
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
-    private double getOutput() { return output; }
+    public double getOutput() { return output; }
 
     public void setupIMU() {
         parameters = new BNO055IMU.Parameters();
@@ -107,9 +107,9 @@ public class Drivetrain {
 
 
         fr.setPower(motorOut[0]);
-        bl.setPower(motorOut[1]);
+        fl.setPower(motorOut[1]);
         br.setPower(motorOut[2]);
-        fl.setPower(motorOut[3]);
+        bl.setPower(motorOut[3]);
     }
 
     public void tankDrive(float leftPower, float rightPower, double acceleration) {
@@ -179,6 +179,13 @@ public class Drivetrain {
         previousError = error;
 
 //        wait(iteration_time);
+    }
+
+    public void setPowers(double forward, double turn) {
+        fl.setPower(-forward - turn);
+        fr.setPower(-forward + turn);
+        bl.setPower(-forward);
+        br.setPower(-forward);
     }
 
 
