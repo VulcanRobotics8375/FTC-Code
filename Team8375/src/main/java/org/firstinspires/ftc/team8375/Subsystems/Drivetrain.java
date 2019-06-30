@@ -26,6 +26,9 @@ public class Drivetrain {
     private double derivative = 0;
     private double output = 0;
     private double previousError = 0;
+    private double previousHeading = 0;
+    private double integratedHeading = 0;
+    private boolean ranFirstCycle = false;
 //    ElapsedTime lastTime;
 
     public Drivetrain(DcMotor frontLeft, DcMotor frontRight, DcMotor backLeft, DcMotor backRight, BNO055IMU IMU) {
@@ -53,6 +56,27 @@ public class Drivetrain {
 
     public double getOutput() { return output; }
 
+    public double getRobotAngle() {
+        double robotAngle = getIntegratedHeading();
+        return robotAngle;
+    }
+
+    private double getIntegratedHeading() {
+        double currentHeading = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+        double deltaHeading = currentHeading - previousHeading;
+
+        if (deltaHeading < -180) {
+            deltaHeading += 360;
+        } else if (deltaHeading >= 180) {
+            deltaHeading -= 360;
+        }
+
+        integratedHeading += deltaHeading;
+        previousHeading = currentHeading;
+
+        return integratedHeading;
+    }
+
     public void setupIMU() {
         parameters = new BNO055IMU.Parameters();
         parameters.mode = BNO055IMU.SensorMode.IMU;
@@ -63,7 +87,9 @@ public class Drivetrain {
             while (!imu.isGyroCalibrated()) {}
         } else {
             imu.initialize(parameters);
+
         }
+
         targetAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
     }
 
@@ -170,9 +196,17 @@ public class Drivetrain {
             long iteration_time,
             double heading
     ) {
-        sensorVal = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+        sensorVal = getIntegratedHeading();
+        if(ranFirstCycle) {} else {
+            heading += sensorVal;
+            ranFirstCycle = true;
+        }
 
         double error = sensorVal - heading;
+
+        if(error < 10 && error > -10) {
+            integral = 0;
+        }
         integral += ((error + previousError)/2.0) * (iteration_time/100.0);
         derivative = (error - previousError);
         output = Kp*error + Ki*integral + Kd*derivative;
