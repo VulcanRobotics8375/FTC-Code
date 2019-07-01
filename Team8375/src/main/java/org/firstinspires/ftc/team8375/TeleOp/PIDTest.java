@@ -14,7 +14,7 @@ public class PIDTest extends LinearOpMode {
     public void runOpMode() {
         robot = new Robot(hardwareMap);
         robot.drivetrain.setupIMU();
-
+        robot.pid.getCalibrationStatus();
         waitForStart();
 
         do {

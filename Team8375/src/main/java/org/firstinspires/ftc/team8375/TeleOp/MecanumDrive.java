@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.team8375.Subsystems.Arm;
+import org.firstinspires.ftc.team8375.Subsystems.PID;
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
 
 @TeleOp(name="MecanumDrive", group="Drive")
@@ -20,6 +21,7 @@ public class MecanumDrive extends OpMode {
 
     public void start() {
         robot.drivetrain.setupIMU();
+        robot.pid.getIntegratedHeading();
          robot.arm.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.arm.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.drivetrain.Time.reset();

@@ -27,7 +27,6 @@ public class Robot {
                 hwMap.servo.get("flip")
         );
 
-        pid = new PID(hwMap.get(BNO055IMU.class, "imu"));
     }
 
     public void stop() {
