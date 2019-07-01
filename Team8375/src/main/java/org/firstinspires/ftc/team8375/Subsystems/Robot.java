@@ -7,6 +7,7 @@ import org.firstinspires.ftc.team8375.TeleOp.MecanumDrive;
 public class Robot {
     public Drivetrain drivetrain;
     public Arm arm;
+    public PID pid;
 
     public Robot(HardwareMap hwMap) {
         drivetrain = new Drivetrain(
@@ -25,6 +26,8 @@ public class Robot {
                 hwMap.crservo.get("intake"),
                 hwMap.servo.get("flip")
         );
+
+        pid = new PID(hwMap.get(BNO055IMU.class, "imu"));
     }
 
     public void stop() {

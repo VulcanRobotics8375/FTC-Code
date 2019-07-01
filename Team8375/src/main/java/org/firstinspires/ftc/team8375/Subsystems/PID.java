@@ -21,6 +21,10 @@ public class PID {
     private double previousHeading = 0;
     private double integratedHeading = 0;
 
+    public PID(BNO055IMU IMU) {
+        imu = IMU;
+    }
+
     public double getIntegratedHeading() {
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         imu.getPosition();
@@ -78,7 +82,7 @@ public class PID {
 
 
     }
-
+    //default params
     public void run(double Kp, double Ki, double Kd, float iterationTime) { run(Kp, Ki, Kd, iterationTime, 0); }
 
     public void run(double Kp, double Ki, double Kd) { run(Kp, Ki, Kd, 10, 0); }
