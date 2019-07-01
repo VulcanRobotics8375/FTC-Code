@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class Drivetrain {
     private DcMotor fl, fr, bl, br;
@@ -20,6 +21,7 @@ public class Drivetrain {
     private double tPower;
     private double divisor;
     double targetAngle;
+    private Orientation angles;
     public ElapsedTime Time = new ElapsedTime();
     private double sensorVal;
     private double integral = 0;
@@ -61,8 +63,10 @@ public class Drivetrain {
         return robotAngle;
     }
 
-    private double getIntegratedHeading() {
-        double currentHeading = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+    public double getIntegratedHeading() {
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        imu.getPosition();
+        double currentHeading = AngleUnit.DEGREES.normalize(angles.firstAngle);
         double deltaHeading = currentHeading - previousHeading;
 
         if (deltaHeading < -180) {
@@ -89,8 +93,6 @@ public class Drivetrain {
             imu.initialize(parameters);
 
         }
-
-        targetAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
     }
 
     //graph explaining how mecanum works - https://www.desmos.com/calculator/nhqgggjnj6
@@ -107,14 +109,14 @@ public class Drivetrain {
 //        if(forward < 0 || turn < 0 || strafe < 0) {
 //
 //        }
-//
-//        if(turn == 0) {
-//            //targetAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-//            PID(0.01, 0, 0, 10, targetAngle);
-//            turn = getOutput();
-//        } else {
-//            targetAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-//        }
+
+        if(turn == 0) {
+            //targetAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+            PID(0.01, 0.001, 0.01, 10, targetAngle);
+            turn = getOutput();
+        } else {
+            targetAngle = getIntegratedHeading();
+        }
 
         double[] v = {
                 vd * Math.sin(theta) - turn,
@@ -197,20 +199,18 @@ public class Drivetrain {
             double heading
     ) {
         sensorVal = getIntegratedHeading();
-        if(ranFirstCycle) {} else {
-            heading += sensorVal;
-            ranFirstCycle = true;
-        }
 
         double error = sensorVal - heading;
 
-        if(error < 10 && error > -10) {
+        if(error < 5 && error > -5) {
             integral = 0;
+            output = 0;
+        } else {
+            integral += ((error + previousError) / 2.0) * (iteration_time / 100.0);
+            derivative = (error - previousError);
+            output = Kp * error + Ki * integral + Kd * derivative;
+            previousError = error;
         }
-        integral += ((error + previousError)/2.0) * (iteration_time/100.0);
-        derivative = (error - previousError);
-        output = Kp*error + Ki*integral + Kd*derivative;
-        previousError = error;
 
 //        wait(iteration_time);
     }
