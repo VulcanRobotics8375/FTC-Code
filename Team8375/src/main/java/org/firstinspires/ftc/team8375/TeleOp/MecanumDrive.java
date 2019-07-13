@@ -3,9 +3,6 @@ package org.firstinspires.ftc.team8375.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
-import org.firstinspires.ftc.team8375.Subsystems.Arm;
-import org.firstinspires.ftc.team8375.Subsystems.PID;
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
 
 @TeleOp(name="MecanumDrive", group="Drive")
@@ -15,15 +12,16 @@ public class MecanumDrive extends OpMode {
     public void init() {
         robot = new Robot(hardwareMap);
          telemetry.addData("Encoder Value", robot.arm.lift.getCurrentPosition());
+        robot.drivetrain.setupIMU();
          gamepad1.setJoystickDeadzone(0.075f);
          gamepad2.setJoystickDeadzone(0.075f);
     }
 
     public void start() {
-        robot.drivetrain.setupIMU();
-        robot.pid.getIntegratedHeading();
+        robot.drivetrain.getIntegratedHeading();
          robot.arm.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.arm.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         robot.drivetrain.Time.reset();
     }
 

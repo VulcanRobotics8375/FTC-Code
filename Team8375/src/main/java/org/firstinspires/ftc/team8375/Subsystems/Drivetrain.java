@@ -100,15 +100,15 @@ public class Drivetrain {
         double vd = Math.hypot(forward, strafe);
         double theta = Math.atan2(forward, strafe) - (Math.PI / 4);
 
-//        if(forward == 0 && strafe == 0 && turn == 0) {
-//            Time.reset();
-//        }
-//
-//        double accLim = (Time.time()/1.07)*((0.62*Math.pow(Time.time(), 2))+0.45);
-//
-//        if(forward < 0 || turn < 0 || strafe < 0) {
-//
-//        }
+        if(forward == 0 && strafe == 0 && turn == 0) {
+            Time.reset();
+        }
+
+        double accLim = (Time.time()/1.07)*((0.62*Math.pow(Time.time(), 2))+0.45);
+
+        if(forward < 0 || turn < 0 || strafe < 0) {
+
+        }
 
         if(turn == 0) {
             //targetAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;

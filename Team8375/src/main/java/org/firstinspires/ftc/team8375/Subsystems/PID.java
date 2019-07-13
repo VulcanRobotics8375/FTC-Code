@@ -46,12 +46,12 @@ public class PID {
         return imu.getCalibrationStatus();
     }
 
-    public void initIMU(BNO055IMU.SensorMode mode, AngleUnit angleUnit, BNO055IMU.AccelUnit accelUnit, boolean loggingEnabled) {
+    public void initIMU(BNO055IMU.SensorMode mode, BNO055IMU.AngleUnit angleUnit, BNO055IMU.AccelUnit accelUnit, boolean loggingEnabled) {
         parameters = new BNO055IMU.Parameters();
-        parameters.mode = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled = false;
+        parameters.mode = mode;
+        parameters.angleUnit = angleUnit;
+        parameters.accelUnit = accelUnit;
+        parameters.loggingEnabled = loggingEnabled;
         if(imu.initialize(parameters)) {
             while (!imu.isGyroCalibrated()) {}
         } else {
@@ -63,7 +63,7 @@ public class PID {
     public void initIMU() {
         initIMU(
             BNO055IMU.SensorMode.IMU,
-            AngleUnit.DEGREES,
+            BNO055IMU.AngleUnit.DEGREES,
             BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC,
             false
         );
@@ -85,7 +85,6 @@ public class PID {
             output = Kp * error + Ki * integral + Kd * derivative;
             previousError = error;
         }
-
 
     }
     //default params

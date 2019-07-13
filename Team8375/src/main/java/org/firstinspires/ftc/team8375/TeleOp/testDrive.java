@@ -25,7 +25,7 @@ public class testDrive extends OpMode {
     }
 
     public void loop() {
-        robot.drivetrain.mecanumDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, 1);
+        robot.drivetrain.mecanumDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, 0.2);
         robot.arm.setPowers(gamepad1.left_stick_y, -gamepad1.right_stick_y, gamepad2.left_trigger, gamepad2.a, 300, 4250, 500);
          telemetry.addData("Arm Position", robot.arm.lift.getCurrentPosition());
          telemetry.addData("triggerTest", gamepad1.left_trigger);
