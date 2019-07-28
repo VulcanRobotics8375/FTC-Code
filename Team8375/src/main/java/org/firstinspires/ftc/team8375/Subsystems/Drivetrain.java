@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2019. Vulcan Robotics FTC Team 8375. All Rights Reserved.
+ */
+
 package org.firstinspires.ftc.team8375.Subsystems;
 
 //import android.test.FlakyTest;
@@ -104,19 +108,19 @@ public class Drivetrain {
             Time.reset();
         }
 
-        double accLim = (Time.time()/1.07)*((0.62*Math.pow(Time.time(), 2))+0.45);
+//        double accLim = (Time.time()/1.07)*((0.62*Math.pow(Time.time(), 2))+0.45);
 
-        if(forward < 0 || turn < 0 || strafe < 0) {
-
-        }
-
-        if(turn == 0) {
-            //targetAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-            PID(0.01, 0.001, 0.01, 10, targetAngle);
-            turn = getOutput();
-        } else {
-            targetAngle = getIntegratedHeading();
-        }
+//        if(forward < 0 || turn < 0 || strafe < 0) {
+//
+//        }
+//
+//        if(turn == 0) {
+//            //targetAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+//            PID(0.01, 0.001, 0.01, 10, targetAngle);
+//            turn = getOutput();
+//        } else {
+//            targetAngle = getIntegratedHeading();
+//        }
 
         double[] v = {
                 vd * Math.sin(theta) - turn,
