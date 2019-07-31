@@ -25,19 +25,9 @@ public class Drivetrain {
     private double mPower;
     private double tPower;
     private double divisor;
-    double targetAngle;
-    private Orientation angles;
     public ElapsedTime Time = new ElapsedTime();
-    private double sensorVal;
-    private double integral = 0;
-    private double derivative = 0;
     private double output = 0;
-    private double previousError = 0;
-    private double previousHeading = 0;
-    private double integratedHeading = 0;
-    private boolean ranFirstCycle = false;
-//    ElapsedTime lastTime;
-
+    private boolean motorIsBusy;
     public PID pid;
 
     public Drivetrain(DcMotor frontLeft, DcMotor frontRight, DcMotor backLeft, DcMotor backRight, BNO055IMU IMU) {
@@ -191,10 +181,15 @@ public class Drivetrain {
 
         resetEncoders(DcMotor.RunMode.RUN_TO_POSITION);
 
+        double wheelSize = (100/25.4) * Math.PI;
+        int targetPos = (int) Math.round((inches/wheelSize)/1120.0);
+
+        setTargetPos(targetPos);
+        setPowers(speed, 0);
+
         do {
-
-
-        } while(getDrivetrainPos() < inches);
+            setPowers(speed, 0);
+        } while(motorIsBusy);
 
     }
 
@@ -232,6 +227,8 @@ public class Drivetrain {
         return position;
     }
 
+
+
     public void resetEncoders(DcMotor.RunMode runMode) {
 
         fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -251,6 +248,16 @@ public class Drivetrain {
         fr.setTargetPosition(pos);
         bl.setTargetPosition(pos);
         br.setTargetPosition(pos);
+    }
+
+    public boolean motorIsBusy() {
+        if(fl.isBusy() || fr.isBusy() || bl.isBusy() || br.isBusy()) {
+            motorIsBusy = true;
+        } else {
+            motorIsBusy = false;
+        }
+
+        return motorIsBusy;
     }
 
         public void stop() {
