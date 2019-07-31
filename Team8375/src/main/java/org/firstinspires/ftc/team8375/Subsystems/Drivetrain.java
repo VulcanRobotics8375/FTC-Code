@@ -19,6 +19,7 @@ public class Drivetrain {
     private DcMotor fl, fr, bl, br;
     private BNO055IMU imu;
     private BNO055IMU.Parameters parameters;
+    private double position;
     private double movePower;
     private double turnPower;
     private double mPower;
@@ -37,7 +38,10 @@ public class Drivetrain {
     private boolean ranFirstCycle = false;
 //    ElapsedTime lastTime;
 
+    public PID pid;
+
     public Drivetrain(DcMotor frontLeft, DcMotor frontRight, DcMotor backLeft, DcMotor backRight, BNO055IMU IMU) {
+        pid = new PID(imu);
         fl = frontLeft;
         fr = frontRight;
         bl = backLeft;
@@ -60,31 +64,6 @@ public class Drivetrain {
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
-    public double getOutput() { return output; }
-
-    public double getRobotAngle() {
-        double robotAngle = getIntegratedHeading();
-        return robotAngle;
-    }
-
-    public double getIntegratedHeading() {
-        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        imu.getPosition();
-        double currentHeading = AngleUnit.DEGREES.normalize(angles.firstAngle);
-        double deltaHeading = currentHeading - previousHeading;
-
-        if (deltaHeading < -180) {
-            deltaHeading += 360;
-        } else if (deltaHeading >= 180) {
-            deltaHeading -= 360;
-        }
-
-        integratedHeading += deltaHeading;
-        previousHeading = currentHeading;
-
-        return integratedHeading;
-    }
-
     public void setupIMU() {
         parameters = new BNO055IMU.Parameters();
         parameters.mode = BNO055IMU.SensorMode.IMU;
@@ -98,6 +77,12 @@ public class Drivetrain {
 
         }
     }
+
+    /**
+     *
+     * TeleOp Functions
+     *
+     */
 
     //graph explaining how mecanum works - https://www.desmos.com/calculator/nhqgggjnj6
     public void mecanumDrive(double forward, double turn, double strafe, double multiplier) {
@@ -116,10 +101,10 @@ public class Drivetrain {
 //
 //        if(turn == 0) {
 //            //targetAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-//            PID(0.01, 0.001, 0.01, 10, targetAngle);
-//            turn = getOutput();
+//            pid.run(0.01, 0.001, 0.01, 10, targetAngle);
+//            turn = pid.getOutput();
 //        } else {
-//            targetAngle = getIntegratedHeading();
+//            targetAngle = pid.getIntegratedHeading();
 //        }
 
         double[] v = {
@@ -195,35 +180,69 @@ public class Drivetrain {
         br.setPower(turnPower - movePower);
     }
 
-    public void PID(
-            double Kp,
-            double Ki,
-            double Kd,
-            long iteration_time,
-            double heading
-    ) {
-        sensorVal = getIntegratedHeading();
 
-        double error = sensorVal - heading;
+    /**
+     *
+     * Autonomous Functions
+     *
+     */
 
-        if(error < 5 && error > -5) {
-            integral = 0;
-            output = 0;
-        } else {
-            integral += ((error + previousError) / 2.0) * (iteration_time / 100.0);
-            derivative = (error - previousError);
-            output = Kp * error + Ki * integral + Kd * derivative;
-            previousError = error;
-        }
+    public void MoveIn(double Kp, double Ki, double Kd, double inches, double speed) {
 
-//        wait(iteration_time);
+        resetEncoders();
+
+
     }
+
+    public void strafeIn(double Kp, double Ki, double Kd, double inches, double speed) {
+
+
+    }
+
+
+    /**
+     *
+     * Miscellanious Functions
+     *
+     */
 
     public void setPowers(double forward, double turn) {
         fl.setPower(-forward - turn);
         fr.setPower(-forward + turn);
-        bl.setPower(-forward);
-        br.setPower(-forward);
+        bl.setPower(-forward - turn);
+        br.setPower(-forward + turn);
+    }
+
+    public double getOutput() {
+        return output;
+    }
+
+    //in inches
+    private double getDrivetrainPos() {
+
+        //convert diameter from mm to in, calculate circumference
+        double wheelSize = (100/25.4)*Math.PI;
+
+        //         Absolute Value of motor ticks for strafing compatibility          divide by # of encoder ticks / revolution to convert to rotations                                              divide by 4 to average out encoders
+        double rotations = (Math.abs(fl.getCurrentPosition() / 1120.0) + (Math.abs(fr.getCurrentPosition()) / 1120.0) + (Math.abs(bl.getCurrentPosition()) / 1120.0) + (Math.abs(br.getCurrentPosition())) / 1120.0) / 4.0;
+
+        position = wheelSize * rotations;
+
+        return position;
+    }
+
+    public void resetEncoders() {
+
+        fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
     }
 
 

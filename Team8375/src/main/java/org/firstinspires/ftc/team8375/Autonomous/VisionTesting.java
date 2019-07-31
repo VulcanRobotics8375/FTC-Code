@@ -7,17 +7,12 @@ package org.firstinspires.ftc.team8375.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.team8375.OpenCVClass;
-import org.firstinspires.ftc.team8375.Subsystems.PIDModular;
 import org.opencv.core.MatOfPoint;
-import org.opencv.core.Point;
-import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
 
@@ -26,7 +21,6 @@ import java.util.List;
 
 @Autonomous(name = "openCVTest", group = "Test")
 public class VisionTesting extends LinearOpMode {
-    private PIDModular pid;
     private OpenCVClass opencv;
     double a = Math.sqrt(Math.pow(2, 2) + Math.pow(2, 2));
     double b = Math.sqrt(2);

@@ -13,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
+@Disabled
 public class PID {
     private BNO055IMU imu;
     private BNO055IMU.Parameters parameters;
@@ -24,9 +25,7 @@ public class PID {
     private double previousHeading = 0;
     private double integratedHeading = 0;
 
-    public PID(BNO055IMU IMU) {
-        imu = IMU;
-    }
+    public PID(BNO055IMU IMU) { imu = IMU; }
 
     public double getIntegratedHeading() {
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -44,6 +43,10 @@ public class PID {
         previousHeading = currentHeading;
 
         return integratedHeading;
+    }
+
+    public double getOutput() {
+        return output;
     }
 
     public BNO055IMU.CalibrationStatus getCalibrationStatus() {
@@ -73,8 +76,7 @@ public class PID {
         );
     }
 
-
-
+    //pid calculations
     public void run(double Kp, double Ki, double Kd, float iterationTime, double heading) {
         double sensorVal = getIntegratedHeading();
 

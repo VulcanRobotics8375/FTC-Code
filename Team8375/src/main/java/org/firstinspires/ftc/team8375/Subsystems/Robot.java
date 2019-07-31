@@ -11,7 +11,7 @@ import org.firstinspires.ftc.team8375.TeleOp.MecanumDrive;
 public class Robot {
     public Drivetrain drivetrain;
     public Arm arm;
-    public PID pid;
+
 
     public Robot(HardwareMap hwMap) {
         drivetrain = new Drivetrain(
