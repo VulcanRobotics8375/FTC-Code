@@ -187,10 +187,14 @@ public class Drivetrain {
      *
      */
 
-    public void MoveIn(double Kp, double Ki, double Kd, double inches, double speed) {
+    public void MoveIn(double inches, double speed) {
 
-        resetEncoders();
+        resetEncoders(DcMotor.RunMode.RUN_TO_POSITION);
 
+        do {
+
+
+        } while(getDrivetrainPos() < inches);
 
     }
 
@@ -220,31 +224,34 @@ public class Drivetrain {
     //in inches
     private double getDrivetrainPos() {
 
-        //convert diameter from mm to in, calculate circumference
-        double wheelSize = (100/25.4)*Math.PI;
 
-        //         Absolute Value of motor ticks for strafing compatibility          divide by # of encoder ticks / revolution to convert to rotations                                              divide by 4 to average out encoders
-        double rotations = (Math.abs(fl.getCurrentPosition() / 1120.0) + (Math.abs(fr.getCurrentPosition()) / 1120.0) + (Math.abs(bl.getCurrentPosition()) / 1120.0) + (Math.abs(br.getCurrentPosition())) / 1120.0) / 4.0;
+        //         Absolute Value of motor ticks for strafing compatibility                                                                                 divide by 4 to average out encoders
+        position = (Math.abs(fl.getCurrentPosition()) + (Math.abs(fr.getCurrentPosition())) + (Math.abs(bl.getCurrentPosition())) + (Math.abs(br.getCurrentPosition()))) / 4.0;
 
-        position = wheelSize * rotations;
 
         return position;
     }
 
-    public void resetEncoders() {
+    public void resetEncoders(DcMotor.RunMode runMode) {
 
         fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        fl.setMode(runMode);
+        fr.setMode(runMode);
+        bl.setMode(runMode);
+        br.setMode(runMode);
 
     }
 
+    public void setTargetPos(int pos) {
+        fl.setTargetPosition(pos);
+        fr.setTargetPosition(pos);
+        bl.setTargetPosition(pos);
+        br.setTargetPosition(pos);
+    }
 
         public void stop() {
     }
