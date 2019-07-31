@@ -17,11 +17,16 @@ public class AutoPathTest extends LinearOpMode {
 
         robot = new Robot(hardwareMap);
 
+        robot.drivetrain.pid.initIMU();
+        telemetry.addData("calibration status", robot.drivetrain.pid.getCalibrationStatus().toString());
+
         waitForStart();
 
         do {
             robot.drivetrain.pid.init();
             robot.drivetrain.turn(0.1, 0.1, 0.1, 90);
+
+            robot.drivetrain.moveIn(5, 0.4);
 
         } while(opModeIsActive());
 

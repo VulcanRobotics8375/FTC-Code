@@ -6,7 +6,6 @@ package org.firstinspires.ftc.team8375.Subsystems;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import org.firstinspires.ftc.team8375.TeleOp.MecanumDrive;
 
 public class Robot {
     public Drivetrain drivetrain;

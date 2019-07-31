@@ -10,11 +10,6 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-
 public class Drivetrain {
     private DcMotor fl, fr, bl, br;
     private BNO055IMU imu;
@@ -177,7 +172,7 @@ public class Drivetrain {
      *
      */
 
-    public void MoveIn(double inches, double speed) {
+    public void moveIn(double inches, double speed) {
 
         resetEncoders(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -191,6 +186,7 @@ public class Drivetrain {
             setPowers(speed, 0);
         } while(motorIsBusy());
 
+        setPowers(0, 0);
     }
 
     public void strafeIn(double Kp, double Ki, double Kd, double inches, double speed) {
@@ -199,8 +195,13 @@ public class Drivetrain {
     }
 
     public void turn(double Kp, double Ki, double Kd, double heading) {
-        output = pid.run(Kp, Ki, Kd, 10, heading);
-        setPowers(0, output);
+
+        do {
+            output = pid.run(Kp, Ki, Kd, 10, heading);
+            setPowers(0, output);
+        } while(!(pid.getIntegratedHeading() < 95 && pid.getIntegratedHeading() > 85));
+
+        setPowers(0, 0);
     }
 
 
@@ -231,8 +232,6 @@ public class Drivetrain {
 
         return position;
     }
-
-
 
     public void resetEncoders(DcMotor.RunMode runMode) {
 
