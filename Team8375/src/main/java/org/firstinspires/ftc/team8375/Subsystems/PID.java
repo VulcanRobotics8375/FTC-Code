@@ -24,6 +24,7 @@ public class PID {
     private double previousError = 0;
     private double previousHeading = 0;
     private double integratedHeading = 0;
+    private double startHeading;
 
     public PID(BNO055IMU IMU) { imu = IMU; }
 
@@ -76,9 +77,15 @@ public class PID {
         );
     }
 
+    public void init() {
+        startHeading = getIntegratedHeading();
+
+    }
+
     //pid calculations
-    public void run(double Kp, double Ki, double Kd, float iterationTime, double heading) {
-        double sensorVal = getIntegratedHeading();
+    public double run(double Kp, double Ki, double Kd, float iterationTime, double heading) {
+
+        double sensorVal = getIntegratedHeading() + startHeading;
 
         double error = sensorVal - heading;
 
@@ -91,7 +98,7 @@ public class PID {
             output = Kp * error + Ki * integral + Kd * derivative;
             previousError = error;
         }
-
+        return output;
     }
     //default params
     public void run(double Kp, double Ki, double Kd, float iterationTime) {

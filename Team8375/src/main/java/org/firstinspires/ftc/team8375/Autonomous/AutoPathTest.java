@@ -20,7 +20,8 @@ public class AutoPathTest extends LinearOpMode {
         waitForStart();
 
         do {
-
+            robot.drivetrain.pid.init();
+            robot.drivetrain.turn(0.1, 0.1, 0.1, 90);
 
         } while(opModeIsActive());
 

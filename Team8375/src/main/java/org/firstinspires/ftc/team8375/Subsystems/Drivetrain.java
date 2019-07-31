@@ -189,13 +189,18 @@ public class Drivetrain {
 
         do {
             setPowers(speed, 0);
-        } while(motorIsBusy);
+        } while(motorIsBusy());
 
     }
 
     public void strafeIn(double Kp, double Ki, double Kd, double inches, double speed) {
 
 
+    }
+
+    public void turn(double Kp, double Ki, double Kd, double heading) {
+        output = pid.run(Kp, Ki, Kd, 10, heading);
+        setPowers(0, output);
     }
 
 
