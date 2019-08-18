@@ -18,15 +18,15 @@ public class PIDTest extends LinearOpMode {
     public void runOpMode() {
         robot = new Robot(hardwareMap);
         robot.drivetrain.setupIMU();
-        robot.pid.getCalibrationStatus();
+        robot.drivetrain.pid.getCalibrationStatus();
         waitForStart();
 
         do {
-            robot.drivetrain.PID(0.01, 0.001, 0.01, iterationTime, 0);
+            robot.drivetrain.pid.run(0.01, 0.001, 0.01);
             output = robot.drivetrain.getOutput();
             robot.drivetrain.setPowers(gamepad1.left_stick_y, -output);
             telemetry.addData("output", robot.drivetrain.getOutput());
-            telemetry.addData("angle", robot.drivetrain.getRobotAngle());
+            telemetry.addData("angle", robot.drivetrain.pid.getIntegratedHeading());
             telemetry.update();
             sleep(iterationTime);
         } while(opModeIsActive());

@@ -5,7 +5,6 @@
 package org.firstinspires.ftc.team8375.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
 
 public class AutoPathTest extends LinearOpMode {
@@ -23,10 +22,11 @@ public class AutoPathTest extends LinearOpMode {
         waitForStart();
 
         do {
-            robot.drivetrain.pid.init();
+            robot.drivetrain.pid.initHeading();
             robot.drivetrain.turn(0.1, 0.1, 0.1, 90);
 
             robot.drivetrain.moveIn(5, 0.4);
+
 
         } while(opModeIsActive());
 

@@ -54,7 +54,7 @@ public class Arm {
             lastLiftPos = LiftPos;
         }
        else if (liftPower < 0 && LiftPos <= -highLimit) {
-            liftPower = (-(liftHigh + LiftPos)/limitRange)/1.0;
+            liftPower = (-(liftHigh + LiftPos)/(limitRange/liftPower))/1.0;
             lastLiftPos = LiftPos;
         }
         //auto-correct function to make sure the arm is in the desired position when stopped.

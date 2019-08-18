@@ -199,7 +199,7 @@ public class Drivetrain {
         do {
             output = pid.run(Kp, Ki, Kd, 10, heading);
             setPowers(0, output);
-        } while(!(pid.getIntegratedHeading() < 95 && pid.getIntegratedHeading() > 85));
+        } while(!(pid.getIntegratedHeading() < heading + 5 && pid.getIntegratedHeading() > heading - 5));
 
         setPowers(0, 0);
     }
@@ -267,4 +267,3 @@ public class Drivetrain {
         public void stop() {
     }
 }
-

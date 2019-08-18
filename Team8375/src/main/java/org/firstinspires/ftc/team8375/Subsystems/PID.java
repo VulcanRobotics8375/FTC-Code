@@ -23,7 +23,7 @@ public class PID {
     private double previousError = 0;
     private double previousHeading = 0;
     private double integratedHeading = 0;
-    private double startHeading;
+    private double startHeading = 0;
 
     public PID(BNO055IMU IMU) { imu = IMU; }
 
@@ -76,7 +76,7 @@ public class PID {
         );
     }
 
-    public void init() {
+    public void initHeading() {
         startHeading = getIntegratedHeading();
 
     }
