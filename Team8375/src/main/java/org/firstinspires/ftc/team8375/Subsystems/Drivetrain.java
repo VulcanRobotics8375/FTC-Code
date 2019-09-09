@@ -74,9 +74,9 @@ public class Drivetrain {
         double vd = Math.hypot(forward, strafe);
         double theta = Math.atan2(forward, strafe) - (Math.PI / 4);
 
-        if(forward == 0 && strafe == 0 && turn == 0) {
-            Time.reset();
-        }
+//        if(forward == 0 && strafe == 0 && turn == 0) {
+//            Time.reset();
+//        }
 
 //        double accLim = (Time.time()/1.07)*((0.62*Math.pow(Time.time(), 2))+0.45);
 
@@ -116,41 +116,41 @@ public class Drivetrain {
 
     public void tankDrive(float leftPower, float rightPower, double acceleration) {
         //double error = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle - targetAngle;
-        divisor = (Math.pow(Math.E, (acceleration/0.519298))-0.947908)/5.89074;
+//        divisor = (Math.pow(Math.E, (acceleration/0.519298))-0.947908)/5.89074;
         // modifies the controller input for a more natural feel
         // graph for acceleration curve - https://bit.ly/2M4Iybm
         movePower = (leftPower/1.07)*((0.62*Math.pow(leftPower, 2))+0.45);
         turnPower = (rightPower/1.07)*((0.62*Math.pow(rightPower, 2))+0.45);
-        if(movePower == 0 && turnPower == 0){
-            Time.reset();
-        }
-        mPower = movePower;
-        tPower = turnPower;
+//        if(movePower == 0 && turnPower == 0){
+//            Time.reset();
+//        }
+//        mPower = movePower;
+//        tPower = turnPower;
 
         //same acceleration curve, but based on time instead of controller input.
         // limits the speed at which the robot accelerates
-        double accLim = (Time.time()/1.07)*((0.62*Math.pow(Time.time(), 2))+0.45);
-
-        //logic gates to determine when to use time-based or controller-based power
-        if(accLim < Math.abs(movePower) && accLim < Math.abs(turnPower)){
-            movePower = accLim;
-            turnPower = accLim;
-        }
-        else if(accLim < Math.abs(movePower)){
-            movePower = accLim;
-        } else if(accLim < Math.abs(turnPower)){
-            turnPower = accLim;
-        }
-
-        //makes sure the motors are going the correct way
-        if(mPower < 0 || tPower < 0){
-            if(movePower == accLim){
-                movePower = -movePower;
-            }
-            if(turnPower == accLim){
-                turnPower = -turnPower;
-            }
-        }
+//        double accLim = (Time.time()/1.07)*((0.62*Math.pow(Time.time(), 2))+0.45);
+//
+//        //logic gates to determine when to use time-based or controller-based power
+//        if(accLim < Math.abs(movePower) && accLim < Math.abs(turnPower)){
+//            movePower = accLim;
+//            turnPower = accLim;
+//        }
+//        else if(accLim < Math.abs(movePower)){
+//            movePower = accLim;
+//        } else if(accLim < Math.abs(turnPower)){
+//            turnPower = accLim;
+//        }
+//
+//        //makes sure the motors are going the correct way
+//        if(mPower < 0 || tPower < 0){
+//            if(movePower == accLim){
+//                movePower = -movePower;
+//            }
+//            if(turnPower == accLim){
+//                turnPower = -turnPower;
+//            }
+//        }
 //        if(tPower != 0){
 //            targetAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
 //        }

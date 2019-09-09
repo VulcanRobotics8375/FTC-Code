@@ -24,10 +24,9 @@ public class Robot {
         arm = new Arm(
                 0,
                 hwMap.dcMotor.get("lift"),
-                hwMap.dcMotor.get("extend_left"),
-                hwMap.dcMotor.get("extend_right"),
+                hwMap.dcMotor.get("claw"),
                 hwMap.crservo.get("intake"),
-                hwMap.servo.get("flip")
+                hwMap.dcMotor.get("flip")
         );
 
     }

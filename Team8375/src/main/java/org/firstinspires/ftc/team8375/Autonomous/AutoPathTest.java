@@ -4,9 +4,11 @@
 
 package org.firstinspires.ftc.team8375.Autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
 
+@Autonomous(name="autoTest", group = "test")
 public class AutoPathTest extends LinearOpMode {
 
     protected Robot robot;
@@ -24,7 +26,6 @@ public class AutoPathTest extends LinearOpMode {
         do {
             robot.drivetrain.pid.initHeading();
             robot.drivetrain.turn(0.1, 0.1, 0.1, 90);
-
             robot.drivetrain.moveIn(5, 0.4);
 
 
