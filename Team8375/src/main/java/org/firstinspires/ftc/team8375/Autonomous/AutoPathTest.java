@@ -6,6 +6,8 @@ package org.firstinspires.ftc.team8375.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
 
 @Autonomous(name="autoTest", group = "test")
@@ -17,7 +19,7 @@ public class AutoPathTest extends LinearOpMode {
 
         robot = new Robot(hardwareMap);
 
-
+        robot.drivetrain.resetEncoders(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.drivetrain.pid.initIMU();
         telemetry.addData("calibration status", robot.drivetrain.pid.getCalibrationStatus().toString());
         telemetry.update();
@@ -26,10 +28,14 @@ public class AutoPathTest extends LinearOpMode {
         do {
 //            robot.drivetrain.pid.initHeading();
 //            robot.drivetrain.turn(0.32, 0, 0, 90);
-            robot.drivetrain
-            robot.drivetrain.moveIn(20, 0.4);
+//            robot.drivetrain.moveIn(20, 0.4);
 
-            telemetry.addData("test", robot.drivetrain.pid.getIntegratedHeading());
+            telemetry.addData("fl", robot.drivetrain.getPositionFl());
+            telemetry.addData("fr", robot.drivetrain.getPositionFr());
+            telemetry.addData("bl", robot.drivetrain.getPositionBl());
+            telemetry.addData("br", robot.drivetrain.getPositionBr());
+
+
             telemetry.update();
 
         } while(opModeIsActive());

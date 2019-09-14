@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class Drivetrain extends LinearOpMode {
+public class Drivetrain {
     private DcMotor fl, fr, bl, br;
     private BNO055IMU imu;
     private BNO055IMU.Parameters parameters;
@@ -51,13 +51,13 @@ public class Drivetrain extends LinearOpMode {
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
-    public void runOpMode() {
-        telemetry.addData("fl Position", fl.getCurrentPosition());
-        telemetry.addData("fr Position", fr.getCurrentPosition());
-        telemetry.addData("bl Position", bl.getCurrentPosition());
-        telemetry.addData("br Position", br.getCurrentPosition());
-        telemetry.update();
-    }
+//    public void runOpMode() {
+//        telemetry.addData("fl Position", fl.getCurrentPosition());
+//        telemetry.addData("fr Position", fr.getCurrentPosition());
+//        telemetry.addData("bl Position", bl.getCurrentPosition());
+//        telemetry.addData("br Position", br.getCurrentPosition());
+//        telemetry.update();
+//    }
 
     public void setupIMU() {
         parameters = new BNO055IMU.Parameters();
@@ -193,9 +193,8 @@ public class Drivetrain extends LinearOpMode {
 
             setPowers(speed, 0);
 
-            while(opModeIsActive() && motorIsBusy()) {
-                telemetry.addData("pos", targetPos - fl.getCurrentPosition());
-                telemetry.update();
+            while(motorIsBusy()) {
+
             }
 
             setPowers(0, 0);
@@ -233,8 +232,17 @@ public class Drivetrain extends LinearOpMode {
         br.setPower(forward + turn);
     }
 
-    public double getPosition() {
+    public double getPositionFl() {
         return fl.getCurrentPosition();
+    }
+    public double getPositionBl() {
+        return bl.getCurrentPosition();
+    }
+    public double getPositionBr() {
+        return br.getCurrentPosition();
+    }
+    public double getPositionFr() {
+        return fr.getCurrentPosition();
     }
     public double getOutput() {
         return output;
