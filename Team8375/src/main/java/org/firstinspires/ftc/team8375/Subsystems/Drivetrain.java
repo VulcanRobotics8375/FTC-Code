@@ -7,10 +7,11 @@ package org.firstinspires.ftc.team8375.Subsystems;
 //import android.test.FlakyTest;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class Drivetrain {
+public class Drivetrain extends LinearOpMode {
     private DcMotor fl, fr, bl, br;
     private BNO055IMU imu;
     private BNO055IMU.Parameters parameters;
@@ -26,12 +27,13 @@ public class Drivetrain {
     public PID pid;
 
     public Drivetrain(DcMotor frontLeft, DcMotor frontRight, DcMotor backLeft, DcMotor backRight, BNO055IMU IMU) {
-        pid = new PID(imu);
         fl = frontLeft;
         fr = frontRight;
         bl = backLeft;
         br = backRight;
         imu = IMU;
+
+        pid = new PID(imu);
 
         fl.setDirection(DcMotor.Direction.FORWARD);
         fr.setDirection(DcMotor.Direction.REVERSE);
@@ -47,6 +49,14 @@ public class Drivetrain {
         fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+    }
+
+    public void runOpMode() {
+        telemetry.addData("fl Position", fl.getCurrentPosition());
+        telemetry.addData("fr Position", fr.getCurrentPosition());
+        telemetry.addData("bl Position", bl.getCurrentPosition());
+        telemetry.addData("br Position", br.getCurrentPosition());
+        telemetry.update();
     }
 
     public void setupIMU() {
@@ -121,36 +131,36 @@ public class Drivetrain {
         // graph for acceleration curve - https://bit.ly/2M4Iybm
         movePower = (leftPower/1.07)*((0.62*Math.pow(leftPower, 2))+0.45);
         turnPower = (rightPower/1.07)*((0.62*Math.pow(rightPower, 2))+0.45);
-//        if(movePower == 0 && turnPower == 0){
-//            Time.reset();
-//        }
-//        mPower = movePower;
-//        tPower = turnPower;
+        if(movePower == 0 && turnPower == 0){
+            Time.reset();
+        }
+        mPower = movePower;
+        tPower = turnPower;
 
-        //same acceleration curve, but based on time instead of controller input.
-        // limits the speed at which the robot accelerates
-//        double accLim = (Time.time()/1.07)*((0.62*Math.pow(Time.time(), 2))+0.45);
-//
-//        //logic gates to determine when to use time-based or controller-based power
-//        if(accLim < Math.abs(movePower) && accLim < Math.abs(turnPower)){
-//            movePower = accLim;
-//            turnPower = accLim;
-//        }
-//        else if(accLim < Math.abs(movePower)){
-//            movePower = accLim;
-//        } else if(accLim < Math.abs(turnPower)){
-//            turnPower = accLim;
-//        }
-//
-//        //makes sure the motors are going the correct way
-//        if(mPower < 0 || tPower < 0){
-//            if(movePower == accLim){
-//                movePower = -movePower;
-//            }
-//            if(turnPower == accLim){
-//                turnPower = -turnPower;
-//            }
-//        }
+//        same acceleration curve, but based on time instead of controller input.
+//         limits the speed at which the robot accelerates
+        double accLim = (Time.time()/1.07)*((0.62*Math.pow(Time.time(), 2))+0.45);
+
+        //logic gates to determine when to use time-based or controller-based power
+        if(accLim < Math.abs(movePower) && accLim < Math.abs(turnPower)){
+            movePower = accLim;
+            turnPower = accLim;
+        }
+        else if(accLim < Math.abs(movePower)){
+            movePower = accLim;
+        } else if(accLim < Math.abs(turnPower)){
+            turnPower = accLim;
+        }
+
+        //makes sure the motors are going the correct way
+        if(mPower < 0 || tPower < 0){
+            if(movePower == accLim){
+                movePower = -movePower;
+            }
+            if(turnPower == accLim){
+                turnPower = -turnPower;
+            }
+        }
 //        if(tPower != 0){
 //            targetAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
 //        }
@@ -174,19 +184,24 @@ public class Drivetrain {
 
     public void moveIn(double inches, double speed) {
 
-        resetEncoders(DcMotor.RunMode.RUN_TO_POSITION);
+        double wheelSize = (100.0/25.4) * Math.PI;
+        int targetPos = (int) Math.round((inches/wheelSize) * 537.6);
 
-        double wheelSize = (100/25.4) * Math.PI;
-        int targetPos = (int) Math.round((inches/wheelSize)/1120.0);
+            resetEncoders(DcMotor.RunMode.RUN_TO_POSITION);
 
-        setTargetPos(targetPos);
-        setPowers(speed, 0);
+            setTargetPos(targetPos);
 
-        do {
             setPowers(speed, 0);
-        } while(motorIsBusy());
 
-        setPowers(0, 0);
+            while(opModeIsActive() && motorIsBusy()) {
+                telemetry.addData("pos", targetPos - fl.getCurrentPosition());
+                telemetry.update();
+            }
+
+            setPowers(0, 0);
+
+            resetEncoders(DcMotor.RunMode.RUN_USING_ENCODER);
+
     }
 
     public void strafeIn(double Kp, double Ki, double Kd, double inches, double speed) {
@@ -197,11 +212,11 @@ public class Drivetrain {
     public void turn(double Kp, double Ki, double Kd, double heading) {
 
         do {
-            output = pid.run(Kp, Ki, Kd, 10, heading);
-            setPowers(0, output);
+            setPowers(0, Kp);
+
         } while(!(pid.getIntegratedHeading() < heading + 5 && pid.getIntegratedHeading() > heading - 5));
 
-        setPowers(0, 0);
+            setPowers(0, 0);
     }
 
 
@@ -212,12 +227,15 @@ public class Drivetrain {
      */
 
     public void setPowers(double forward, double turn) {
-        fl.setPower(-forward - turn);
-        fr.setPower(-forward + turn);
-        bl.setPower(-forward - turn);
-        br.setPower(-forward + turn);
+        fl.setPower(forward - turn);
+        fr.setPower(forward + turn);
+        bl.setPower(forward - turn);
+        br.setPower(forward + turn);
     }
 
+    public double getPosition() {
+        return fl.getCurrentPosition();
+    }
     public double getOutput() {
         return output;
     }
@@ -248,10 +266,10 @@ public class Drivetrain {
     }
 
     public void setTargetPos(int pos) {
-        fl.setTargetPosition(pos);
-        fr.setTargetPosition(pos);
-        bl.setTargetPosition(pos);
-        br.setTargetPosition(pos);
+        fl.setTargetPosition(-pos);
+        fr.setTargetPosition(-pos);
+        bl.setTargetPosition(-pos);
+        br.setTargetPosition(-pos);
     }
 
     public boolean motorIsBusy() {
@@ -264,6 +282,7 @@ public class Drivetrain {
         return motorIsBusy;
     }
 
-        public void stop() {
+        public void stopDriveTrain() {
+
     }
 }

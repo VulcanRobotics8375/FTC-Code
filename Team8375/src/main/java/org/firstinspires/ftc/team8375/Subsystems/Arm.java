@@ -34,13 +34,13 @@ public class Arm {
         ArmMotorInit(targetStartPosition);
     }
 // high limit - 2375
-    public void setPowers(double liftPower, double clawPower, float intakeButton, double flipPower, float limitRange, float liftHigh, double autoGain) {
+    public void setPowers(double liftPower, double clawPower, boolean flipButton, double flipPower, float limitRange, float liftHigh, double autoGain) {
 
-        if(intakeButton > 0){
-            intake.setPower(-intakePower);
-        } else{
-            intake.setPower(intakePower);
-        }
+//        if(intakeButton > 0){
+//            intake.setPower(-intakePower);
+//        } else{
+//            intake.setPower(intakePower);
+//        }
 //        if (flipButton) {
 //            flip.setPosition(180);
 //        } else {

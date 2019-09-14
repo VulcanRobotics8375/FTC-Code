@@ -12,24 +12,29 @@ import org.firstinspires.ftc.team8375.Subsystems.Robot;
 public class AutoPathTest extends LinearOpMode {
 
     protected Robot robot;
-
     @Override
     public void runOpMode() {
 
         robot = new Robot(hardwareMap);
 
+
         robot.drivetrain.pid.initIMU();
         telemetry.addData("calibration status", robot.drivetrain.pid.getCalibrationStatus().toString());
-
+        telemetry.update();
         waitForStart();
 
         do {
-            robot.drivetrain.pid.initHeading();
-            robot.drivetrain.turn(0.1, 0.1, 0.1, 90);
-            robot.drivetrain.moveIn(5, 0.4);
+//            robot.drivetrain.pid.initHeading();
+//            robot.drivetrain.turn(0.32, 0, 0, 90);
+            robot.drivetrain
+            robot.drivetrain.moveIn(20, 0.4);
 
+            telemetry.addData("test", robot.drivetrain.pid.getIntegratedHeading());
+            telemetry.update();
 
         } while(opModeIsActive());
+
+        robot.drivetrain.stopDriveTrain();
 
     }
 }

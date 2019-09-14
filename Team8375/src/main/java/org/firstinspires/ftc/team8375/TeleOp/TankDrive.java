@@ -34,8 +34,8 @@ public class TankDrive extends OpMode {
     }
 
     public void loop() {
-        robot.drivetrain.tankDrive(-gamepad1.right_stick_x, gamepad1.left_stick_y, 0.2);
-        robot.arm.setPowers(gamepad2.left_stick_y, gamepad2.right_stick_x, gamepad2.left_trigger, gamepad2.left_stick_x * 0.05, 500, 3600, 400.0);
+        robot.drivetrain.tankDrive(-gamepad1.right_stick_x, gamepad1.left_stick_y,0.2);
+        robot.arm.setPowers(gamepad2.left_stick_y, gamepad2.right_stick_x, gamepad2.a, gamepad2.left_stick_x * 0.05, 500, 3500, 400.0);
         telemetry.addData("lift Position", robot.arm.lift.getCurrentPosition());
         telemetry.addData("Claw Position", robot.arm.claw.getCurrentPosition());
         telemetry.addData("Flip Position", robot.arm.flip.getCurrentPosition());

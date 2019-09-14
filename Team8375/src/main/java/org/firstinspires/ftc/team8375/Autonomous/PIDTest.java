@@ -31,7 +31,7 @@ public class PIDTest extends LinearOpMode {
             sleep(iterationTime);
         } while(opModeIsActive());
 
-        robot.drivetrain.stop();
+        robot.drivetrain.stopDriveTrain();
 
     }
 

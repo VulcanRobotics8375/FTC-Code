@@ -32,6 +32,6 @@ public class Robot {
     }
 
     public void stop() {
-        drivetrain.stop();
+        drivetrain.stopDriveTrain();
     }
 }
