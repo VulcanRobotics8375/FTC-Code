@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-public class PID extends LinearOpMode {
+public class PID {
     private BNO055IMU imu;
     private BNO055IMU.Parameters parameters;
     private Orientation angles;
@@ -27,9 +27,9 @@ public class PID extends LinearOpMode {
 
     public PID(BNO055IMU IMU) { imu = IMU; }
 
-    public void runOpMode() {
-        telemetry.addData("PID output", output);
-    }
+//    public void runOpMode() {
+//        telemetry.addData("PID output", output);
+//    }
 
     public double getIntegratedHeading() {
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -73,8 +73,9 @@ public class PID extends LinearOpMode {
     }
 
 
-    public void initHeading() {
+    public double initHeading() {
         startHeading = getIntegratedHeading();
+        return startHeading;
 
     }
 
@@ -94,7 +95,7 @@ public class PID extends LinearOpMode {
             output = Kp * error + Ki * integral + Kd * derivative;
             previousError = error;
         }
-        sleep(iterationTime);
+//        sleep(iterationTime);
         return output;
     }
     //default params

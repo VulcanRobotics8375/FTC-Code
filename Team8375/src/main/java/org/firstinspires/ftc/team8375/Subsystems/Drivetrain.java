@@ -182,7 +182,7 @@ public class Drivetrain {
      *
      */
 
-    public void moveIn(double inches, double speed) {
+    public void moveIn(double inches, double speed, double turn) {
 
         double wheelSize = (100.0/25.4) * Math.PI;
         int targetPos = (int) Math.round((inches/wheelSize) * 537.6);
@@ -191,7 +191,7 @@ public class Drivetrain {
 
             setTargetPos(targetPos);
 
-            setPowers(speed, 0);
+            setPowers(speed/100.0, turn);
 
             while(motorIsBusy()) {
 
@@ -266,6 +266,10 @@ public class Drivetrain {
         bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        setRunMode(runMode);
+    }
+
+    public void setRunMode(DcMotor.RunMode runMode) {
         fl.setMode(runMode);
         fr.setMode(runMode);
         bl.setMode(runMode);

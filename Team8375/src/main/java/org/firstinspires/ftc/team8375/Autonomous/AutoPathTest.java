@@ -13,6 +13,12 @@ import org.firstinspires.ftc.team8375.Subsystems.Robot;
 @Autonomous(name="autoTest", group = "test")
 public class AutoPathTest extends LinearOpMode {
 
+    private boolean isDone = false;
+    private double accSpeed = 0;
+    private double pidOut;
+    private double integral = 0;
+    private double derivative = 0;
+    private double previousError = 0;
     protected Robot robot;
     @Override
     public void runOpMode() {
@@ -28,8 +34,17 @@ public class AutoPathTest extends LinearOpMode {
         do {
 //            robot.drivetrain.pid.initHeading();
 //            robot.drivetrain.turn(0.32, 0, 0, 90);
-//            robot.drivetrain.moveIn(20, 0.4);
+            if(!isDone) {
+                pid(1, 1, 1, 40, 10, 0);
+                robot.drivetrain.moveIn(20, 40, pidOut);
+                isDone = true;
+            }
 
+//            isDone = false;
+//            if (!isDone) {
+//                robot.drivetrain.pid.initHeading();
+//                robot.drivetrain.turn(0.1, 0, 0, 90);
+//            }
             telemetry.addData("fl", robot.drivetrain.getPositionFl());
             telemetry.addData("fr", robot.drivetrain.getPositionFr());
             telemetry.addData("bl", robot.drivetrain.getPositionBl());
@@ -43,4 +58,24 @@ public class AutoPathTest extends LinearOpMode {
         robot.drivetrain.stopDriveTrain();
 
     }
+
+    private void pid(double Kp, double Kd, double Ki, double power, long iterationTime, double heading) {
+        double sensorVal = robot.drivetrain.pid.getIntegratedHeading() + robot.drivetrain.pid.initHeading();
+
+        double error = sensorVal - heading;
+        if(error < 5 && error > -5) {
+            integral = 0;
+            pidOut = 0;
+        } else {
+            integral += ((error + previousError) / 2.0) * (iterationTime / 100.0);
+            derivative = (error - previousError);
+            pidOut = Kp * error + Ki * integral + Kd * derivative;
+            previousError = error;
+        }
+
+        pidOut = (0.02 * power)/100;
+        sleep(iterationTime);
+    }
+
 }
+
