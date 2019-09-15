@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2019. Vulcan Robotics FTC Team 8375. All Rights Reserved.
+ */
+
 package org.firstinspires.ftc.team8375.Subsystems;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -19,10 +23,13 @@ public class PID {
     private double previousError = 0;
     private double previousHeading = 0;
     private double integratedHeading = 0;
+    private double startHeading = 0;
 
-    public PID(BNO055IMU IMU) {
-        imu = IMU;
-    }
+    public PID(BNO055IMU IMU) { imu = IMU; }
+
+//    public void runOpMode() {
+//        telemetry.addData("PID output", output);
+//    }
 
     public double getIntegratedHeading() {
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -42,16 +49,21 @@ public class PID {
         return integratedHeading;
     }
 
+    public double getOutput() {
+        return output;
+    }
+
     public BNO055IMU.CalibrationStatus getCalibrationStatus() {
         return imu.getCalibrationStatus();
     }
 
-    public void initIMU(BNO055IMU.SensorMode mode, BNO055IMU.AngleUnit angleUnit, BNO055IMU.AccelUnit accelUnit, boolean loggingEnabled) {
+    public void initIMU() {
         parameters = new BNO055IMU.Parameters();
-        parameters.mode = mode;
-        parameters.angleUnit = angleUnit;
-        parameters.accelUnit = accelUnit;
-        parameters.loggingEnabled = loggingEnabled;
+        parameters.mode = BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
+        parameters.loggingEnabled = false;
         if(imu.initialize(parameters)) {
             while (!imu.isGyroCalibrated()) {}
         } else {
@@ -60,19 +72,17 @@ public class PID {
         }
     }
 
-    public void initIMU() {
-        initIMU(
-            BNO055IMU.SensorMode.IMU,
-            BNO055IMU.AngleUnit.DEGREES,
-            BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC,
-            false
-        );
+
+    public double initHeading() {
+        startHeading = getIntegratedHeading();
+        return startHeading;
+
     }
 
+    //pid calculations
+    public double run(double Kp, double Ki, double Kd, long iterationTime, double heading) {
 
-
-    public void run(double Kp, double Ki, double Kd, float iterationTime, double heading) {
-        double sensorVal = getIntegratedHeading();
+        double sensorVal = getIntegratedHeading() + startHeading;
 
         double error = sensorVal - heading;
 
@@ -85,10 +95,11 @@ public class PID {
             output = Kp * error + Ki * integral + Kd * derivative;
             previousError = error;
         }
-
+//        sleep(iterationTime);
+        return output;
     }
     //default params
-    public void run(double Kp, double Ki, double Kd, float iterationTime) {
+    public void run(double Kp, double Ki, double Kd, long iterationTime) {
         run(Kp, Ki, Kd, iterationTime, 0);
     }
 

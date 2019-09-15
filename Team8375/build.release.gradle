@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2019. Vulcan Robotics FTC Team 8375. All Rights Reserved.
+ */
+
 dependencies {
     implementation project(':FtcRobotController')
     implementation (name: 'RobotCore-release', ext: 'aar')

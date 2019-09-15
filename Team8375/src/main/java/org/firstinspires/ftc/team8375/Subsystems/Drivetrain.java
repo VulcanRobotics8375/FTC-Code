@@ -1,37 +1,30 @@
+/*
+ * Copyright (c) 2019. Vulcan Robotics FTC Team 8375. All Rights Reserved.
+ */
+
 package org.firstinspires.ftc.team8375.Subsystems;
 
 //import android.test.FlakyTest;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class Drivetrain {
     private DcMotor fl, fr, bl, br;
     private BNO055IMU imu;
     private BNO055IMU.Parameters parameters;
+    private double position;
     private double movePower;
     private double turnPower;
     private double mPower;
     private double tPower;
     private double divisor;
-    double targetAngle;
-    private Orientation angles;
     public ElapsedTime Time = new ElapsedTime();
-    private double sensorVal;
-    private double integral = 0;
-    private double derivative = 0;
     private double output = 0;
-    private double previousError = 0;
-    private double previousHeading = 0;
-    private double integratedHeading = 0;
-    private boolean ranFirstCycle = false;
-//    ElapsedTime lastTime;
+    private boolean motorIsBusy;
+    public PID pid;
 
     public Drivetrain(DcMotor frontLeft, DcMotor frontRight, DcMotor backLeft, DcMotor backRight, BNO055IMU IMU) {
         fl = frontLeft;
@@ -39,6 +32,8 @@ public class Drivetrain {
         bl = backLeft;
         br = backRight;
         imu = IMU;
+
+        pid = new PID(imu);
 
         fl.setDirection(DcMotor.Direction.FORWARD);
         fr.setDirection(DcMotor.Direction.REVERSE);
@@ -56,30 +51,13 @@ public class Drivetrain {
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
-    public double getOutput() { return output; }
-
-    public double getRobotAngle() {
-        double robotAngle = getIntegratedHeading();
-        return robotAngle;
-    }
-
-    public double getIntegratedHeading() {
-        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        imu.getPosition();
-        double currentHeading = AngleUnit.DEGREES.normalize(angles.firstAngle);
-        double deltaHeading = currentHeading - previousHeading;
-
-        if (deltaHeading < -180) {
-            deltaHeading += 360;
-        } else if (deltaHeading >= 180) {
-            deltaHeading -= 360;
-        }
-
-        integratedHeading += deltaHeading;
-        previousHeading = currentHeading;
-
-        return integratedHeading;
-    }
+//    public void runOpMode() {
+//        telemetry.addData("fl Position", fl.getCurrentPosition());
+//        telemetry.addData("fr Position", fr.getCurrentPosition());
+//        telemetry.addData("bl Position", bl.getCurrentPosition());
+//        telemetry.addData("br Position", br.getCurrentPosition());
+//        telemetry.update();
+//    }
 
     public void setupIMU() {
         parameters = new BNO055IMU.Parameters();
@@ -95,28 +73,34 @@ public class Drivetrain {
         }
     }
 
+    /**
+     *
+     * TeleOp Functions
+     *
+     */
+
     //graph explaining how mecanum works - https://www.desmos.com/calculator/nhqgggjnj6
     public void mecanumDrive(double forward, double turn, double strafe, double multiplier) {
         double vd = Math.hypot(forward, strafe);
         double theta = Math.atan2(forward, strafe) - (Math.PI / 4);
 
-        if(forward == 0 && strafe == 0 && turn == 0) {
-            Time.reset();
-        }
+//        if(forward == 0 && strafe == 0 && turn == 0) {
+//            Time.reset();
+//        }
 
-        double accLim = (Time.time()/1.07)*((0.62*Math.pow(Time.time(), 2))+0.45);
+//        double accLim = (Time.time()/1.07)*((0.62*Math.pow(Time.time(), 2))+0.45);
 
-        if(forward < 0 || turn < 0 || strafe < 0) {
-
-        }
-
-        if(turn == 0) {
-            //targetAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-            PID(0.01, 0.001, 0.01, 10, targetAngle);
-            turn = getOutput();
-        } else {
-            targetAngle = getIntegratedHeading();
-        }
+//        if(forward < 0 || turn < 0 || strafe < 0) {
+//
+//        }
+//
+//        if(turn == 0) {
+//            //targetAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+//            pid.run(0.01, 0.001, 0.01, 10, targetAngle);
+//            turn = pid.getOutput();
+//        } else {
+//            targetAngle = pid.getIntegratedHeading();
+//        }
 
         double[] v = {
                 vd * Math.sin(theta) - turn,
@@ -142,7 +126,7 @@ public class Drivetrain {
 
     public void tankDrive(float leftPower, float rightPower, double acceleration) {
         //double error = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle - targetAngle;
-        divisor = (Math.pow(Math.E, (acceleration/0.519298))-0.947908)/5.89074;
+//        divisor = (Math.pow(Math.E, (acceleration/0.519298))-0.947908)/5.89074;
         // modifies the controller input for a more natural feel
         // graph for acceleration curve - https://bit.ly/2M4Iybm
         movePower = (leftPower/1.07)*((0.62*Math.pow(leftPower, 2))+0.45);
@@ -153,8 +137,8 @@ public class Drivetrain {
         mPower = movePower;
         tPower = turnPower;
 
-        //same acceleration curve, but based on time instead of controller input.
-        // limits the speed at which the robot accelerates
+//        same acceleration curve, but based on time instead of controller input.
+//         limits the speed at which the robot accelerates
         double accLim = (Time.time()/1.07)*((0.62*Math.pow(Time.time(), 2))+0.45);
 
         //logic gates to determine when to use time-based or controller-based power
@@ -191,39 +175,126 @@ public class Drivetrain {
         br.setPower(turnPower - movePower);
     }
 
-    public void PID(
-            double Kp,
-            double Ki,
-            double Kd,
-            long iteration_time,
-            double heading
-    ) {
-        sensorVal = getIntegratedHeading();
 
-        double error = sensorVal - heading;
+    /**
+     *
+     * Autonomous Functions
+     *
+     */
 
-        if(error < 5 && error > -5) {
-            integral = 0;
-            output = 0;
-        } else {
-            integral += ((error + previousError) / 2.0) * (iteration_time / 100.0);
-            derivative = (error - previousError);
-            output = Kp * error + Ki * integral + Kd * derivative;
-            previousError = error;
-        }
+    public void moveIn(double inches, double speed, double turn) {
 
-//        wait(iteration_time);
+        double wheelSize = (100.0/25.4) * Math.PI;
+        int targetPos = (int) Math.round((inches/wheelSize) * 537.6);
+
+            resetEncoders(DcMotor.RunMode.RUN_TO_POSITION);
+
+            setTargetPos(targetPos);
+
+            setPowers(speed/100.0, turn);
+
+            while(motorIsBusy()) {
+
+            }
+
+            setPowers(0, 0);
+
+            resetEncoders(DcMotor.RunMode.RUN_USING_ENCODER);
+
     }
+
+    public void strafeIn(double Kp, double Ki, double Kd, double inches, double speed) {
+
+
+    }
+
+    public void turn(double Kp, double Ki, double Kd, double heading) {
+
+        do {
+            setPowers(0, Kp);
+
+        } while(!(pid.getIntegratedHeading() < heading + 5 && pid.getIntegratedHeading() > heading - 5));
+
+            setPowers(0, 0);
+    }
+
+
+    /**
+     *
+     * Miscellanious Functions
+     *
+     */
 
     public void setPowers(double forward, double turn) {
-        fl.setPower(-forward - turn);
-        fr.setPower(-forward + turn);
-        bl.setPower(-forward);
-        br.setPower(-forward);
+        fl.setPower(forward - turn);
+        fr.setPower(forward + turn);
+        bl.setPower(forward - turn);
+        br.setPower(forward + turn);
     }
 
+    public double getPositionFl() {
+        return fl.getCurrentPosition();
+    }
+    public double getPositionBl() {
+        return bl.getCurrentPosition();
+    }
+    public double getPositionBr() {
+        return br.getCurrentPosition();
+    }
+    public double getPositionFr() {
+        return fr.getCurrentPosition();
+    }
+    public double getOutput() {
+        return output;
+    }
 
-        public void stop() {
+    //in inches
+    private double getDrivetrainPos() {
+
+
+        //         Absolute Value of motor ticks for strafing compatibility                                                                                 divide by 4 to average out encoders
+        position = (Math.abs(fl.getCurrentPosition()) + (Math.abs(fr.getCurrentPosition())) + (Math.abs(bl.getCurrentPosition())) + (Math.abs(br.getCurrentPosition()))) / 4.0;
+
+
+        return position;
+    }
+
+    public void resetEncoders(DcMotor.RunMode runMode) {
+
+        fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        setRunMode(runMode);
+    }
+
+    public void setRunMode(DcMotor.RunMode runMode) {
+        fl.setMode(runMode);
+        fr.setMode(runMode);
+        bl.setMode(runMode);
+        br.setMode(runMode);
+
+    }
+
+    public void setTargetPos(int pos) {
+        fl.setTargetPosition(-pos);
+        fr.setTargetPosition(-pos);
+        bl.setTargetPosition(-pos);
+        br.setTargetPosition(-pos);
+    }
+
+    public boolean motorIsBusy() {
+        if(fl.isBusy() || fr.isBusy() || bl.isBusy() || br.isBusy()) {
+            motorIsBusy = true;
+        } else {
+            motorIsBusy = false;
+        }
+
+        return motorIsBusy;
+    }
+
+        public void stopDriveTrain() {
+
     }
 }
-
