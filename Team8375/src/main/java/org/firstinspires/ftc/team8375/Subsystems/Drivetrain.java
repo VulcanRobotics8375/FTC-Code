@@ -202,6 +202,10 @@ public class Drivetrain {
             resetEncoders(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
+    public void moveIn(double inches, double speed) {
+
+        moveIn(inches, speed, 0);
+    }
 
     public void strafeIn(double Kp, double Ki, double Kd, double inches, double speed) {
 
