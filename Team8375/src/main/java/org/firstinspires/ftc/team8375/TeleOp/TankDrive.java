@@ -7,12 +7,16 @@ package org.firstinspires.ftc.team8375.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
+
+import java.util.concurrent.TimeUnit;
 
 @TeleOp(name="TankDrive", group="Drive")
 public class TankDrive extends OpMode {
     protected Robot robot;
+    ElapsedTime runtime = new ElapsedTime();
     public void init() {
         robot = new Robot(hardwareMap);
         telemetry.addData("Encoder Value", robot.arm.lift.getCurrentPosition());
@@ -30,7 +34,8 @@ public class TankDrive extends OpMode {
         robot.drivetrain.setupIMU();
         robot.arm.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.arm.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.drivetrain.Time.reset();
+        runtime.reset();
+
     }
 
     public void loop() {
@@ -39,11 +44,19 @@ public class TankDrive extends OpMode {
         telemetry.addData("lift Position", robot.arm.lift.getCurrentPosition());
         telemetry.addData("Claw Position", robot.arm.claw.getCurrentPosition());
         telemetry.addData("Flip Position", robot.arm.flip.getCurrentPosition());
-        telemetry.addData("Time", robot.drivetrain.Time.time());
+        telemetryDrivetrainPos();
+        telemetry.addData("Runtime", runtime.time(TimeUnit.SECONDS));
         telemetry.update();
     }
 
     public void stop() {
         robot.stop();
+    }
+
+    public void telemetryDrivetrainPos() {
+        telemetry.addData("front Left", robot.drivetrain.getPositionFl());
+        telemetry.addData("front Right", robot.drivetrain.getPositionFr());
+        telemetry.addData("back Left", robot.drivetrain.getPositionBl());
+        telemetry.addData("back Right", robot.drivetrain.getPositionBr());
     }
 }
