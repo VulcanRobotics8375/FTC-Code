@@ -22,7 +22,7 @@ public class Drivetrain {
     private double tPower;
     private double divisor;
     private double accLim;
-    public ElapsedTime Time = new ElapsedTime();
+    private ElapsedTime accelTime = new ElapsedTime();
     private double output = 0;
     private boolean motorIsBusy;
     public PID pid;
@@ -132,8 +132,8 @@ public class Drivetrain {
         // graph for acceleration curve - https://www.desmos.com/calculator/gdwizzld3f
         movePower = (leftPower/1.07)*((0.62*Math.pow(leftPower, 2))+0.45);
         turnPower = (rightPower/1.07)*((0.62*Math.pow(rightPower, 2))+0.45);
-        if(movePower == 0 && turnPower == 0){
-            Time.reset();
+        if(Math.abs(movePower) < greyZone && Math.abs(turnPower) < greyZone){
+            accelTime.reset();
         }
         mPower = movePower;
         tPower = turnPower;
@@ -142,7 +142,7 @@ public class Drivetrain {
 //         limits the speed at which the robot accelerates
 
         if(Math.abs(movePower) > greyZone || Math.abs(turnPower) > greyZone) {
-            accLim = (Time.time() / 1.07) * ((0.62 * Math.pow(Time.time(), 2)) + 0.45) / divisor;
+            accLim = (accelTime.time() / 1.07) * ((0.62 * Math.pow(accelTime.time(), 2)) + 0.45) / divisor;
 
             //logic gates to determine when to use time-based or controller-based power
             if(accLim < Math.abs(movePower) && accLim < Math.abs(turnPower)){
@@ -218,15 +218,15 @@ public class Drivetrain {
 
     }
 
-    public void turn(double Kp, double Ki, double Kd, double heading) {
-
-        do {
-            setPowers(0, Kp);
-
-        } while(!(pid.getIntegratedHeading() < heading + 5 && pid.getIntegratedHeading() > heading - 5));
-
-            setPowers(0, 0);
-    }
+//    public void turn(double Kp, double Ki, double Kd, double heading) {
+//
+//        do {
+//            setPowers(0, Kp);
+//
+//        } while(!(pid.getIntegratedHeading() < heading + 5 && pid.getIntegratedHeading() > heading - 5));
+//
+//            setPowers(0, 0);
+//    }
 
 
     /**
