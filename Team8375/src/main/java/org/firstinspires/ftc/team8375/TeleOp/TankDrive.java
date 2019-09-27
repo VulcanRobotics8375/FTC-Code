@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 @TeleOp(name="TankDrive", group="Drive")
 public class TankDrive extends OpMode {
     protected Robot robot;
-    private ElapsedTime runtime = new ElapsedTime();
+    ElapsedTime runtime = new ElapsedTime();
     public void init() {
         robot = new Robot(hardwareMap);
         telemetry.addData("Encoder Value", robot.arm.lift.getCurrentPosition());
