@@ -99,12 +99,12 @@ public class PID {
         return output;
     }
     //default params
-    public void run(double Kp, double Ki, double Kd, long iterationTime) {
-        run(Kp, Ki, Kd, iterationTime, 0);
+    public double run(double Kp, double Ki, double Kd, long iterationTime) {
+        return run(Kp, Ki, Kd, iterationTime, 0);
     }
 
-    public void run(double Kp, double Ki, double Kd) {
-        run(Kp, Ki, Kd, 10, 0);
+    public double run(double Kp, double Ki, double Kd) {
+        return run(Kp, Ki, Kd, 10, 0);
     }
 
 }

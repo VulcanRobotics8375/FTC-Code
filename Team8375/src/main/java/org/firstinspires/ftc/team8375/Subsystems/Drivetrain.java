@@ -22,7 +22,7 @@ public class Drivetrain {
     private double tPower;
     private double divisor;
     private double accLim;
-    public ElapsedTime Time = new ElapsedTime();
+    private ElapsedTime Time = new ElapsedTime();
     private double output = 0;
     private boolean motorIsBusy;
     public PID pid;
