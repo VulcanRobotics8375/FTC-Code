@@ -30,6 +30,12 @@ public class TankDrive extends OpMode {
 //        }
     }
 
+//    @Override
+//    public void init_loop() {
+//
+//    }
+
+    @Override
     public void start() {
         robot.drivetrain.setupIMU();
         robot.arm.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -39,7 +45,7 @@ public class TankDrive extends OpMode {
     }
 
     public void loop() {
-        robot.drivetrain.tankDrive(-gamepad1.right_stick_x, gamepad1.left_stick_y,1, 0.1);
+        robot.drivetrain.tankDrive(-gamepad1.right_stick_x, gamepad1.left_stick_y,1, 0.1, gamepad1.a);
         robot.arm.setPowers(gamepad2.left_stick_y, gamepad2.right_stick_x, gamepad2.a, gamepad2.left_stick_x * 0.05, 500, 3500, 400.0);
         telemetry.addData("lift Position", robot.arm.lift.getCurrentPosition());
         telemetry.addData("Claw Position", robot.arm.claw.getCurrentPosition());
@@ -49,6 +55,7 @@ public class TankDrive extends OpMode {
         telemetry.update();
     }
 
+    @Override
     public void stop() {
         robot.stop();
     }

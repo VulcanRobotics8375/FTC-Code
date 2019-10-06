@@ -13,7 +13,6 @@ public class Arm {
     // variable initialization
     public DcMotor lift;
     public DcMotor claw;
-    public CRServo intake;
     public DcMotor flip;
     float LiftPos;
     float flipPos;
@@ -23,11 +22,9 @@ public class Arm {
     float lastFlipPos = 0;
     double intakePower = 0.5;
 
-    public Arm(int targetStartPosition, DcMotor Lift, DcMotor Claw, CRServo Intake, DcMotor Flip) {
+    public Arm(int targetStartPosition, DcMotor Lift, DcMotor Claw, DcMotor Flip) {
         lift = Lift;
-        //left = 0, right = 1 (might not be correct but I'll test it later)
         claw = Claw;
-        intake = Intake;
         flip = Flip;
 
         //motor initialization

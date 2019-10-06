@@ -25,7 +25,6 @@ public class testDrive extends OpMode {
         robot.drivetrain.setupIMU();
          robot.arm.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.arm.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.drivetrain.Time.reset();
     }
 
     public void loop() {
@@ -33,7 +32,6 @@ public class testDrive extends OpMode {
         robot.arm.setPowers(gamepad1.left_stick_y, -gamepad1.right_stick_y, gamepad2.a, gamepad2.left_stick_x, 300, 4250, 500);
          telemetry.addData("Arm Position", robot.arm.lift.getCurrentPosition());
          telemetry.addData("triggerTest", gamepad1.left_trigger);
-         telemetry.addData("Time Active", robot.drivetrain.Time.time());
     }
 
     public void stop() {

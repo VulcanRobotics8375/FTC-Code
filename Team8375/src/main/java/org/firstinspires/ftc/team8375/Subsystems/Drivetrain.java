@@ -11,10 +11,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class Drivetrain {
     private DcMotor fl, fr, bl, br;
     private BNO055IMU imu;
     private BNO055IMU.Parameters parameters;
+    private int inverse;
+    private boolean buttonPressed = false;
     private double position;
     private double movePower;
     private double turnPower;
@@ -125,18 +128,28 @@ public class Drivetrain {
         bl.setPower(motorOut[3]);
     }
 
-    public void tankDrive(float leftPower, float rightPower, double acc, double greyZone) {
+    public void tankDrive(float leftPower, float rightPower, double acc, double greyZone, boolean headSwitchButton) {
         //double error = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle - targetAngle;
         divisor = (acc/1.07)*((0.62*Math.pow(acc, 2))+0.45);
         // modifies the controller input for a more natural feel
         // graph for acceleration curve - https://www.desmos.com/calculator/gdwizzld3f
-        movePower = (leftPower/1.07)*((0.62*Math.pow(leftPower, 2))+0.45);
-        turnPower = (rightPower/1.07)*((0.62*Math.pow(rightPower, 2))+0.45);
-        if(movePower == 0 && turnPower == 0){
+        movePower = (leftPower/1.07)*((0.62*Math.pow(leftPower, 2))+0.45) * inverse;
+        turnPower = (rightPower/1.07)*((0.62*Math.pow(rightPower, 2))+0.45) * inverse;
+        if(Math.abs(movePower) < greyZone && Math.abs(turnPower) < greyZone) {
             Time.reset();
         }
         mPower = movePower;
         tPower = turnPower;
+
+        if(headSwitchButton) {
+            buttonPressed = true;
+        }
+
+        if(buttonPressed && !headSwitchButton) {
+            buttonPressed = false;
+
+            inverse *= -1;
+        }
 
 //        same acceleration curve, but based on time instead of controller input.
 //         limits the speed at which the robot accelerates
