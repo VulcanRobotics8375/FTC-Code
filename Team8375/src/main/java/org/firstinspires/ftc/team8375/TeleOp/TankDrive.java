@@ -16,18 +16,13 @@ import java.util.concurrent.TimeUnit;
 @TeleOp(name="TankDrive", group="Drive")
 public class TankDrive extends OpMode {
     protected Robot robot;
-    ElapsedTime runtime = new ElapsedTime();
+    private ElapsedTime runtime = new ElapsedTime();
+    boolean startDone = false;
+
+    @Override
     public void init() {
         robot = new Robot(hardwareMap);
-        telemetry.addData("Encoder Value", robot.arm.lift.getCurrentPosition());
-//        gamepad1.setJoystickDeadzone(0.075f);
-//        gamepad2.setJoystickDeadzone(0.075f);
-//        robot.arm.flip.setTargetPosition(100);
-//        robot.arm.flip.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        robot.arm.flip.setPower(0.05);
-//        if(!robot.arm.flip.isBusy()) {
-//            robot.arm.flip.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        }
+        robot.arm.ArmMotorInit(0);
     }
 
 //    @Override
@@ -38,18 +33,23 @@ public class TankDrive extends OpMode {
     @Override
     public void start() {
         robot.drivetrain.setupIMU();
-        robot.arm.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.arm.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        while(!startDone) {
+            robot.intake.deploy(1);
+
+
+            startDone = true;
+        }
+//        robot.arm.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        robot.arm.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         runtime.reset();
 
     }
 
     public void loop() {
         robot.drivetrain.tankDrive(-gamepad1.right_stick_x, gamepad1.left_stick_y,1, 0.1, gamepad1.a);
-        robot.arm.setPowers(gamepad2.left_stick_y, gamepad2.right_stick_x, gamepad2.a, gamepad2.left_stick_x * 0.05, 500, 3500, 400.0);
-        telemetry.addData("lift Position", robot.arm.lift.getCurrentPosition());
-        telemetry.addData("Claw Position", robot.arm.claw.getCurrentPosition());
-        telemetry.addData("Flip Position", robot.arm.flip.getCurrentPosition());
+        robot.arm.run(gamepad2.left_stick_y, gamepad2.right_stick_y, gamepad2.right_bumper, 900, 300, 6000, 500);
+        robot.intake.run(1, gamepad2.a);
         telemetryDrivetrainPos();
         telemetry.addData("Runtime", runtime.time(TimeUnit.SECONDS));
         telemetry.update();

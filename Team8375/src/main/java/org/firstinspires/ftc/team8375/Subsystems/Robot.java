@@ -25,10 +25,11 @@ public class Robot {
         );
 
         arm = new Arm(
-                0,
                 hwMap.dcMotor.get("lift"),
-                hwMap.dcMotor.get("claw"),
-                hwMap.dcMotor.get("flip")
+                hwMap.dcMotor.get("pitch"),
+                hwMap.servo.get("claw"),
+                hwMap.servo.get("yaw"),
+                hwMap.servo.get("level")
         );
 
         intake = new Intake(
@@ -38,7 +39,7 @@ public class Robot {
                 hwMap.crservo.get("deploy_right"),
                 hwMap.servo.get("lock_left"),
                 hwMap.servo.get("lock_right")
-                );
+        );
 
     }
 

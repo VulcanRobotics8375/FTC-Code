@@ -9,45 +9,44 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class Arm {
     // variable initialization
-    public DcMotor lift;
-    public DcMotor claw;
-    public DcMotor flip;
-    float LiftPos;
-    float flipPos;
-    float clawPos;
-    float highLimit;
-    float lastLiftPos = 0;
-    float lastFlipPos = 0;
-    double intakePower = 0.5;
+    private DcMotor lift;
+    private DcMotor pitch;
+    private Servo claw;
+    private Servo yaw;
+    private Servo level;
 
-    public Arm(int targetStartPosition, DcMotor Lift, DcMotor Claw, DcMotor Flip) {
-        lift = Lift;
-        claw = Claw;
-        flip = Flip;
+    private float LiftPos;
+    private float pitchPos;
+    private double levelPos;
+
+    //degrees per tick calculation
+    private static final double theta = 1;
+    private static final double ticks = 20.0;
+    private static final double coefficient = theta/ticks;
+
+    private float highLimit;
+    private float lastLiftPos = 0;
+
+    private boolean buttonPressed;
+    private int clawOn = -1;
+
+    public Arm(DcMotor lift, DcMotor pitch, Servo claw, Servo yaw, Servo level) {
+        this.lift = lift;
+        this.pitch = pitch;
+        this.claw = claw;
+        this.yaw = yaw;
+        this.level = level;
 
         //motor initialization
-        ArmMotorInit(targetStartPosition);
     }
-// high limit - 2375
-    public void setPowers(double liftPower, double clawPower, boolean flipButton, double flipPower, float limitRange, float liftHigh, double autoGain) {
 
-//        if(intakeButton > 0){
-//            intake.setPower(-intakePower);
-//        } else{
-//            intake.setPower(intakePower);
-//        }
-//        if (flipButton) {
-//            flip.setPosition(180);
-//        } else {
-//            flip.setPosition(0);
-//        }
+    public void run(double liftPower, double pitchPower, boolean clawButton, double flipPos, float limitRange, float liftHigh, double autoGain) {
 
         //limits
         LiftPos = lift.getCurrentPosition();
-        flipPos = flip.getCurrentPosition();
-        clawPos = claw.getCurrentPosition();
         highLimit = liftHigh - limitRange;
         if(liftPower > 0 && Math.abs(LiftPos) < limitRange){
             liftPower = (-(LiftPos/limitRange))/1.0;
@@ -58,13 +57,37 @@ public class Arm {
             lastLiftPos = LiftPos;
         }
 
-       if(clawPower > 0 && Math.abs(clawPos) < limitRange) {
-           clawPower = (-(LiftPos/limitRange)/1.0);
-       }
+       //leveler
+        pitchPos = pitch.getCurrentPosition();
+        levelPos = (double) pitchPos * coefficient;
+        level.setPosition(levelPos);
+
+        //claw button
+        if(clawButton) {
+            buttonPressed = true;
+        }
+        if(buttonPressed && !clawButton) {
+            clawOn *= -1;
+            if(clawOn < 0) {
+                claw.setPosition(0);
+            }
+            if(clawOn > 0) {
+                claw.setPosition(90);
+            }
+        }
+
+        //yaw position - tells the robot when to flip the claw around
+        if(LiftPos >= flipPos) {
+            yaw.setPosition(180);
+        } else {
+            yaw.setPosition(0);
+        }
 
         //auto-correct function to make sure the arm is in the desired position when stopped.
         //sometimes the arm can sag under its own weight and this prevents that from happening
-        // EDIT:: this isn't needed if you use worm gears, so it's commented out for now
+
+        /* EDIT:: this isn't needed in most applications, so it's commented out for now */
+
 //        if(Math.abs(lastFlipPos-flipPos)>10 && Math.abs(flipPower) < 0.055) {
 //            float error = lastFlipPos - flipPos;
 //            flipPower = -(error / autoGain);
@@ -78,8 +101,7 @@ public class Arm {
 
         //set powers
         lift.setPower(liftPower * 0.5);
-        claw.setPower(clawPower);
-        flip.setPower(flipPower);
+        pitch.setPower(pitchPower);
     }
 
 
@@ -88,18 +110,10 @@ public class Arm {
 
         //motor initialization
         lift.setDirection(DcMotor.Direction.FORWARD);
-        claw.setDirection(DcMotor.Direction.FORWARD);
-        flip.setDirection(DcMotor.Direction.FORWARD);
         //there's a lot but its all important
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        claw.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        flip.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        claw.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        flip.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        claw.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        flip.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         if(position > 0) {
             lift.setTargetPosition(-position);
             lift.setPower(0.05);
@@ -112,7 +126,6 @@ public class Arm {
 
         if(!lift.isBusy()){
             lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            claw.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
     }
