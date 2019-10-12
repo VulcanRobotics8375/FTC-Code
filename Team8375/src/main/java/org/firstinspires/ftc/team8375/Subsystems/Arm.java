@@ -30,7 +30,8 @@ public class Arm {
     private float highLimit;
     private float lastLiftPos = 0;
 
-    private boolean buttonPressed;
+    private boolean clawPressed;
+    private boolean flipPressed;
     private int clawOn = -1;
 
     public Arm(DcMotor lift, DcMotor pitch, Servo claw, Servo yaw, Servo level) {
@@ -43,10 +44,11 @@ public class Arm {
         //motor initialization
     }
 
-    public void run(double liftPower, double pitchPower, boolean clawButton, double flipPos, float limitRange, float liftHigh, double autoGain) {
+    public void run(double liftPower, double pitchPower, boolean clawButton, boolean flipButton, double flipPos, float limitRange, float liftHigh, double autoGain) {
 
         //limits
         LiftPos = lift.getCurrentPosition();
+        pitchPos = pitch.getCurrentPosition();
         highLimit = liftHigh - limitRange;
         if(liftPower > 0 && Math.abs(LiftPos) < limitRange){
             liftPower = (-(LiftPos/limitRange))/1.0;
@@ -57,16 +59,23 @@ public class Arm {
             lastLiftPos = LiftPos;
         }
 
+        if(pitchPower > 0 && Math.abs(pitchPos) < limitRange){
+            liftPower = (-(pitchPos/limitRange))/1.0;
+
+        }
+        else if (pitchPower < 0 && pitchPos <= -highLimit) {
+            pitchPower = ((liftHigh + pitchPos)/(limitRange/pitchPower))/1.0;
+        }
+
        //leveler
-        pitchPos = pitch.getCurrentPosition();
         levelPos = (double) pitchPos * coefficient;
         level.setPosition(levelPos);
 
         //claw button
         if(clawButton) {
-            buttonPressed = true;
+            clawPressed = true;
         }
-        if(buttonPressed && !clawButton) {
+        if(clawPressed && !clawButton) {
             clawOn *= -1;
             if(clawOn < 0) {
                 claw.setPosition(0);
@@ -76,11 +85,20 @@ public class Arm {
             }
         }
 
-        //yaw position - tells the robot when to flip the claw around
-        if(LiftPos >= flipPos) {
+    if(LiftPos >= flipPos && liftPower >= 0) {
             yaw.setPosition(180);
         } else {
             yaw.setPosition(0);
+        }
+
+        //flip button
+        if(flipButton && LiftPos >= flipPos) {
+            flipPressed = true;
+        }
+        if(flipPressed && !flipButton) {
+
+            yaw.setPosition(0);
+            flipPressed = false;
         }
 
         //auto-correct function to make sure the arm is in the desired position when stopped.
@@ -128,5 +146,23 @@ public class Arm {
             lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
+    }
+
+
+    //Testing stuff
+    public float getLiftPos() {
+        return LiftPos;
+    }
+    public float getPitchPos() {
+        return pitchPos;
+    }
+    public double getClawPos() {
+        return claw.getPosition();
+    }
+    public double getLevelPos() {
+        return levelPos;
+    }
+    public double getYawPos() {
+        return yaw.getPosition();
     }
 }

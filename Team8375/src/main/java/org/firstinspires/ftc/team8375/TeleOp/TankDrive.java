@@ -17,7 +17,9 @@ import java.util.concurrent.TimeUnit;
 public class TankDrive extends OpMode {
     protected Robot robot;
     private ElapsedTime runtime = new ElapsedTime();
-    boolean startDone = false;
+    private boolean startDone = false;
+    private boolean telemetryButton;
+    private boolean telemetryOn;
 
     @Override
     public void init() {
@@ -47,12 +49,24 @@ public class TankDrive extends OpMode {
     }
 
     public void loop() {
-        robot.drivetrain.tankDrive(-gamepad1.right_stick_x, gamepad1.left_stick_y,1, 0.1, gamepad1.a);
-        robot.arm.run(gamepad2.left_stick_y, gamepad2.right_stick_y, gamepad2.right_bumper, 900, 300, 6000, 500);
+        robot.drivetrain.tankDrive(-gamepad1.right_stick_x, gamepad1.left_stick_y,1, 0.1, gamepad1.left_bumper);
+        robot.arm.run(gamepad2.left_stick_y, gamepad2.right_stick_y, gamepad2.right_bumper, gamepad2.left_bumper, 900, 300, 6000, 500);
         robot.intake.run(1, gamepad2.a);
-        telemetryDrivetrainPos();
-        telemetry.addData("Runtime", runtime.time(TimeUnit.SECONDS));
-        telemetry.update();
+
+        //telemetry toggle
+        if(gamepad1.y) {
+            telemetryButton = true;
+        }
+        if(telemetryButton && !gamepad1.y) {
+            if(telemetryOn) {
+                telemetryOn = false;
+            } else if(!telemetryOn){
+                setTelemetryOn();
+                telemetryOn = true;
+            }
+
+            telemetryButton = false;
+        }
     }
 
     @Override
@@ -60,10 +74,26 @@ public class TankDrive extends OpMode {
         robot.stop();
     }
 
-    public void telemetryDrivetrainPos() {
+    public void setTelemetryOn() {
+        //Drivetrain
         telemetry.addData("front Left", robot.drivetrain.getPositionFl());
         telemetry.addData("front Right", robot.drivetrain.getPositionFr());
         telemetry.addData("back Left", robot.drivetrain.getPositionBl());
         telemetry.addData("back Right", robot.drivetrain.getPositionBr());
+
+        //Arm
+        telemetry.addData("lift", robot.arm.getLiftPos());
+        telemetry.addData("claw", robot.arm.getClawPos());
+        telemetry.addData("pitch", robot.arm.getPitchPos());
+        telemetry.addData("level", robot.arm.getLevelPos());
+        telemetry.addData("yaw", robot.arm.getYawPos());
+
+        //Intake
+        telemetry.addData("deployLeft", robot.intake.getDeployLeftPos());
+        telemetry.addData("deployRight", robot.intake.getDeployRightPos());
+
+        telemetry.addData("Runtime", runtime.time(TimeUnit.SECONDS));
+
+        telemetry.update();
     }
 }

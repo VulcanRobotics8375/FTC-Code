@@ -77,5 +77,9 @@ public class AutoPathTest extends LinearOpMode {
         sleep(iterationTime);
     }
 
+
+    private void turn(double angle, double speed) {
+
+    }
 }
 

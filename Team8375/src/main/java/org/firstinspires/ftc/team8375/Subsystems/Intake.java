@@ -16,32 +16,23 @@ public class Intake {
     private DcMotor intake_right;
 
     //servos
-    private CRServo deploy_left;
-    private CRServo deploy_right;
-    private Servo lock_left;
-    private Servo lock_right;
+    private Servo deploy_left;
+    private Servo deploy_right;
 
-    public Intake(DcMotor intakeLeft, DcMotor intakeRight, CRServo deployLeft, CRServo deployRight, Servo lockLeft, Servo lockRight) {
+    public Intake(DcMotor intakeLeft, DcMotor intakeRight, Servo deployLeft, Servo deployRight) {
          intake_left = intakeLeft;
          intake_right = intakeRight;
 
          deploy_left = deployLeft;
          deploy_right = deployRight;
-         lock_left = lockLeft;
-         lock_right = lockRight;
     }
 
     public void deploy(long time) {
         this.time.reset();
 
         while(this.time.now(TimeUnit.SECONDS) < time) {
-            deploy_right.setPower(1);
-            deploy_left.setPower(1);
-        }
-
-        if(!(this.time.now(TimeUnit.SECONDS) < time + 3.0)) {
-            lock_right.setPosition(90);
-            lock_left.setPosition(90);
+            deploy_right.setPosition(90);
+            deploy_left.setPosition(90);
         }
 
     }
@@ -56,10 +47,13 @@ public class Intake {
 
         }
 
-        if(lock_left.getPosition() != 90 || lock_right.getPosition() != 90) {
-            lock_right.setPosition(90);
-            lock_left.setPosition(90);
-        }
+    }
+
+    public double getDeployLeftPos() {
+        return deploy_left.getPosition();
+    }
+    public double getDeployRightPos() {
+        return deploy_right.getPosition();
     }
 
 }
