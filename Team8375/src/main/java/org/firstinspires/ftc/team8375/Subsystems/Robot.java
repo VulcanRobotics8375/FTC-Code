@@ -35,8 +35,8 @@ public class Robot {
         intake = new Intake(
                 hwMap.dcMotor.get("intake_left"),
                 hwMap.dcMotor.get("intake_right"),
-                hwMap.servo.get("deploy_left"),
-                hwMap.servo.get("deploy_right")
+                hwMap.crservo.get("deploy_left"),
+                hwMap.crservo.get("deploy_right")
         );
 
     }

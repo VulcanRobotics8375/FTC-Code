@@ -23,9 +23,10 @@ public class Arm {
     private double levelPos;
 
     //degrees per tick calculation
-    private static final double theta = 1;
-    private static final double ticks = 20.0;
+    private static final double theta = 25;
+    private static final double ticks = 2000.0;
     private static final double coefficient = theta/ticks;
+    private static final double levelBias = 0.1;
 
     private float highLimit;
     private float lastLiftPos = 0;
@@ -69,7 +70,7 @@ public class Arm {
 
        //leveler
         levelPos = (double) pitchPos * coefficient;
-        level.setPosition(levelPos);
+        setServoAngle(level, levelPos);
 
         //claw button
         if(clawButton) {
@@ -78,28 +79,26 @@ public class Arm {
         if(clawPressed && !clawButton) {
             clawOn *= -1;
             if(clawOn < 0) {
-                claw.setPosition(0);
+                setServoAngle(claw, 0);
             }
             if(clawOn > 0) {
-                claw.setPosition(90);
+                setServoAngle(claw, 90);
             }
         }
 
-    if(LiftPos >= flipPos && liftPower >= 0) {
-            yaw.setPosition(180);
-        } else {
-            yaw.setPosition(0);
-        }
+    //flip Limits
+    if(LiftPos >= flipPos) {
 
-        //flip button
-        if(flipButton && LiftPos >= flipPos) {
+        //flip button -- only works if the lift is higher than a specific position
+        if (flipButton && LiftPos >= flipPos) {
             flipPressed = true;
         }
-        if(flipPressed && !flipButton) {
+        if (flipPressed && !flipButton) {
 
             yaw.setPosition(0);
             flipPressed = false;
         }
+    }
 
         //auto-correct function to make sure the arm is in the desired position when stopped.
         //sometimes the arm can sag under its own weight and this prevents that from happening
@@ -148,6 +147,11 @@ public class Arm {
 
     }
 
+
+    private void setServoAngle(Servo servo, double angle) {
+        servo.setPosition(angle/180.0);
+
+    }
 
     //Testing stuff
     public float getLiftPos() {

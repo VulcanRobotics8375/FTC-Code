@@ -16,10 +16,10 @@ public class Intake {
     private DcMotor intake_right;
 
     //servos
-    private Servo deploy_left;
-    private Servo deploy_right;
+    private CRServo deploy_left;
+    private CRServo deploy_right;
 
-    public Intake(DcMotor intakeLeft, DcMotor intakeRight, Servo deployLeft, Servo deployRight) {
+    public Intake(DcMotor intakeLeft, DcMotor intakeRight, CRServo deployLeft, CRServo deployRight) {
          intake_left = intakeLeft;
          intake_right = intakeRight;
 
@@ -31,8 +31,8 @@ public class Intake {
         this.time.reset();
 
         while(this.time.now(TimeUnit.SECONDS) < time) {
-            deploy_right.setPosition(90);
-            deploy_left.setPosition(90);
+            deploy_right.setPower(1.0);
+            deploy_left.setPower(1.0);
         }
 
     }
@@ -50,10 +50,10 @@ public class Intake {
     }
 
     public double getDeployLeftPos() {
-        return deploy_left.getPosition();
+        return deploy_left.getPower();
     }
     public double getDeployRightPos() {
-        return deploy_right.getPosition();
+        return deploy_right.getPower();
     }
 
 }
