@@ -11,6 +11,8 @@ import java.util.concurrent.TimeUnit;
 public class Intake {
 
     private ElapsedTime time = new ElapsedTime();
+    private boolean onPressed;
+    private int intakeOn = 1;
     //motors
     private DcMotor intake_left;
     private DcMotor intake_right;
@@ -37,14 +39,29 @@ public class Intake {
 
     }
 
-    public void run(double intakePower, boolean reverse) {
-        intake_left.setPower(intakePower);
-        intake_right.setPower(intakePower);
+    public void run(double intakePower, boolean reverse, boolean isOn) {
 
-        if(reverse) {
-            intake_left.setPower(-intakePower);
-            intake_right.setPower(-intakePower);
+        if(isOn) {
+            onPressed = true;
+        }
+        if(onPressed && !isOn) {
+            intakeOn *= -1;
+            onPressed = false;
+        }
 
+        if(intakeOn > 0) {
+            intake_left.setPower(intakePower);
+            intake_right.setPower(intakePower);
+
+            if (reverse) {
+                intake_left.setPower(-intakePower);
+                intake_right.setPower(-intakePower);
+
+            }
+
+        } else {
+            intake_left.setPower(0);
+            intake_right.setPower(0);
         }
 
     }

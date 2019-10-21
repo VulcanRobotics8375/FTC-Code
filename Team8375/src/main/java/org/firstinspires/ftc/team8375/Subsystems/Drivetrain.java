@@ -11,13 +11,22 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+
 @SuppressWarnings("FieldCanBeLocal")
 public class Drivetrain {
     private DcMotor fl, fr, bl, br;
     private BNO055IMU imu;
     private BNO055IMU.Parameters parameters;
-    private int inverse;
+    private int inverse = 1;
+    private double imuAngle;
+    private double imuOffset;
+    private double turnHeading;
+    private double error;
     private boolean buttonPressed = false;
+    private boolean turnDone;
     private double position;
     private double movePower;
     private double turnPower;
@@ -135,7 +144,7 @@ public class Drivetrain {
         // graph for acceleration curve - https://www.desmos.com/calculator/gdwizzld3f
         movePower = (leftPower/1.07)*((0.62*Math.pow(leftPower, 2))+0.45) * inverse;
         turnPower = (rightPower/1.07)*((0.62*Math.pow(rightPower, 2))+0.45) * inverse;
-        if(Math.abs(movePower) < greyZone && Math.abs(turnPower) < greyZone) {
+        if(Math.abs(movePower) == 0 && Math.abs(turnPower) == 0) {
             Time.reset();
         }
         mPower = movePower;
@@ -158,26 +167,26 @@ public class Drivetrain {
             accLim = (Time.time() / 1.07) * ((0.62 * Math.pow(Time.time(), 2)) + 0.45) / divisor;
 
             //logic gates to determine when to use time-based or controller-based power
-            if(accLim < Math.abs(movePower) && accLim < Math.abs(turnPower)){
+            if (accLim < Math.abs(movePower) && accLim < Math.abs(turnPower)) {
                 movePower = accLim;
                 turnPower = accLim;
-            }
-            else if(accLim < Math.abs(movePower)){
+            } else if (accLim < Math.abs(movePower)) {
                 movePower = accLim;
-            } else if(accLim < Math.abs(turnPower)){
+            } else if (accLim < Math.abs(turnPower)) {
                 turnPower = accLim;
-            }
-
-            //makes sure the motors are going the correct way
-            if(mPower < 0 || tPower < 0){
-                if(movePower == accLim){
-                    movePower = -movePower;
-                }
-                if(turnPower == accLim){
-                    turnPower = -turnPower;
-                }
             }
         }
+
+        //makes sure the motors are going the correct way
+        if(mPower < 0 || tPower < 0){
+            if(movePower == accLim){
+                movePower = -movePower;
+            }
+            if(turnPower == accLim){
+                turnPower = -turnPower;
+            }
+        }
+
 
 
 //        if(tPower != 0){
@@ -226,19 +235,33 @@ public class Drivetrain {
         moveIn(inches, speed, 0);
     }
 
-    public void strafeIn(double Kp, double Ki, double Kd, double inches, double speed) {
+    public void turn(double heading, double speed, double speed2) {
+        imuAngle = getImuAngle();
+        turnHeading = heading + imuOffset;
+        error = turnHeading - imuAngle;
 
+        if (imuAngle != turnHeading && Math.abs(error) > 15) {
+            percentSteer(-error, speed);
+        }
+        if(imuAngle != turnHeading && Math.abs(error) <= 15) {
+            percentSteer(-error, speed2);
+        }
 
+        if(error == 0) {
+            turnDone = true;
+        } else {
+            turnDone = false;
+        }
     }
 
-    public void turn(double Kp, double Ki, double Kd, double heading) {
+    public void setImuOffset(double offset) {
+        imuOffset = offset;
+    }
 
-        do {
-            setPowers(0, Kp);
+    public double getImuAngle() {
+        imuAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle;
 
-        } while(!(pid.getIntegratedHeading() < heading + 5 && pid.getIntegratedHeading() > heading - 5));
-
-            setPowers(0, 0);
+        return imuAngle;
     }
 
 
@@ -248,12 +271,35 @@ public class Drivetrain {
      *
      */
 
+    public void percentSteer(double percent, double speed) {
+        if(percent < 0) {
+            fr.setPower(speed);
+            br.setPower(speed);
+
+            fl.setPower(((percent * (0.02 * speed)) + speed)/100.0);
+            bl.setPower(((percent * (0.02 * speed)) + speed)/100.0);
+
+        } else if(percent >= 0) {
+            fr.setPower(((percent * (0.02 * speed)) + speed)/100.0);
+            br.setPower(((percent * (0.02 * speed)) + speed)/100.0);
+
+            fl.setPower(speed);
+            fl.setPower(speed);
+
+
+        }
+
+    }
+
     public void setPowers(double forward, double turn) {
         fl.setPower(forward - turn);
         fr.setPower(forward + turn);
         bl.setPower(forward - turn);
         br.setPower(forward + turn);
     }
+
+    public double getError() { return error; }
+    public boolean isTurnDone() { return turnDone; }
 
     public double getPositionFl() {
         return fl.getCurrentPosition();

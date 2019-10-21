@@ -18,8 +18,6 @@ public class TankDrive extends OpMode {
     protected Robot robot;
     private ElapsedTime runtime = new ElapsedTime();
     private boolean startDone = false;
-    private boolean telemetryButton;
-    private boolean telemetryOn;
 
     @Override
     public void init() {
@@ -49,24 +47,30 @@ public class TankDrive extends OpMode {
     }
 
     public void loop() {
-        robot.drivetrain.tankDrive(-gamepad1.right_stick_x, gamepad1.left_stick_y,1, 0.1, gamepad1.left_bumper);
-        robot.arm.run(gamepad2.left_stick_y, gamepad2.right_stick_y, gamepad2.right_bumper, gamepad2.left_bumper, 900, 300, 6000, 500);
-        robot.intake.run(1, gamepad2.a);
+        robot.drivetrain.tankDrive(-gamepad1.right_stick_x, gamepad1.left_stick_y,0.5, 0.1, gamepad1.left_bumper);
+        robot.arm.run(gamepad2.left_stick_y, gamepad2.right_stick_y, gamepad2.right_bumper, gamepad2.left_bumper, 900, 300, 2150, 9850, 500);
+        robot.intake.run(-0.5, gamepad2.a, gamepad1.dpad_left);
 
-        //telemetry toggle
-        if(gamepad1.y) {
-            telemetryButton = true;
-        }
-        if(telemetryButton && !gamepad1.y) {
-            if(telemetryOn) {
-                telemetryOn = false;
-            } else if(!telemetryOn){
-                setTelemetryOn();
-                telemetryOn = true;
-            }
+        //Drivetrain
+        telemetry.addData("front Left", robot.drivetrain.getPositionFl());
+        telemetry.addData("front Right", robot.drivetrain.getPositionFr());
+        telemetry.addData("back Left", robot.drivetrain.getPositionBl());
+        telemetry.addData("back Right", robot.drivetrain.getPositionBr());
 
-            telemetryButton = false;
-        }
+        //Arm
+        telemetry.addData("lift", robot.arm.getLiftPos());
+        telemetry.addData("claw", robot.arm.getClawPos());
+        telemetry.addData("pitch", robot.arm.getPitchPos());
+        telemetry.addData("level", robot.arm.getLevelPos());
+        telemetry.addData("yaw", robot.arm.getYawPos());
+
+        //Intake
+        telemetry.addData("deployLeft", robot.intake.getDeployLeftPos());
+        telemetry.addData("deployRight", robot.intake.getDeployRightPos());
+
+        telemetry.addData("Runtime", runtime.time(TimeUnit.SECONDS));
+
+        telemetry.update();
     }
 
     @Override
@@ -93,7 +97,5 @@ public class TankDrive extends OpMode {
         telemetry.addData("deployRight", robot.intake.getDeployRightPos());
 
         telemetry.addData("Runtime", runtime.time(TimeUnit.SECONDS));
-
-        telemetry.update();
     }
 }

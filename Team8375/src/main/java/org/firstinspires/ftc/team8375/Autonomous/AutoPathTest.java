@@ -35,8 +35,7 @@ public class AutoPathTest extends LinearOpMode {
 //            robot.drivetrain.pid.initHeading();
 //            robot.drivetrain.turn(0.32, 0, 0, 90);
             if(!isDone) {
-                pid(1, 1, 1, 40, 10, 0);
-                robot.drivetrain.moveIn(20, 40, pidOut);
+                robot.drivetrain.moveIn(20, 40, 0);
                 isDone = true;
             }
 
@@ -79,7 +78,14 @@ public class AutoPathTest extends LinearOpMode {
 
 
     private void turn(double angle, double speed) {
-
+        accSpeed = speed;
+        do {
+            robot.drivetrain.turn(angle, speed, accSpeed);
+            if (robot.drivetrain.getError() <= 15) {
+                accSpeed--;
+                sleep(7);
+            }
+        } while(!robot.drivetrain.isTurnDone());
     }
 }
 

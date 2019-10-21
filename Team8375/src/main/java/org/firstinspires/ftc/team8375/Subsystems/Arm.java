@@ -21,14 +21,18 @@ public class Arm {
     private float LiftPos;
     private float pitchPos;
     private double levelPos;
+    private double liftPower;
+    private double pitchPower;
 
     //degrees per tick calculation
-    private static final double theta = 25;
-    private static final double ticks = 2000.0;
+    private static final double theta = 27;
+    private static final double ticks = 9850;
     private static final double coefficient = theta/ticks;
+                                // degrees / 180.0
     private static final double levelBias = 0.1;
 
-    private float highLimit;
+    private float liftHighLimit;
+    private float pitchHighLimit;
     private float lastLiftPos = 0;
 
     private boolean clawPressed;
@@ -45,32 +49,45 @@ public class Arm {
         //motor initialization
     }
 
-    public void run(double liftPower, double pitchPower, boolean clawButton, boolean flipButton, double flipPos, float limitRange, float liftHigh, double autoGain) {
+    public void run(double liftPower, double pitchPower, boolean clawButton, boolean flipButton, double flipPos, float limitRange, float liftHigh, float pitchHigh, double autoGain) {
 
         //limits
         LiftPos = lift.getCurrentPosition();
         pitchPos = pitch.getCurrentPosition();
-        highLimit = liftHigh - limitRange;
-        if(liftPower > 0 && Math.abs(LiftPos) < limitRange){
-            liftPower = (-(LiftPos/limitRange))/1.0;
-            lastLiftPos = LiftPos;
-        }
-       else if (liftPower < 0 && LiftPos <= -highLimit) {
-            liftPower = ((liftHigh + LiftPos)/(limitRange/liftPower))/1.0;
+        liftHighLimit = liftHigh - limitRange;
+        pitchHighLimit = pitchHigh - limitRange;
+
+        //lower bound
+        if(liftPower > 0 && LiftPos <= limitRange){
+
+            //gradual slow down
+            this.liftPower = (LiftPos/limitRange)/1.0;
             lastLiftPos = LiftPos;
         }
 
-        if(pitchPower > 0 && Math.abs(pitchPos) < limitRange){
-            liftPower = (-(pitchPos/limitRange))/1.0;
+        //upper bound
+       else if (liftPower < 0 && LiftPos >= liftHighLimit) {
+
+           //takes the distance from the upper limit and divides it by the limit range for a gradual slow down of the motor.
+            this.liftPower = -((liftHigh - LiftPos)/(limitRange/liftPower))/1.0;
+            lastLiftPos = LiftPos;
+        } else {
+           this.liftPower = liftPower;
+        }
+
+        if(pitchPower < 0 && Math.abs(pitchPos) <= limitRange){
+            this.pitchPower = (-(pitchPos/limitRange))/1.0;
 
         }
-        else if (pitchPower < 0 && pitchPos <= -highLimit) {
-            pitchPower = ((liftHigh + pitchPos)/(limitRange/pitchPower))/1.0;
+        else if (pitchPower > 0 && pitchPos >= pitchHighLimit) {
+            this.pitchPower = (pitchHigh - pitchPos)/(limitRange/pitchPower)/1.0;
+        } else {
+            this.pitchPower = pitchPower;
         }
 
        //leveler
         levelPos = (double) pitchPos * coefficient;
-        setServoAngle(level, levelPos);
+        setServoAngle(level, levelPos + levelBias);
 
         //claw button
         if(clawButton) {
@@ -117,8 +134,8 @@ public class Arm {
 
 
         //set powers
-        lift.setPower(liftPower * 0.5);
-        pitch.setPower(pitchPower);
+        lift.setPower(this.liftPower * 0.5);
+        pitch.setPower(this.pitchPower);
     }
 
 
@@ -129,8 +146,11 @@ public class Arm {
         lift.setDirection(DcMotor.Direction.FORWARD);
         //there's a lot but its all important
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        pitch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        pitch.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        pitch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         if(position > 0) {
             lift.setTargetPosition(-position);
             lift.setPower(0.05);
@@ -164,7 +184,7 @@ public class Arm {
         return claw.getPosition();
     }
     public double getLevelPos() {
-        return levelPos;
+        return level.getPosition();
     }
     public double getYawPos() {
         return yaw.getPosition();
