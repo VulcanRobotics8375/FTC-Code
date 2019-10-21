@@ -14,6 +14,7 @@ import org.firstinspires.ftc.team8375.Subsystems.Robot;
 public class AutoPathTest extends LinearOpMode {
 
     private boolean isDone = false;
+    private int event = 1;
     private double accSpeed = 0;
     private double pidOut;
     private double integral = 0;
@@ -34,16 +35,16 @@ public class AutoPathTest extends LinearOpMode {
         do {
 //            robot.drivetrain.pid.initHeading();
 //            robot.drivetrain.turn(0.32, 0, 0, 90);
-            if(!isDone) {
-                robot.drivetrain.moveIn(20, 40, 0);
-                isDone = true;
+            switch (event){
+                case 1:
+                    robot.drivetrain.moveIn(20, 40, 0);
+                    isDone = true;
+                    event++;
+                    break;
+                case 2:
+
             }
 
-//            isDone = false;
-//            if (!isDone) {
-//                robot.drivetrain.pid.initHeading();
-//                robot.drivetrain.turn(0.1, 0, 0, 90);
-//            }
             telemetry.addData("fl", robot.drivetrain.getPositionFl());
             telemetry.addData("fr", robot.drivetrain.getPositionFr());
             telemetry.addData("bl", robot.drivetrain.getPositionBl());
