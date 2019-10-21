@@ -7,7 +7,6 @@ package org.firstinspires.ftc.team8375.Subsystems;
 //import android.test.FlakyTest;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -355,9 +354,7 @@ public class Drivetrain {
 
     public boolean motorIsBusy() {
         if(fl.isBusy() || fr.isBusy() || bl.isBusy() || br.isBusy()) {
-            motorIsBusy = true;
-        } else {
-            motorIsBusy = false;
+            return motorIsBusy();
         }
 
         return motorIsBusy;

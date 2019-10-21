@@ -55,6 +55,8 @@ public class visionTest extends LinearOpMode {
             params.setFlashMode(Parameters.FLASH_MODE_TORCH);
             camera.setParameters(params);
             camera.startPreview();
+
+
         }
 
 

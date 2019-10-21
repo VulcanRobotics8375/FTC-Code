@@ -44,8 +44,6 @@ public class AutoPathTest extends LinearOpMode {
                     robot.foundation.setFoundationMoveAngle(180.0);
                     event++;
                     break;
-                case 3:
-
             }
 
             telemetry.addData("fl", robot.drivetrain.getPositionFl());
