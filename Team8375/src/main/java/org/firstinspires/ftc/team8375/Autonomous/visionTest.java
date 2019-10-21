@@ -9,9 +9,6 @@ import android.hardware.Camera.Parameters;
 
 import com.disnodeteam.dogecv.detectors.skystone.SkystoneDetector;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
-import com.disnodeteam.dogecv.DogeCV;
 
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -27,7 +24,7 @@ public class visionTest extends LinearOpMode {
     private OpenCvCamera phoneCam;
     private SkystoneDetector detector;
     private Camera camera;
-    Parameters params;
+    private Parameters params;
 
     @Override
     public void runOpMode() {
@@ -55,7 +52,6 @@ public class visionTest extends LinearOpMode {
             params.setFlashMode(Parameters.FLASH_MODE_TORCH);
             camera.setParameters(params);
             camera.startPreview();
-
 
         }
 

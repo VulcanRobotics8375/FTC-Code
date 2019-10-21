@@ -38,6 +38,7 @@ public class Arm {
     private boolean clawPressed;
     private boolean flipPressed;
     private int clawOn = -1;
+    private int flipOn = -1;
 
     public Arm(DcMotor lift, DcMotor pitch, Servo claw, Servo yaw, Servo level) {
         this.lift = lift;
@@ -111,8 +112,13 @@ public class Arm {
             flipPressed = true;
         }
         if (flipPressed && !flipButton) {
-
-            yaw.setPosition(0);
+            flipOn *= -1;
+            if(flipOn > 0) {
+                setServoAngle(yaw, 90);
+            }
+            if (flipOn < 0) {
+                setServoAngle(yaw, 0);
+            }
             flipPressed = false;
         }
     }
