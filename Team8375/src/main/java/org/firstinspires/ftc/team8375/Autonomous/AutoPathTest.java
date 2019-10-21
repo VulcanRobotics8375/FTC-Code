@@ -37,11 +37,14 @@ public class AutoPathTest extends LinearOpMode {
 //            robot.drivetrain.turn(0.32, 0, 0, 90);
             switch (event){
                 case 1:
-                    robot.drivetrain.moveIn(20, 40, 0);
-                    isDone = true;
+                    robot.drivetrain.moveIn(10, 40, 0);
                     event++;
                     break;
                 case 2:
+                    robot.foundation.setFoundationMoveAngle(180.0);
+                    event++;
+                    break;
+                case 3:
 
             }
 
