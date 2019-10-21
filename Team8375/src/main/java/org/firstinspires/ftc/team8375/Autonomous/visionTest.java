@@ -8,6 +8,7 @@ import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 
 import com.disnodeteam.dogecv.detectors.skystone.SkystoneDetector;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import com.disnodeteam.dogecv.DogeCV;
@@ -21,7 +22,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.openftc.easyopencv.OpenCvCamera;
 
 @TeleOp(name="vision test", group="test")
-public class visionTest extends OpMode {
+public class visionTest extends LinearOpMode {
 
     private OpenCvCamera phoneCam;
     private SkystoneDetector detector;
@@ -29,7 +30,7 @@ public class visionTest extends OpMode {
     Parameters params;
 
     @Override
-    public void init(){
+    public void runOpMode() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
 
@@ -48,28 +49,15 @@ public class visionTest extends OpMode {
                 telemetry.addData("error", e.getMessage());
                 telemetry.update();
             }
-
-
-
         }
 
-    }
+        while(opModeIsActive()) {
+            params.setFlashMode(Parameters.FLASH_MODE_TORCH);
+            camera.setParameters(params);
+            camera.startPreview();
+        }
 
-    @Override
-    public void start() {
-        params.setFlashMode(Parameters.FLASH_MODE_TORCH);
-        camera.setParameters(params);
-        camera.startPreview();
-
-    }
-
-    @Override
-    public void loop() {
-
-    }
-
-    @Override
-    public void stop() {
 
     }
 }
+
