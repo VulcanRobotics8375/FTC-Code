@@ -5,15 +5,14 @@
 package org.firstinspires.ftc.team8375.Subsystems;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorREV2mDistance;
 
 public class Robot {
     public Drivetrain drivetrain;
     public Arm arm;
     public Intake intake;
+    public Foundation foundation;
 
     public Robot(HardwareMap hwMap) {
         drivetrain = new Drivetrain(
@@ -38,6 +37,8 @@ public class Robot {
                 hwMap.crservo.get("deploy_left"),
                 hwMap.crservo.get("deploy_right")
         );
+
+        foundation = new Foundation(hwMap.servo.get("foundation_move"));
 
     }
 
