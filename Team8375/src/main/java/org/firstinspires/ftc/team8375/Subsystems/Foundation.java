@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Foundation {
     private Servo foundationMove;
 
-    private Foundation(Servo foundationMove) {
+    public Foundation(Servo foundationMove) {
         this.foundationMove = foundationMove;
     }
 
