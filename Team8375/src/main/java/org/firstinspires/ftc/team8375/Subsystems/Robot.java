@@ -5,7 +5,11 @@
 package org.firstinspires.ftc.team8375.Subsystems;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+
+import java.security.cert.CRLSelector;
 
 
 public class Robot {
@@ -26,16 +30,16 @@ public class Robot {
         arm = new Arm(
                 hwMap.dcMotor.get("lift"),
                 hwMap.dcMotor.get("pitch"),
-                hwMap.servo.get("claw"),
-                hwMap.servo.get("yaw"),
-                hwMap.servo.get("level")
+                hwMap.get(Servo.class, "claw"),
+                hwMap.get(Servo.class, "yaw"),
+                hwMap.get(Servo.class, "level")
         );
 
         intake = new Intake(
                 hwMap.dcMotor.get("intake_left"),
                 hwMap.dcMotor.get("intake_right"),
-                hwMap.crservo.get("deploy_left"),
-                hwMap.crservo.get("deploy_right")
+                hwMap.get(CRServo.class, "deploy_left"),
+                hwMap.get(CRServo.class, "deploy_right")
         );
 
         foundation = new Foundation(hwMap.servo.get("foundation_move"));

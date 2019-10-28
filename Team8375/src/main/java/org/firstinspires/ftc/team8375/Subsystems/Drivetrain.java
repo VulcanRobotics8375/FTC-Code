@@ -142,7 +142,7 @@ public class Drivetrain {
         // modifies the controller input for a more natural feel
         // graph for acceleration curve - https://www.desmos.com/calculator/gdwizzld3f
         movePower = (leftPower/1.07)*((0.62*Math.pow(leftPower, 2))+0.45) * inverse;
-        turnPower = (rightPower/1.07)*((0.62*Math.pow(rightPower, 2))+0.45) * inverse;
+        turnPower = (rightPower/1.07)*((0.62*Math.pow(rightPower, 2))+0.45);
         if(Math.abs(movePower) == 0 && Math.abs(turnPower) == 0) {
             Time.reset();
         }

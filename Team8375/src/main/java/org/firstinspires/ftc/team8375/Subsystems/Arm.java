@@ -29,7 +29,7 @@ public class Arm {
     private static final double ticks = 9850;
     private static final double coefficient = theta/ticks;
                                 // degrees / 180.0
-    private static final double levelBias = 0.1;
+    private static final double levelBias = 90;
 
     private float liftHighLimit;
     private float pitchHighLimit;
@@ -59,22 +59,22 @@ public class Arm {
         pitchHighLimit = pitchHigh - limitRange;
 
         //lower bound
-        if(liftPower > 0 && LiftPos <= limitRange){
-
-            //gradual slow down
-            this.liftPower = (LiftPos/limitRange)/1.0;
-            lastLiftPos = LiftPos;
-        }
-
-        //upper bound
-       else if (liftPower < 0 && LiftPos >= liftHighLimit) {
-
-           //takes the distance from the upper limit and divides it by the limit range for a gradual slow down of the motor.
-            this.liftPower = -((liftHigh - LiftPos)/(limitRange/liftPower))/1.0;
-            lastLiftPos = LiftPos;
-        } else {
+//        if(liftPower > 0 && LiftPos <= limitRange){
+//
+//            //gradual slow down
+//            this.liftPower = ((LiftPos/limitRange))/1.0;
+//            lastLiftPos = LiftPos;
+//        }
+//
+//        //upper bound
+//       else if (liftPower < 0 && LiftPos >= liftHighLimit) {
+//
+//           //takes the distance from the upper limit and divides it by the limit range for a gradual slow down of the motor.
+//            this.liftPower = -((liftHigh - LiftPos)/(limitRange))/1.0;
+//            lastLiftPos = LiftPos;
+//        } else {
            this.liftPower = liftPower;
-        }
+//        }
 
         if(pitchPower < 0 && Math.abs(pitchPos) <= limitRange){
             this.pitchPower = (-(pitchPos/limitRange))/1.0;
@@ -88,7 +88,12 @@ public class Arm {
 
        //leveler
         levelPos = (double) pitchPos * coefficient;
-        setServoAngle(level, levelPos + levelBias);
+
+        if(pitchPos != 0) {
+            setServoAngle(level, levelPos + levelBias);
+        } else {
+            setServoAngle(level, levelBias);
+        }
 
         //claw button
         if(clawButton) {
@@ -96,19 +101,21 @@ public class Arm {
         }
         if(clawPressed && !clawButton) {
             clawOn *= -1;
-            if(clawOn < 0) {
-                setServoAngle(claw, 0);
-            }
-            if(clawOn > 0) {
-                setServoAngle(claw, 90);
-            }
+            clawPressed = false;
+        }
+
+        if(clawOn < 0) {
+            setServoAngle(claw, 0);
+        }
+        else if(clawOn > 0) {
+            setServoAngle(claw, 40);
         }
 
     //flip Limits
-    if(LiftPos >= flipPos) {
+
 
         //flip button -- only works if the lift is higher than a specific position
-        if (flipButton && LiftPos >= flipPos) {
+        if (flipButton) {
             flipPressed = true;
         }
         if (flipPressed && !flipButton) {
@@ -121,7 +128,6 @@ public class Arm {
             }
             flipPressed = false;
         }
-    }
 
         //auto-correct function to make sure the arm is in the desired position when stopped.
         //sometimes the arm can sag under its own weight and this prevents that from happening
@@ -140,7 +146,7 @@ public class Arm {
 
 
         //set powers
-        lift.setPower(this.liftPower * 0.5);
+        lift.setPower(this.liftPower * 0.3);
         pitch.setPower(this.pitchPower);
     }
 
@@ -149,7 +155,7 @@ public class Arm {
     public void ArmMotorInit(int position) {
 
         //motor initialization
-        lift.setDirection(DcMotor.Direction.FORWARD);
+//        lift.setDirection(DcMotor.Direction.REVERSE);
         //there's a lot but its all important
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         pitch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -157,29 +163,38 @@ public class Arm {
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         pitch.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pitch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        if(position > 0) {
-            lift.setTargetPosition(-position);
-            lift.setPower(0.05);
-            lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        } else if(position < 0) {
-            lift.setTargetPosition(position);
-            lift.setPower(-0.05);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-
-        if(!lift.isBusy()){
-            lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
+//        if(position > 0) {
+//            lift.setTargetPosition(-position);
+//            lift.setPower(0.05);
+//            lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        } else if(position < 0) {
+//            lift.setTargetPosition(position);
+//            lift.setPower(-0.05);
+//        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        }
+//
+//        if(!lift.isBusy()){
+//            lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        }
 
     }
 
 
     private void setServoAngle(Servo servo, double angle) {
-        servo.setPosition(angle/180.0);
+
+        if(angle != 0) {
+            servo.setPosition(angle / 180.0);
+        } else {
+            servo.setPosition(angle);
+        }
 
     }
 
     //Testing stuff
+
+    public double getLiftPower() {
+        return liftPower;
+    }
     public float getLiftPos() {
         return LiftPos;
     }

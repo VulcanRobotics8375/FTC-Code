@@ -39,6 +39,8 @@ public class Intake {
             deploy_right.setPower(1.0);
             deploy_left.setPower(1.0);
         }
+        deploy_left.setPower(0);
+        deploy_right.setPower(0);
 
     }
 
@@ -53,13 +55,14 @@ public class Intake {
         }
 
         if(intakeOn > 0) {
-            intake_left.setPower(intakePower);
-            intake_right.setPower(intakePower);
 
             if (reverse) {
                 intake_left.setPower(-intakePower);
                 intake_right.setPower(-intakePower);
 
+            } else {
+                intake_left.setPower(intakePower);
+                intake_right.setPower(intakePower);
             }
 
         } else {
