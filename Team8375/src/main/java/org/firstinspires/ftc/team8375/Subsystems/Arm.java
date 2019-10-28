@@ -15,7 +15,7 @@ public class Arm {
     private DcMotor lift;
     private DcMotor pitch;
     private Servo claw;
-    private Servo yaw;
+    private CRServo yaw;
     private Servo level;
 
     private float LiftPos;
@@ -34,13 +34,15 @@ public class Arm {
     private float liftHighLimit;
     private float pitchHighLimit;
     private float lastLiftPos = 0;
+    private double yawClockwise;
+    private double yawCounterClockwise;
 
     private boolean clawPressed;
     private boolean flipPressed;
     private int clawOn = -1;
     private int flipOn = -1;
 
-    public Arm(DcMotor lift, DcMotor pitch, Servo claw, Servo yaw, Servo level) {
+    public Arm(DcMotor lift, DcMotor pitch, Servo claw, CRServo yaw, Servo level) {
         this.lift = lift;
         this.pitch = pitch;
         this.claw = claw;
@@ -50,7 +52,7 @@ public class Arm {
         //motor initialization
     }
 
-    public void run(double liftPower, double pitchPower, boolean clawButton, boolean flipButton, double flipPos, float limitRange, float liftHigh, float pitchHigh, double autoGain) {
+    public void run(double liftPower, double pitchPower, boolean clawButton, float yawClockwise, float yawCounterClockwise, double flipPos, float limitRange, float liftHigh, float pitchHigh, double autoGain) {
 
         //limits
         LiftPos = lift.getCurrentPosition();
@@ -111,23 +113,10 @@ public class Arm {
             setServoAngle(claw, 40);
         }
 
-    //flip Limits
+        this.yawClockwise = (double) yawClockwise;
+        this.yawCounterClockwise = (double) yawCounterClockwise;
 
-
-        //flip button -- only works if the lift is higher than a specific position
-        if (flipButton) {
-            flipPressed = true;
-        }
-        if (flipPressed && !flipButton) {
-            flipOn *= -1;
-            if(flipOn > 0) {
-                setServoAngle(yaw, 90);
-            }
-            if (flipOn < 0) {
-                setServoAngle(yaw, 0);
-            }
-            flipPressed = false;
-        }
+        yaw.setPower(this.yawClockwise - this.yawCounterClockwise);
 
         //auto-correct function to make sure the arm is in the desired position when stopped.
         //sometimes the arm can sag under its own weight and this prevents that from happening
@@ -206,8 +195,5 @@ public class Arm {
     }
     public double getLevelPos() {
         return level.getPosition();
-    }
-    public double getYawPos() {
-        return yaw.getPosition();
     }
 }
