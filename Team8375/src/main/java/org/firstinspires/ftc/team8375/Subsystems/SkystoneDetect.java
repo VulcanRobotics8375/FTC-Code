@@ -27,7 +27,7 @@ public class SkystoneDetect {
     public boolean detect() {
         updateSensorInput();
 
-        for(int i = 0; i == 3; i++) {
+        for(int i = 0; i < 3; i++) {
             error = stoneRGB[i] - sensorInput[i] * scorerGain;
             scorer += Range.clip(error, -10, 10);
         }
