@@ -45,7 +45,7 @@ public class SkystoneDetect {
         sensorInput[2] = colorSensor.green();
     }
 
-    public void setScoreThreshold(double threshold) {
+    public void setScorerThreshold(double threshold) {
         this.threshold = threshold;
     }
 }
