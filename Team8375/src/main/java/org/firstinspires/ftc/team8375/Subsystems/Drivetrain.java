@@ -207,10 +207,10 @@ public class Drivetrain {
 //            turnPower = output;
 //        }
         //set powers
-        fl.setPower(turnPower + movePower);
-        bl.setPower(turnPower + movePower);
-        fr.setPower(turnPower - movePower);
-        br.setPower(turnPower - movePower);
+        fl.setPower(movePower + turnPower);
+        bl.setPower(movePower + turnPower);
+        fr.setPower(movePower - turnPower);
+        br.setPower(movePower - turnPower);
     }
 
 

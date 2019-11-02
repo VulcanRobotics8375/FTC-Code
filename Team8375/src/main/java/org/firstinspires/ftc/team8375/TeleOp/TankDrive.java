@@ -33,7 +33,7 @@ public class TankDrive extends OpMode {
 
     public void loop() {
 
-        robot.intake.deploy(1.5);
+        robot.intake.deploy(1);
 
         robot.drivetrain.tankDrive(
                 //turn
@@ -67,7 +67,7 @@ public class TankDrive extends OpMode {
         );
 
         robot.intake.run(
-                -0.5,
+                -0.25,
                 //reverse
                 gamepad1.a,
                 //toggle

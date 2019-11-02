@@ -4,8 +4,11 @@
 
 package org.firstinspires.ftc.team8375.Subsystems;
 
+import android.app.slice.Slice;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -16,6 +19,7 @@ public class Robot {
     public Arm arm;
     public Intake intake;
     public Foundation foundation;
+    public SkystoneDetect skystoneDetect;
 
     public Robot(HardwareMap hwMap) {
         drivetrain = new Drivetrain(
@@ -42,6 +46,10 @@ public class Robot {
         );
 
         foundation = new Foundation(hwMap.get(Servo.class, "foundation_move"));
+
+        skystoneDetect = new SkystoneDetect(
+                hwMap.get(ColorSensor.class, "detector")
+        );
 
     }
 

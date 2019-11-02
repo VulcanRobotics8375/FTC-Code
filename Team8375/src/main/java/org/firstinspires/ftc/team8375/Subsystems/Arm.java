@@ -120,7 +120,7 @@ public class Arm {
         } else if(yawCounterClockwise) {
             yaw.setPower(-1.0);
         } else {
-            yaw.setPower(0);
+            yaw.setPower(-0.05);
         }
         //set powers
         lift.setPower(this.liftPower * 0.3);

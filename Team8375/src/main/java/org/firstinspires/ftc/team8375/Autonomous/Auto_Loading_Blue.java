@@ -5,13 +5,12 @@
 package org.firstinspires.ftc.team8375.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
 
 @Autonomous(name = "yeet", group = "yeet")
-public class Auto_Loading_Blue extends VulcanAuto {
+public class Auto_Loading_Blue extends VulcanPipeline {
 
     @Override
     public void runOpMode() {
@@ -24,8 +23,11 @@ public class Auto_Loading_Blue extends VulcanAuto {
 
         while(opModeIsActive()) {
 
-            turn(5, 4);
+
             moveIn(10, 50);
+            turn(90, 30);
+            moveIn(5, 30);
+
 
 
         }
