@@ -33,7 +33,7 @@ public class Intake {
          deploy_right = deployRight;
     }
 
-    public void deploy(long time) {
+    public void deploy(double time) {
         if(!reset) {
             this.time.reset();
             reset = true;

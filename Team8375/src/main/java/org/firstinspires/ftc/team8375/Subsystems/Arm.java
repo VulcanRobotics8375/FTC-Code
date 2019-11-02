@@ -23,7 +23,6 @@ public class Arm {
     private double levelPos;
     private double liftPower;
     private double pitchPower;
-    private double yawPower;
 
     //degrees per tick calculation
     private static final double theta = 27;
@@ -53,7 +52,7 @@ public class Arm {
         //motor initialization
     }
 
-    public void run(double liftPower, double pitchPower, boolean clawButton, float yawClockwise, float yawCounterClockwise, double flipPos, float limitRange, float liftHigh, float pitchHigh, double autoGain) {
+    public void run(double liftPower, double pitchPower, boolean clawButton, boolean yawClockwise, boolean yawCounterClockwise, double flipPos, float limitRange, float liftHigh, float pitchHigh, double autoGain) {
 
         //limits
         LiftPos = lift.getCurrentPosition();
@@ -80,7 +79,7 @@ public class Arm {
 //        }
 
         if(pitchPower < 0 && Math.abs(pitchPos) <= limitRange){
-            this.pitchPower = (-(pitchPos/limitRange))/1.0;
+            this.pitchPower = (-(pitchPos/(limitRange/Math.abs(pitchPower))))/1.0;
 
         }
         else if (pitchPower > 0 && pitchPos >= pitchHighLimit) {
@@ -115,12 +114,14 @@ public class Arm {
         }
 
         //set flip power
-        this.yawClockwise = (double) yawClockwise;
-        this.yawCounterClockwise = (double) yawCounterClockwise;
-        yawPower = yawClockwise;
 
-        yaw.setPower(yawPower);
-
+        if(yawClockwise) {
+            yaw.setPower(1.0);
+        } else if(yawCounterClockwise) {
+            yaw.setPower(-1.0);
+        } else {
+            yaw.setPower(0);
+        }
         //set powers
         lift.setPower(this.liftPower * 0.3);
         pitch.setPower(this.pitchPower);
@@ -185,6 +186,6 @@ public class Arm {
     }
 
     public double getYawClockwise() {
-        return yawClockwise;
+        return yaw.getPower();
     }
 }

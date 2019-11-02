@@ -29,11 +29,11 @@ public class TankDrive extends OpMode {
     public void start() {
 //        robot.arm.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        robot.arm.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.intake.deploy(1);
     }
 
     public void loop() {
 
+        robot.intake.deploy(1.5);
 
         robot.drivetrain.tankDrive(
                 //turn
@@ -50,15 +50,15 @@ public class TankDrive extends OpMode {
 
         robot.arm.run(
                 //lift
-                gamepad2.right_trigger,
+                gamepad2.left_stick_y,
                 //pitch
                 gamepad2.right_stick_y,
                 //claw button
                 gamepad2.right_bumper,
                 //flip clockwise
-                gamepad2.left_stick_y,
+                gamepad2.dpad_right,
                 //flip counter clockwise
-                gamepad2.left_trigger,
+                gamepad2.dpad_left,
                 900,
                 300,
                 2150,
@@ -96,7 +96,6 @@ public class TankDrive extends OpMode {
         telemetry.addData("yawClockwise", robot.arm.getYawClockwise());
 
         telemetry.addData("Runtime", getRuntime());
-        telemetry.addData("gamepad1", gamepad1.toString());
 
         telemetry.update();
     }
