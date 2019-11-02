@@ -16,6 +16,7 @@ public class Intake {
     private ElapsedTime time = new ElapsedTime();
     private boolean onPressed;
     private int intakeOn = 1;
+    private boolean reset = false;
     //motors
     private DcMotor intake_left;
     private DcMotor intake_right;
@@ -33,7 +34,10 @@ public class Intake {
     }
 
     public void deploy(long time) {
-        this.time.reset();
+        if(!reset) {
+            this.time.reset();
+            reset = true;
+        }
 
         while(this.time.now(TimeUnit.SECONDS) < time) {
             deploy_right.setPower(1.0);

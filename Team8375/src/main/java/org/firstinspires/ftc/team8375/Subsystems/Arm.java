@@ -23,6 +23,7 @@ public class Arm {
     private double levelPos;
     private double liftPower;
     private double pitchPower;
+    private double yawPower;
 
     //degrees per tick calculation
     private static final double theta = 27;
@@ -107,32 +108,18 @@ public class Arm {
         }
 
         if(clawOn < 0) {
-            setServoAngle(claw, 0);
+            setServoAngle(claw, 10);
         }
         else if(clawOn > 0) {
-            setServoAngle(claw, 40);
+            setServoAngle(claw, 50);
         }
 
+        //set flip power
         this.yawClockwise = (double) yawClockwise;
         this.yawCounterClockwise = (double) yawCounterClockwise;
+        yawPower = yawClockwise;
 
-        yaw.setPower(this.yawClockwise - this.yawCounterClockwise);
-
-        //auto-correct function to make sure the arm is in the desired position when stopped.
-        //sometimes the arm can sag under its own weight and this prevents that from happening
-
-        /* EDIT:: this isn't needed in most applications, so it's commented out for now */
-
-//        if(Math.abs(lastFlipPos-flipPos)>10 && Math.abs(flipPower) < 0.055) {
-//            float error = lastFlipPos - flipPos;
-//            flipPower = -(error / autoGain);
-//        }
-//        if(Math.abs(lastFlipPos-flipPos) > 100) {
-//            lastFlipPos = flipPos;
-//        }
-
-
-
+        yaw.setPower(yawPower);
 
         //set powers
         lift.setPower(this.liftPower * 0.3);
@@ -195,5 +182,9 @@ public class Arm {
     }
     public double getLevelPos() {
         return level.getPosition();
+    }
+
+    public double getYawClockwise() {
+        return yawClockwise;
     }
 }

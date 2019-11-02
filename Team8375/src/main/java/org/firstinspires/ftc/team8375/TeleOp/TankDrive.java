@@ -6,21 +6,18 @@ package org.firstinspires.ftc.team8375.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import java.util.concurrent.TimeUnit;
 
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
 
 @TeleOp(name="TankDrive", group="Drive")
 public class TankDrive extends OpMode {
     protected Robot robot;
-    private ElapsedTime runtime = new ElapsedTime();
-    private boolean startDone = false;
 
     @Override
     public void init() {
         robot = new Robot(hardwareMap);
         robot.arm.ArmMotorInit(0);
+        robot.drivetrain.init();
     }
 
 //    @Override
@@ -30,12 +27,9 @@ public class TankDrive extends OpMode {
 
     @Override
     public void start() {
-        robot.drivetrain.setupIMU();
 //        robot.arm.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        robot.arm.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        runtime.reset();
         robot.intake.deploy(1);
-
     }
 
     public void loop() {
@@ -53,15 +47,16 @@ public class TankDrive extends OpMode {
                 gamepad1.left_bumper
         );
 
+
         robot.arm.run(
                 //lift
-                gamepad2.left_stick_y,
+                gamepad2.right_trigger,
                 //pitch
                 gamepad2.right_stick_y,
                 //claw button
                 gamepad2.right_bumper,
                 //flip clockwise
-                gamepad2.right_trigger,
+                gamepad2.left_stick_y,
                 //flip counter clockwise
                 gamepad2.left_trigger,
                 900,
@@ -74,7 +69,7 @@ public class TankDrive extends OpMode {
         robot.intake.run(
                 -0.5,
                 //reverse
-                gamepad2.a,
+                gamepad1.a,
                 //toggle
                 gamepad1.dpad_left
         );
@@ -98,7 +93,10 @@ public class TankDrive extends OpMode {
         telemetry.addData("deployLeft", robot.intake.getDeployLeftPos());
         telemetry.addData("deployRight", robot.intake.getDeployRightPos());
 
-        telemetry.addData("Runtime", runtime.time(TimeUnit.SECONDS));
+        telemetry.addData("yawClockwise", robot.arm.getYawClockwise());
+
+        telemetry.addData("Runtime", getRuntime());
+        telemetry.addData("gamepad1", gamepad1.toString());
 
         telemetry.update();
     }

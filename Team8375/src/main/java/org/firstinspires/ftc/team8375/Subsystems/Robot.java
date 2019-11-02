@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import java.security.cert.CRLSelector;
 
 
 public class Robot {
@@ -42,7 +41,7 @@ public class Robot {
                 hwMap.get(CRServo.class, "deploy_right")
         );
 
-        foundation = new Foundation(hwMap.servo.get("foundation_move"));
+        foundation = new Foundation(hwMap.get(Servo.class, "foundation_move"));
 
     }
 

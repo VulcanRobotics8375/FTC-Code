@@ -38,7 +38,6 @@ public class testDrive extends OpMode {
         telemetry.addData("claw", robot.arm.getClawPos());
         telemetry.addData("pitch", robot.arm.getPitchPos());
         telemetry.addData("level", robot.arm.getLevelPos());
-        telemetry.addData("yaw", robot.arm.getYawPos());
 
         //Intake
         telemetry.addData("deployLeft", robot.intake.getDeployLeftPos());

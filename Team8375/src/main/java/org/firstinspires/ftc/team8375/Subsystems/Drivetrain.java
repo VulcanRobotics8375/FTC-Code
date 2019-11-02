@@ -8,6 +8,7 @@ package org.firstinspires.ftc.team8375.Subsystems;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -45,22 +46,6 @@ public class Drivetrain {
         br = backRight;
         imu = IMU;
 
-        pid = new PID(imu);
-
-        fl.setDirection(DcMotor.Direction.FORWARD);
-        fr.setDirection(DcMotor.Direction.REVERSE);
-        bl.setDirection(DcMotor.Direction.FORWARD);
-        br.setDirection(DcMotor.Direction.REVERSE);
-
-        fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
 //    public void runOpMode() {
@@ -70,6 +55,34 @@ public class Drivetrain {
 //        telemetry.addData("br Position", br.getCurrentPosition());
 //        telemetry.update();
 //    }
+
+    public void init(DcMotor.RunMode runMode, DcMotor.ZeroPowerBehavior zeroPowerBehavior, boolean imu) {
+
+        fl.setDirection(DcMotor.Direction.FORWARD);
+        fr.setDirection(DcMotor.Direction.REVERSE);
+        bl.setDirection(DcMotor.Direction.FORWARD);
+        br.setDirection(DcMotor.Direction.REVERSE);
+
+        fl.setMode(runMode);
+        fr.setMode(runMode);
+        bl.setMode(runMode);
+        br.setMode(runMode);
+
+        fl.setZeroPowerBehavior(zeroPowerBehavior);
+        fr.setZeroPowerBehavior(zeroPowerBehavior);
+        bl.setZeroPowerBehavior(zeroPowerBehavior);
+        br.setZeroPowerBehavior(zeroPowerBehavior);
+
+        if(imu) {
+            setupIMU();
+            pid = new PID(this.imu);
+        }
+
+    }
+
+    public void init() {
+        init(DcMotor.RunMode.RUN_USING_ENCODER, DcMotor.ZeroPowerBehavior.FLOAT, true);
+    }
 
     public void setupIMU() {
         parameters = new BNO055IMU.Parameters();
@@ -127,8 +140,6 @@ public class Drivetrain {
                 multiplier * (v[2] / 1.07) * ((0.62 * Math.pow(v[2], 2)) + 0.45),
                 multiplier * (v[3] / 1.07) * ((0.62 * Math.pow(v[3], 2)) + 0.45)
         };
-
-
 
         fr.setPower(motorOut[0]);
         fl.setPower(motorOut[1]);
@@ -298,6 +309,7 @@ public class Drivetrain {
     }
 
     public double getError() { return error; }
+
     public boolean isTurnDone() { return turnDone; }
 
     public double getPositionFl() {
@@ -319,9 +331,7 @@ public class Drivetrain {
     //in inches
     private double getDrivetrainPos() {
 
-
-        //         Absolute Value of motor ticks for strafing compatibility                                                                                 divide by 4 to average out encoders
-        position = (Math.abs(fl.getCurrentPosition()) + (Math.abs(fr.getCurrentPosition())) + (Math.abs(bl.getCurrentPosition())) + (Math.abs(br.getCurrentPosition()))) / 4.0;
+        position = fr.getCurrentPosition() + fl.getCurrentPosition() / 2.0;
 
 
         return position;
@@ -341,7 +351,7 @@ public class Drivetrain {
         fl.setMode(runMode);
         fr.setMode(runMode);
         bl.setMode(runMode);
-        br.setMode(runMode);
+        br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 
