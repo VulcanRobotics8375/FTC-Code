@@ -37,4 +37,11 @@ public abstract class VulcanPipeline extends LinearOpMode {
         robot.drivetrain.moveIn(inches, speed);
     }
 
+    //telemetry
+    public void telemetryOn(boolean telemetryOn) {
+        if(telemetryOn) {
+            telemetry.addData("colorSensor", robot.stoneDetect.getSensorInput());
+        }
+    }
+
 }
