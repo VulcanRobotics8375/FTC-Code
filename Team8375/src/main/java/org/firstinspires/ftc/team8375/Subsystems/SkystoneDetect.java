@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.util.Range;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class stoneDetect {
+public class SkystoneDetect {
     private ColorSensor colorSensor;
 
     private double error;
@@ -20,7 +20,7 @@ public class stoneDetect {
     private static final int[] stoneRGB = {95, 75, 45};
     private int[] sensorInput = {0, 0, 0};
 
-    public stoneDetect(ColorSensor colorSensor) {
+    public SkystoneDetect(ColorSensor colorSensor) {
         this.colorSensor = colorSensor;
     }
 

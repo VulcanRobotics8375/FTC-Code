@@ -17,7 +17,7 @@ public class Robot {
     public Arm arm;
     public Intake intake;
     public Foundation foundation;
-    public stoneDetect stoneDetect;
+    public SkystoneDetect SkystoneDetect;
 
     public Robot(HardwareMap hwMap) {
         drivetrain = new Drivetrain(
@@ -45,7 +45,7 @@ public class Robot {
 
         foundation = new Foundation(hwMap.get(Servo.class, "foundation_move"));
 
-        stoneDetect = new stoneDetect(
+        SkystoneDetect = new SkystoneDetect(
                 hwMap.get(ColorSensor.class, "detector")
         );
 

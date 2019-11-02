@@ -29,10 +29,10 @@ public class Auto_Loading_Blue extends VulcanPipeline {
             turn(90, 30);
             moveIn(5, 30);
 
-            robot.stoneDetect.setScorerThreshold(7);
+            robot.SkystoneDetect.setScorerThreshold(7);
             for(int i = 0; i < 6; i++) {
                 moveIn(1, 15);
-                stone = robot.stoneDetect.detect();
+                stone = robot.SkystoneDetect.detect();
                 if(!stone) {
                     break;
                 }

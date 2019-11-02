@@ -40,7 +40,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
     //telemetry
     public void telemetryOn(boolean telemetryOn) {
         if(telemetryOn) {
-            telemetry.addData("colorSensor", robot.stoneDetect.getSensorInput());
+            telemetry.addData("colorSensor", robot.SkystoneDetect.getSensorInput());
         }
     }
 
