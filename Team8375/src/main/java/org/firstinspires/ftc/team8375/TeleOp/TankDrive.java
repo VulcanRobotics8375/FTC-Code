@@ -12,6 +12,7 @@ import org.firstinspires.ftc.team8375.Subsystems.Robot;
 @TeleOp(name="TankDrive", group="Drive")
 public class TankDrive extends OpMode {
     protected Robot robot;
+    boolean firstRun;
 
     @Override
     public void init() {
@@ -27,19 +28,25 @@ public class TankDrive extends OpMode {
 
     @Override
     public void start() {
+        firstRun = true;
 //        robot.arm.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        robot.arm.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void loop() {
 
-        robot.intake.deploy(1);
+        if(firstRun) {
+            robot.intake.resetDeployTime();
+            firstRun = false;
+        }
+
+        robot.intake.deploy(gamepad1.dpad_left, gamepad1.dpad_right);
 
         robot.drivetrain.tankDrive(
-                //turn
-                -gamepad1.right_stick_x,
                 //forward
                 gamepad1.left_stick_y,
+                //turn
+                -gamepad1.right_stick_x,
                 //acceleration time
                 0.5,
                 0.1,
@@ -50,15 +57,15 @@ public class TankDrive extends OpMode {
 
         robot.arm.run(
                 //lift
-                gamepad2.left_stick_y,
+                -gamepad2.left_stick_y,
                 //pitch
-                gamepad2.right_stick_y,
+                -gamepad2.right_stick_y,
                 //claw button
                 gamepad2.right_bumper,
                 //flip clockwise
-                gamepad2.dpad_right,
+                gamepad2.right_trigger,
                 //flip counter clockwise
-                gamepad2.dpad_left,
+                gamepad2.left_trigger,
                 900,
                 300,
                 2150,
@@ -67,11 +74,11 @@ public class TankDrive extends OpMode {
         );
 
         robot.intake.run(
-                -0.25,
+                -0.3,
                 //reverse
                 gamepad1.a,
                 //toggle
-                gamepad1.dpad_left
+                gamepad1.right_bumper
         );
 
         //Telemetry

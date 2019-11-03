@@ -33,29 +33,30 @@ public class Intake {
          deploy_right = deployRight;
     }
 
-    public void deploy(double time) {
-        if(!reset) {
-            this.time.reset();
-            reset = true;
-        }
+    public void resetDeployTime() {
+        time.reset();
+    }
 
-        while(this.time.now(TimeUnit.SECONDS) < time) {
-            deploy_right.setPower(1.0);
+    public void deploy(boolean left, boolean right) {
+        if(left) {
+            deploy_right.setPower(-1.0);
             deploy_left.setPower(1.0);
+        } else if(right) {
+            deploy_right.setPower(1.0);
+            deploy_left.setPower(-1.0);
+        } else {
+            deploy_right.setPower(0);
+            deploy_left.setPower(0);
         }
-        deploy_left.setPower(0);
-        deploy_right.setPower(0);
 
     }
 
     public void run(double intakePower, boolean reverse, boolean isOn) {
 
         if(isOn) {
-            onPressed = true;
-        }
-        if(onPressed && !isOn) {
-            intakeOn *= -1;
-            onPressed = false;
+            intakeOn = 1;
+        } else {
+            intakeOn = -1;
         }
 
         if(intakeOn > 0) {

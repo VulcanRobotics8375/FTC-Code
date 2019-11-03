@@ -29,7 +29,7 @@ public class Arm {
     private static final double ticks = 9850;
     private static final double coefficient = theta/ticks;
                                 // degrees / 180.0
-    private static final double levelBias = 90;
+    private static final double levelBias = 95;
 
     private float liftHighLimit;
     private float pitchHighLimit;
@@ -52,7 +52,7 @@ public class Arm {
         //motor initialization
     }
 
-    public void run(double liftPower, double pitchPower, boolean clawButton, boolean yawClockwise, boolean yawCounterClockwise, double flipPos, float limitRange, float liftHigh, float pitchHigh, double autoGain) {
+    public void run(double liftPower, double pitchPower, boolean clawButton, double yawClockwise, double yawCounterClockwise, double flipPos, float limitRange, float liftHigh, float pitchHigh, double autoGain) {
 
         //limits
         LiftPos = lift.getCurrentPosition();
@@ -107,22 +107,21 @@ public class Arm {
         }
 
         if(clawOn < 0) {
-            setServoAngle(claw, 10);
+            setServoAngle(claw, 170);
         }
         else if(clawOn > 0) {
-            setServoAngle(claw, 50);
+            setServoAngle(claw, 125);
         }
 
-        //set flip power
-
-        if(yawClockwise) {
-            yaw.setPower(1.0);
-        } else if(yawCounterClockwise) {
-            yaw.setPower(-1.0);
+        //set powers
+        if(yawClockwise > 0.1) {
+            yaw.setPower(yawClockwise);
+        } else if(yawCounterClockwise > 0.1) {
+            yaw.setPower(-yawCounterClockwise);
         } else {
             yaw.setPower(-0.05);
         }
-        //set powers
+
         lift.setPower(this.liftPower * 0.3);
         pitch.setPower(this.pitchPower);
     }

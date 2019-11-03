@@ -13,6 +13,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
     private double accSpeed;
     protected Robot robot;
 
+    @Override
     public abstract void runOpMode();
 
 
@@ -40,7 +41,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
     //telemetry
     public void telemetryOn(boolean telemetryOn) {
         if(telemetryOn) {
-            telemetry.addData("colorSensor", robot.SkystoneDetect.getSensorInput());
+            telemetry.addData("colorSensor", robot.SkystoneDetect.getSensorInput(1));
         }
     }
 
