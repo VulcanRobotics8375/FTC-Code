@@ -148,7 +148,7 @@ public class Drivetrain {
     }
 
     public void tankDrive(float leftPower, float rightPower, double acc, double greyZone, boolean headSwitchButton) {
-        divisor = (acc/1.07)*((0.62*Math.pow(acc, 3))+0.45);
+        divisor = (acc/1.07)*((0.62*Math.pow(acc, 2))+0.45);
         // modifies the controller input for a more natural feel
         // graph for acceleration curve - https://www.desmos.com/calculator/gdwizzld3f
         movePower = (leftPower/1.07)*((0.62*Math.pow(leftPower, 2))+0.45) * inverse;
