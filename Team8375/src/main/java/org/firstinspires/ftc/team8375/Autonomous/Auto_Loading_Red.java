@@ -6,7 +6,7 @@ package org.firstinspires.ftc.team8375.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "yeet", group = "yeet")
+@Autonomous(name = "loading -- red", group = "loading")
 public class Auto_Loading_Red extends VulcanPipeline {
 
     @Override

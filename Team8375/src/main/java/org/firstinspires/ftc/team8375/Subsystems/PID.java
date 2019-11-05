@@ -57,22 +57,6 @@ public class PID {
         return imu.getCalibrationStatus();
     }
 
-    public void initIMU() {
-        parameters = new BNO055IMU.Parameters();
-        parameters.mode = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-        parameters.loggingEnabled = false;
-        if(imu.initialize(parameters)) {
-            while (!imu.isGyroCalibrated()) {}
-        } else {
-            imu.initialize(parameters);
-
-        }
-    }
-
-
     public double initHeading() {
         startHeading = getIntegratedHeading();
         return startHeading;

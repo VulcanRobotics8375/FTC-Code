@@ -6,8 +6,8 @@ package org.firstinspires.ftc.team8375.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="foundation Move", group = "auto")
-public class Auto_Foundation_Move extends VulcanPipeline {
+@Autonomous(name="foundation Move -- blue", group = "foundation move")
+public class Auto_Foundation_Move_Blue extends VulcanPipeline {
 
     @Override
     public void runOpMode() {

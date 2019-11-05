@@ -28,7 +28,7 @@ public class detectorTest extends LinearOpMode {
 
             detected = robot.SkystoneDetect.detect();
 
-            sleep(500);
+            sleep(100);
 
             telemetry.addData("detected", detected);
             telemetry.addData("score", robot.SkystoneDetect.getScorer());
