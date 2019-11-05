@@ -48,6 +48,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
                 sleep(7);
             }
             robot.drivetrain.turn(angle, this.speed);
+            sleep(10);
             telemetry.addData("imu", robot.drivetrain.getImuAngle());
             updateTelemetry();
 
@@ -80,6 +81,23 @@ public abstract class VulcanPipeline extends LinearOpMode {
         pidOut = Range.clip(pidOut, -1.0, 1.0);
         sleep(iterationTime);
         updateTelemetry();
+    }
+
+    public void findSkystone(double threshold) {
+        robot.SkystoneDetect.resetScore();
+
+        while (!robot.SkystoneDetect.detect()) {
+            robot.SkystoneDetect.setScorerThreshold(threshold);
+            robot.drivetrain.setPowers(0.1, 0);
+            robot.SkystoneDetect.resetScore();
+            sleep(100);
+
+        }
+        robot.drivetrain.setPowers(0, 0);
+    }
+
+    public void sleepOpMode(long millis) {
+        sleep(millis);
     }
 
     public void updateTelemetry() {

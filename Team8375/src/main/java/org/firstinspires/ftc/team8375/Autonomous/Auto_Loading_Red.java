@@ -11,11 +11,9 @@ import org.firstinspires.ftc.team8375.Subsystems.Robot;
 
 @Autonomous(name = "yeet", group = "yeet")
 public class Auto_Loading_Red extends VulcanPipeline {
-    private boolean stone;
 
     @Override
     public void runOpMode() {
-        robot = new Robot(hardwareMap);
 
         initialize();
 
@@ -27,16 +25,7 @@ public class Auto_Loading_Red extends VulcanPipeline {
                 moveIn(18, 50);
                 turn(90, 15);
 
-                robot.SkystoneDetect.resetScore();
-
-                while (!robot.SkystoneDetect.detect()) {
-                    robot.SkystoneDetect.setScorerThreshold(12.5);
-                    robot.drivetrain.setPowers(0.1, 0);
-                    robot.SkystoneDetect.resetScore();
-                    sleep(100);
-
-                }
-                robot.drivetrain.setPowers(0, 0);
+                findSkystone(12.5);
 
                 turn(90, 10);
                 robot.intake.setPowers(-0.4);

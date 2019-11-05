@@ -17,7 +17,7 @@ public class SkystoneDetect {
     private double error;
     private double scorer;
     private int scale = 255;
-    private static final double scorerGain = 1;
+    private static final double scorerGain = 1.5;
     private static final double saturationGain = 10;
     private double threshold;
     private float hsv[] = {0F, 0F, 0F};
