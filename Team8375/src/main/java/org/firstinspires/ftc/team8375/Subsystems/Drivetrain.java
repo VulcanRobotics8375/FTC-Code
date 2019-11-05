@@ -368,7 +368,7 @@ public class Drivetrain {
         return motorIsBusy;
     }
 
-        public void stopDriveTrain() {
+        public void stop() {
 
         setPowers(0, 0);
 

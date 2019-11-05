@@ -166,6 +166,12 @@ public class Arm {
 
     }
 
+    public void stop() {
+        yaw.setPower(0);
+        lift.setPower(0);
+        pitch.setPower(0);
+    }
+
     //Testing stuff
 
     public double getLiftPower() {

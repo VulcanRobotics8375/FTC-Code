@@ -5,9 +5,6 @@
 package org.firstinspires.ftc.team8375.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.DcMotor;
-
-import org.firstinspires.ftc.team8375.Subsystems.Robot;
 
 @Autonomous(name = "yeet", group = "yeet")
 public class Auto_Loading_Red extends VulcanPipeline {

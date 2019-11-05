@@ -64,8 +64,8 @@ public abstract class VulcanPipeline extends LinearOpMode {
         step++;
     }
     public void moveIn(double inches, double speed) {
-        robot.drivetrain.moveIn(inches, speed);
-        step++;
+        moveIn(inches, speed, 0);
+
     }
 
     private void pid(double Kp, double Ki, double Kd, long iterationTime, double heading) {

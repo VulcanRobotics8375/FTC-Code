@@ -54,6 +54,8 @@ public class Robot {
     public void init() { }
 
     public void stop() {
-        drivetrain.stopDriveTrain();
+        drivetrain.stop();
+        arm.stop();
+        intake.stop();
     }
 }
