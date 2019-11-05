@@ -77,6 +77,11 @@ public class Intake {
 
     }
 
+    public void setPowers(double power) {
+        intake_left.setPower(power);
+        intake_right.setPower(power);
+    }
+
     public double getDeployLeftPos() {
         return deploy_left.getPower();
     }

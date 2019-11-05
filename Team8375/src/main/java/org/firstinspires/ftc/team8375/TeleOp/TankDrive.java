@@ -12,7 +12,7 @@ import org.firstinspires.ftc.team8375.Subsystems.Robot;
 @TeleOp(name="TankDrive", group="Drive")
 public class TankDrive extends OpMode {
     protected Robot robot;
-    boolean firstRun;
+    private boolean firstRun;
 
     @Override
     public void init() {
@@ -74,12 +74,18 @@ public class TankDrive extends OpMode {
         );
 
         robot.intake.run(
-                -0.3,
+                -0.4,
                 //reverse
                 gamepad1.a,
                 //toggle
                 gamepad1.right_bumper
         );
+
+        if(gamepad2.left_bumper) {
+            robot.foundation.setFoundationMoveAngle(30);
+        } else {
+            robot.foundation.setFoundationMoveAngle(180);
+        }
 
         //Telemetry
 

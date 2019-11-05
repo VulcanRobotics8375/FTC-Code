@@ -26,7 +26,7 @@ public class Drivetrain {
     private double turnHeading;
     private double error;
     private boolean buttonPressed = false;
-    private boolean turnDone;
+    private boolean turnDone = false;
     private double position;
     private double movePower;
     private double turnPower;
@@ -34,6 +34,8 @@ public class Drivetrain {
     private double tPower;
     private double divisor;
     private double accLim;
+    private double turnCoefficient;
+    private double percent;
     private ElapsedTime Time = new ElapsedTime();
     private double output = 0;
     private boolean motorIsBusy;
@@ -215,19 +217,19 @@ public class Drivetrain {
         double wheelSize = (100.0/25.4) * Math.PI;
         int targetPos = (int) Math.round((inches/wheelSize) * 537.6);
 
-            resetEncoders(DcMotor.RunMode.RUN_TO_POSITION);
+        setTargetPos(targetPos);
 
-            setTargetPos(targetPos);
+        resetEncoders(DcMotor.RunMode.RUN_TO_POSITION);
 
-            setPowers(speed/100.0, turn);
+        setPowers(speed/100.0, turn);
 
-            while(motorIsBusy()) {
+        while(motorIsBusy()) {
 
-            }
+        }
 
-            setPowers(0, 0);
+        setPowers(0, 0);
 
-            resetEncoders(DcMotor.RunMode.RUN_USING_ENCODER);
+        resetEncoders(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
     public void moveIn(double inches, double speed) {
@@ -235,19 +237,22 @@ public class Drivetrain {
         moveIn(inches, speed, 0);
     }
 
-    public void turn(double heading, double speed, double speed2) {
+    public void turn(double heading, double speed) {
         imuAngle = getImuAngle();
         turnHeading = heading + imuOffset;
         error = turnHeading - imuAngle;
 
-        if (imuAngle != turnHeading && Math.abs(error) > 15) {
-            percentSteer(-error, speed);
-        }
-        if(imuAngle != turnHeading && Math.abs(error) <= 15) {
-            percentSteer(-error, speed2);
+        if(heading < 0) {
+            percent = -100;
+        } else {
+            percent = 100;
         }
 
-        if(error == 0) {
+        if (imuAngle != turnHeading && Math.abs(error) > 15) {
+            percentSteer(percent, speed);
+        }
+
+        if(Math.abs(error) < 5) {
             turnDone = true;
         } else {
             turnDone = false;
@@ -259,7 +264,7 @@ public class Drivetrain {
     }
 
     public double getImuAngle() {
-        imuAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle;
+        imuAngle = pid.getIntegratedHeading();
 
         return imuAngle;
     }
@@ -272,19 +277,22 @@ public class Drivetrain {
      */
 
     public void percentSteer(double percent, double speed) {
-        if(percent < 0) {
-            fr.setPower(speed);
-            br.setPower(speed);
 
-            fl.setPower(((percent * (0.02 * speed)) + speed)/100.0);
-            bl.setPower(((percent * (0.02 * speed)) + speed)/100.0);
+        if(percent < 0) {
+            turnCoefficient = ((percent * (0.02 * speed)) + speed)/100.0;
+            fr.setPower(speed/100.0);
+            br.setPower(speed/100.0);
+
+            fl.setPower(turnCoefficient);
+            bl.setPower(turnCoefficient);
 
         } else if(percent >= 0) {
-            fr.setPower(((percent * (0.02 * speed)) + speed)/100.0);
-            br.setPower(((percent * (0.02 * speed)) + speed)/100.0);
+            turnCoefficient = (((-percent) * (0.02 * speed)) + speed)/100.0;
+            fr.setPower(turnCoefficient);
+            br.setPower(turnCoefficient);
 
-            fl.setPower(speed);
-            fl.setPower(speed);
+            fl.setPower(speed/100.0);
+            fl.setPower(speed/100.0);
 
 
         }
@@ -361,6 +369,8 @@ public class Drivetrain {
     }
 
         public void stopDriveTrain() {
+
+        setPowers(0, 0);
 
     }
 }
