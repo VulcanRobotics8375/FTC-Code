@@ -20,7 +20,7 @@ public class SkystoneDetect {
     private static final double scorerGain = 1.5;
     private static final double saturationGain = 10;
     private double threshold;
-    private float hsv[] = {0F, 0F, 0F};
+    private float[] hsv = {0F, 0F, 0F};
 
     //stone color in RGB
     private static final float[] stoneHSV = {320, 0.6f, 210};
