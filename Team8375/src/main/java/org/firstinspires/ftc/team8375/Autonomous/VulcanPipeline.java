@@ -6,6 +6,7 @@ package org.firstinspires.ftc.team8375.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
@@ -16,8 +17,10 @@ public abstract class VulcanPipeline extends LinearOpMode {
     private double integral = 0;
     private double derivative = 0;
     private double previousError = 0;
-    public int step = 0;
+    private int step = 0;
+    private int i;
     protected Robot robot;
+    private ElapsedTime stoneTime = new ElapsedTime();
 
     public boolean isDone = false;
 
@@ -28,7 +31,6 @@ public abstract class VulcanPipeline extends LinearOpMode {
         isDone = false;
     }
 
-    @Override
     public abstract void runOpMode();
 
 
@@ -39,10 +41,10 @@ public abstract class VulcanPipeline extends LinearOpMode {
             if (Math.abs(robot.drivetrain.getError()) <= 20) {
                 if(this.speed > 0) {
                     this.speed--;
-                    this.speed = Range.clip(this.speed, 0, 100);
+                    this.speed = Range.clip(this.speed, 5, 100);
                 } else if(speed < 0) {
                     this.speed++;
-                    this.speed = Range.clip(this.speed, -100, 0);
+                    this.speed = Range.clip(this.speed, -100, -5);
                 }
 
                 sleep(7);
@@ -83,21 +85,44 @@ public abstract class VulcanPipeline extends LinearOpMode {
         updateTelemetry();
     }
 
-    public void findSkystone(double threshold) {
+    public void findSkystone(double threshold, double power) {
+        stoneTime.reset();
         robot.SkystoneDetect.resetScore();
 
         while (!robot.SkystoneDetect.detect()) {
             robot.SkystoneDetect.setScorerThreshold(threshold);
-            robot.drivetrain.setPowers(0.1, 0);
+            robot.drivetrain.setPowers(power, 0);
             robot.SkystoneDetect.resetScore();
             sleep(100);
+            telemetry.addData("score", robot.SkystoneDetect.getScorer());
 
         }
         robot.drivetrain.setPowers(0, 0);
+        step++;
+
+        if(stoneTime.milliseconds() <= 2000) {
+            i = 1;
+        } else if(stoneTime.milliseconds() >= 2000 && stoneTime.milliseconds() < 4000) {
+            i = 2;
+        } else if(stoneTime.milliseconds() > 4000) {
+            i = 3;
+        }
+
+
+    }
+
+    public void setAutoArmPos(double pos){
+        while(robot.intake.getAutoArm() != pos) {
+            robot.intake.autoArm(pos);
+        }
     }
 
     public void sleepOpMode(long millis) {
         sleep(millis);
+    }
+
+    public int returnInt() {
+        return i;
     }
 
     public void updateTelemetry() {

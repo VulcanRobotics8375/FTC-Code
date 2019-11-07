@@ -40,7 +40,8 @@ public class Robot {
                 hwMap.dcMotor.get("intake_left"),
                 hwMap.dcMotor.get("intake_right"),
                 hwMap.get(CRServo.class, "deploy_left"),
-                hwMap.get(CRServo.class, "deploy_right")
+                hwMap.get(CRServo.class, "deploy_right"),
+                hwMap.get(Servo.class, "auto_arm")
         );
 
         foundation = new Foundation(hwMap.get(Servo.class, "foundation_move"));
@@ -50,8 +51,6 @@ public class Robot {
         );
 
     }
-
-    public void init() { }
 
     public void stop() {
         drivetrain.stop();

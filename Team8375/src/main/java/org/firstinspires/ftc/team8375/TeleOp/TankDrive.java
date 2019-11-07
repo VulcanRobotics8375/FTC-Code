@@ -49,7 +49,7 @@ public class TankDrive extends OpMode {
                 -gamepad1.right_stick_x,
                 //acceleration time
                 0.5,
-                0.1,
+                0.25,
                 //head switch
                 gamepad1.left_bumper
         );
@@ -62,10 +62,8 @@ public class TankDrive extends OpMode {
                 -gamepad2.right_stick_y,
                 //claw button
                 gamepad2.right_bumper,
-                //flip clockwise
-                gamepad2.right_trigger,
-                //flip counter clockwise
-                gamepad2.left_trigger,
+                //flip joystick
+                gamepad2.right_stick_x,
                 900,
                 300,
                 2150,

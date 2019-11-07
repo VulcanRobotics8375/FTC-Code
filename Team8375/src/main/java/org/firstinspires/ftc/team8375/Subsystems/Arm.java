@@ -52,7 +52,7 @@ public class Arm {
         //motor initialization
     }
 
-    public void run(double liftPower, double pitchPower, boolean clawButton, double yawClockwise, double yawCounterClockwise, double flipPos, float limitRange, float liftHigh, float pitchHigh, double autoGain) {
+    public void run(double liftPower, double pitchPower, boolean clawButton, double yawPower, double flipPos, float limitRange, float liftHigh, float pitchHigh, double autoGain) {
 
         //limits
         LiftPos = lift.getCurrentPosition();
@@ -114,10 +114,8 @@ public class Arm {
         }
 
         //set powers
-        if(yawClockwise > 0.1) {
-            yaw.setPower(yawClockwise);
-        } else if(yawCounterClockwise > 0.1) {
-            yaw.setPower(-yawCounterClockwise);
+        if(yawPower != 0) {
+            yaw.setPower(yawPower);
         } else {
             yaw.setPower(-0.05);
         }

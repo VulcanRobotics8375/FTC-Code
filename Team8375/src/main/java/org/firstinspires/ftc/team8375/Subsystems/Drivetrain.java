@@ -287,7 +287,7 @@ public class Drivetrain {
             bl.setPower(turnCoefficient);
 
         } else if(percent >= 0) {
-            turnCoefficient = (((-percent) * (0.02 * speed)) + speed)/100.0;
+            turnCoefficient = ((-(percent * (0.02 * speed))) + speed)/100.0;
             fr.setPower(turnCoefficient);
             br.setPower(turnCoefficient);
 

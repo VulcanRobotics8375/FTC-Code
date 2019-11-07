@@ -19,15 +19,20 @@ public class Auto_Foundation_Move_Blue extends VulcanPipeline {
         do {
 
             if(!isDone) {
-                moveIn(30, 50);
+
+                robot.drivetrain.percentSteer(50, 10);
+                sleepOpMode(500);
+                moveIn(54, 50);
+                robot.drivetrain.percentSteer(-50, 10);
+                sleepOpMode(500);
+                robot.drivetrain.setPowers(0, 0);
 
                 robot.foundation.setFoundationMoveAngle(30);
                 sleep(500);
 
-                moveIn(-32, -50);
+                moveIn(-52, -50);
 
                 robot.foundation.setFoundationMoveAngle(180);
-
 
             }
 

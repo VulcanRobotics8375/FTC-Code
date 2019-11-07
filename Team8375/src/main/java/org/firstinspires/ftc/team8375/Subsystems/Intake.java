@@ -6,6 +6,7 @@ package org.firstinspires.ftc.team8375.Subsystems;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.concurrent.TimeUnit;
@@ -24,11 +25,13 @@ public class Intake {
     //servos
     private CRServo deploy_left;
     private CRServo deploy_right;
+    private Servo autoArm;
 
-    public Intake(DcMotor intakeLeft, DcMotor intakeRight, CRServo deployLeft, CRServo deployRight) {
+    public Intake(DcMotor intakeLeft, DcMotor intakeRight, CRServo deployLeft, CRServo deployRight, Servo autoArm) {
          intake_left = intakeLeft;
          intake_right = intakeRight;
 
+         this.autoArm = autoArm;
          deploy_left = deployLeft;
          deploy_right = deployRight;
     }
@@ -45,7 +48,7 @@ public class Intake {
             deploy_right.setPower(1.0);
             deploy_left.setPower(-1.0);
         } else {
-            deploy_right.setPower(0);
+            deploy_right.setPower(0.05);
             deploy_left.setPower(0);
         }
 
@@ -86,6 +89,15 @@ public class Intake {
         setPowers(0);
         deploy_left.setPower(0);
         deploy_right.setPower(0);
+    }
+
+    public void autoArm(double pos) {
+        autoArm.setPosition(pos);
+
+    }
+
+    public double getAutoArm() {
+        return autoArm.getPosition();
     }
 
     public double getDeployLeftPos() {
