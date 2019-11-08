@@ -9,8 +9,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
 
-@TeleOp(name="TankDrive", group="Drive")
-public class TankDrive extends OpMode {
+@TeleOp(name="One Stick Tank", group="Drive")
+public class OneStickDrive extends OpMode {
     protected Robot robot;
     private boolean firstRun;
 
@@ -44,7 +44,7 @@ public class TankDrive extends OpMode {
 
         robot.drivetrain.tankDrive(
                 //forward
-                gamepad1.left_stick_y,
+                gamepad1.right_stick_y,
                 //turn
                 -gamepad1.right_stick_x,
                 //acceleration time

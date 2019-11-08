@@ -33,7 +33,7 @@ public class Drivetrain {
     private double mPower;
     private double tPower;
     private double divisor;
-    private double accLim;
+    private double accLim = 0;
     private double turnCoefficient;
     private double percent;
     private ElapsedTime Time = new ElapsedTime();
@@ -186,6 +186,8 @@ public class Drivetrain {
             } else if (accLim < Math.abs(turnPower)) {
                 turnPower = accLim;
             }
+        } else {
+            accLim = 0;
         }
 
         //makes sure the motors are going the correct way
