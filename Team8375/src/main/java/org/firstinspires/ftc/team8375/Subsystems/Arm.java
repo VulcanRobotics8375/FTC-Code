@@ -38,7 +38,7 @@ public class Arm {
     private double yawCounterClockwise;
 
     private boolean clawPressed;
-    private boolean flipPressed;
+    private boolean bypass;
     private int clawOn = -1;
     private int flipOn = -1;
 
@@ -52,7 +52,7 @@ public class Arm {
         //motor initialization
     }
 
-    public void run(double liftPower, double pitchPower, boolean clawButton, double yawPower, double flipPos, float limitRange, float liftHigh, float pitchHigh, double autoGain) {
+    public void run(double liftPower, double pitchPower, boolean clawButton, double yawPower, double flipPos, float limitRange, float liftHigh, float pitchHigh, double autoGain, boolean bypass) {
 
         //limits
         LiftPos = lift.getCurrentPosition();
@@ -78,14 +78,23 @@ public class Arm {
            this.liftPower = liftPower;
 //        }
 
-        if(pitchPower < 0 && Math.abs(pitchPos) <= limitRange){
-            this.pitchPower = (-(pitchPos/(limitRange/Math.abs(pitchPower))))/1.0;
+        if(!bypass && !this.bypass) {
+            if (pitchPower < 0 && Math.abs(pitchPos) <= limitRange) {
+                this.pitchPower = (-(pitchPos / (limitRange / Math.abs(pitchPower)))) / 1.0;
 
-        }
-        else if (pitchPower > 0 && pitchPos >= pitchHighLimit) {
-            this.pitchPower = (pitchHigh - pitchPos)/(limitRange/pitchPower)/1.0;
-        } else {
+            } else if (pitchPower > 0 && pitchPos >= pitchHighLimit) {
+                this.pitchPower = (pitchHigh - pitchPos) / (limitRange / pitchPower) / 1.0;
+            } else {
+                this.pitchPower = pitchPower;
+            }
+        } else if(bypass) {
             this.pitchPower = pitchPower;
+            this.bypass = true;
+        }
+        if(this.bypass && !bypass) {
+            pitch.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            pitch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            this.bypass = false;
         }
 
        //leveler

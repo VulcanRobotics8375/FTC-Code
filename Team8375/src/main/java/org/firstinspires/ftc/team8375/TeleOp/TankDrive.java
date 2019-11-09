@@ -68,7 +68,8 @@ public class TankDrive extends OpMode {
                 300,
                 2150,
                 9850,
-                500
+                500,
+                gamepad2.y
         );
 
         robot.intake.run(
