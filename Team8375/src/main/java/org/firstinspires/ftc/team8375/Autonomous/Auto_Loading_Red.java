@@ -21,7 +21,7 @@ public class Auto_Loading_Red extends VulcanPipeline {
         while(opModeIsActive()) {
             if(!isDone) {
 
-                moveIn(26, 40);
+                moveIn(26.5, 40);
                 turn(79, 15);
 
                 findSkystone(12.5, 0.1);

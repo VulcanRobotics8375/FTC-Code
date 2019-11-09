@@ -20,22 +20,26 @@ public class Drivetrain {
     private DcMotor fl, fr, bl, br;
     private BNO055IMU imu;
     private BNO055IMU.Parameters parameters;
+
+    //doubles
+    private double
+            imuAngle,
+            imuOffset,
+            turnHeading,
+            error,
+            position,
+            movePower,
+            turnPower,
+            mPower,
+            tPower,
+            divisor,
+            turnCoefficient,
+            percent;
+
     private int inverse = 1;
-    private double imuAngle, imuOffset, turnHeading, error, position, movePower, turnPower, mPower, tPower, divisor, turnCoefficient, percent;
-//    private double imuOffset;
-//    private double turnHeading;
-//    private double error;
     private boolean buttonPressed = false;
     private boolean turnDone = false;
-//    private double position;
-//    private double movePower;
-//    private double turnPower;
-//    private double mPower;
-//    private double tPower;
-//    private double divisor;
     private double accLim = 0;
-//    private double turnCoefficient;
-//    private double percent;
     private ElapsedTime Time = new ElapsedTime();
     private double output = 0;
     private boolean motorIsBusy;
@@ -326,6 +330,10 @@ public class Drivetrain {
     }
     public double getOutput() {
         return output;
+    }
+
+    public int getInverse() {
+        return inverse;
     }
 
     //in inches

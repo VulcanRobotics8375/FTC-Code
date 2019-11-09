@@ -85,6 +85,12 @@ public class TankDrive extends OpMode {
             robot.foundation.setFoundationMoveAngle(180);
         }
 
+        if(robot.drivetrain.getInverse() > 0) {
+            robot.intake.autoArm(0.85);
+        } else if(robot.drivetrain.getInverse() < 0) {
+            robot.intake.autoArm(0.7);
+        }
+
         //Telemetry
 
         //Drivetrain
