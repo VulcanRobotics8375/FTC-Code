@@ -18,42 +18,42 @@ public class Auto_Loading_Blue extends VulcanPipeline {
         while(opModeIsActive()) {
             if(!isDone) {
 
-                moveIn(26, 40);
+                moveIn(26.4, 40);
                 turn(83, 15);
                 moveIn(-5, -15);
 
                 findSkystone(12.5, -0.1);
 
                 i = returnInt();
-                moveIn(-1.2, -15);
-                robot.drivetrain.percentSteer(-50, 10);
+                moveIn(2.3, 15);
+                robot.drivetrain.percentSteer(-50, -10);
                 sleepOpMode(1000);
                 setAutoArmPos(0.15);
 
                 switch (i) {
                     case 1:
-                        turn(35, 10);
+                        turn(45, 10);
                         moveIn(25, 20);
-                        turn(-35, 15);
-                        moveIn(35, 30);
+                        turn(-45, 15);
+                        moveIn(33, 30);
                         setAutoArmPos(0.9);
-                        moveIn(-27, -20);
+                        moveIn(-30, -20);
                         break;
 
                     case 2:
-                        turn(20, 10);
-                        moveIn(40, 20);
-                        turn(-20, 15);
+                        turn(45, 10);
+                        moveIn(39, 20);
+                        turn(-45, 15);
                         moveIn(35, 30);
                         setAutoArmPos(0.9);
                         moveIn(-27, -20);
                         break;
 
                     case 3:
-                        turn(15, 10);
-                        moveIn(44, 20);
-                        turn(-15, 15);
-                        moveIn(37, 30);
+                        turn(35, 10);
+                        moveIn(43, 20);
+                        turn(-35, 15);
+                        moveIn(42, 30);
                         setAutoArmPos(0.9);
                         moveIn(-26, -20);
                         break;

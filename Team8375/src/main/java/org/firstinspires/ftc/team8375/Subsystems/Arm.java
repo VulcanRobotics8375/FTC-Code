@@ -126,7 +126,7 @@ public class Arm {
         if(yawPower != 0) {
             yaw.setPower(yawPower);
         } else {
-            yaw.setPower(-0.05);
+            yaw.setPower(0);
         }
 
         lift.setPower(this.liftPower * 0.3);

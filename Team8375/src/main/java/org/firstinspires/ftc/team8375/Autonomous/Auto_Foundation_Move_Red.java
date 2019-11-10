@@ -16,7 +16,18 @@ public class Auto_Foundation_Move_Red extends VulcanPipeline {
         while(opModeIsActive()) {
             if(!isDone) {
 
-                //instructions go here
+                moveIn(45, 45);
+                turn(-87, 15);
+                moveIn(7, 15);
+                robot.foundation.setFoundationMoveAngle(30);
+                sleep(800);
+                moveIn(-2, -15);
+                turn(-65, 15);
+                moveIn(24, 30);
+                robot.foundation.setFoundationMoveAngle(180);
+                moveIn(-4, -20);
+                turn(79, 15);
+                moveIn(-26, -30);
 
                 isDone = true;
             }
