@@ -37,6 +37,7 @@ public class Auto_Loading_Blue extends VulcanPipeline {
                         turn(-45, 15);
                         moveIn(33, 30);
                         setAutoArmPos(0.9);
+                        sleepOpMode(500);
                         moveIn(-30, -20);
                         break;
 
@@ -46,6 +47,7 @@ public class Auto_Loading_Blue extends VulcanPipeline {
                         turn(-45, 15);
                         moveIn(35, 30);
                         setAutoArmPos(0.9);
+                        sleepOpMode(500);
                         moveIn(-27, -20);
                         break;
 
@@ -55,6 +57,7 @@ public class Auto_Loading_Blue extends VulcanPipeline {
                         turn(-35, 15);
                         moveIn(42, 30);
                         setAutoArmPos(0.9);
+                        sleepOpMode(500);
                         moveIn(-26, -20);
                         break;
 
