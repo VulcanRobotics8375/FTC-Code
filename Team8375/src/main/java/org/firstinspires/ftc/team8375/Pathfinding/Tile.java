@@ -19,7 +19,7 @@ public class Tile {
         FLOOR, WALL
     }
 
-    public static final int tileSize = 64;
+//    public static final int tileSize = 64;
     public static final int tileOrigin = 32;
 
     private Point pos;
@@ -41,11 +41,11 @@ public class Tile {
     public Tile(Point pos, TileType type) {
         this.pos = pos;
 
-        this.realPos = new Point((int) (pos.x * tileSize),
-                (int) (pos.y * tileSize));
+        this.realPos = new Point((int) (pos.x),
+                (int) (pos.y));
 
-        this.center = new Point((int) (realPos.x + tileSize / 2f),
-                (int) (realPos.y + tileSize / 2f));
+        this.center = new Point((int) (realPos.x / 2f),
+                (int) (realPos.y / 2f));
 
         this.neighbors = new ArrayList<Tile>();
         this.allNeighbors = new ArrayList<Tile>();
@@ -94,22 +94,6 @@ public class Tile {
         }
 
     }
-
-    public boolean contains(float x, float y) {
-
-        if (x >= realPos.x && x < realPos.x + tileSize) {
-
-            if (realPos.y <= y && realPos.y + tileSize > y) {
-                return true;
-
-            }
-
-        }
-
-        return false;
-
-    }
-
 
     @Override
     public boolean equals(Object obj) {

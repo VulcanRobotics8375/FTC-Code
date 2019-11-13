@@ -12,10 +12,8 @@ public class pathFinder {
     public ArrayList<Tile> allTiles;
     private ArrayList<Tile> closed;
     private ArrayList<Tile> open;
-    private Board board;
 
     public pathFinder(ArrayList<Tile> all) {
-        board = new Board(allTiles);
 
         this.allTiles = all;
         this.closed = new ArrayList<Tile>();
