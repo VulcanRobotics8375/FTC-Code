@@ -8,27 +8,37 @@ import org.opencv.core.Point;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class Board {
 
-    private ArrayList<ArrayList<Tile>> tiles;
-    private ArrayList<Tile> linearTiles;
+    private ArrayList<Tile> open;
+    private ArrayList<Tile> closed;
 
-    private pathFinder finder;
+    private Tile start;
+    private Tile dst;
 
-    public Board() {
-        linearTiles = new ArrayList<Tile>();
-        setBoard();
+    private int startX;
+    private int startY;
+    private int dstX;
+    private int dstY;
 
-        finder = new pathFinder(linearTiles);
+    public Board(Tile start, Tile dst) {
+        this.start = tiles.get((int) start.getPos().y).get((int) start.getPos().x);
+        this.dst = tiles.get((int) dst.getPos().y).get((int) dst.getPos().x);
+
+        this.startX = (int) this.start.getPos().x;
+        this.startY = (int) this.start.getPos().y;
+        this.dstX = (int) this.dst.getPos().x;
+        this.dstY = (int) this.dst.getPos().y;
+
+
     }
 
-    public ArrayList<ArrayList<Tile>> getTiles() {
-        return this.tiles;
-    }
+    private ArrayList<ArrayList<Tile>> tiles = new ArrayList<>();
 
     public void setBoard() {
 
-        ArrayList<ArrayList<Tile>> map = new ArrayList<ArrayList<Tile>>();
+        ArrayList<ArrayList<Tile>> map = new ArrayList<>();
 
         //turns the 2d board int[][] array into an ArrayList
         for(int i = 0; i < 11; i++) {
@@ -45,37 +55,7 @@ public class Board {
             }
         }
 
-        tiles = map;
-
-        for (ArrayList<Tile> list : map) {
-            linearTiles.addAll(list);
-        }
-
-        for(Tile tile : linearTiles) {
-            ArrayList<Tile> neighbors = new ArrayList<Tile>();
-
-            if (tile.getPos().x > 0)
-                neighbors.add(map.get((int) tile.getPos().y).get(
-                        (int) tile.getPos().x - 1));
-            if (tile.getPos().x < 12 - 2)
-                neighbors.add(map.get((int)tile.getPos().y).get(
-                        (int) tile.getPos().x + 1));
-
-            if (tile.getPos().y > 0)
-                neighbors.add(map.get((int) tile.getPos().y - 1).get(
-                        (int) tile.getPos().x));
-            if (tile.getPos().y < 12 - 2)
-                neighbors.add(map.get((int) tile.getPos().y + 1).get(
-                        (int) tile.getPos().x));
-
-            tile.setNeighbors(neighbors);
-
-
-        }
+        tiles.addAll(map);
 
     }
-    public void run() {
-        new Board();
-    }
-
 }

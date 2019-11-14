@@ -60,10 +60,10 @@ public class Tile {
 
         float dx = (float) Math.abs(pos.x - dst.pos.x);
         float dy = (float) Math.abs(pos.y - dst.pos.y);
-//        H = 25 * (dx + dy);
+        H = Math.max(dx, dy);
 
         //Heuristic for diagonal movement
-        H = 25 * (dx + dy) + (5 - 2 * 25) * Math.min(dx, dy);
+//        H = 25 * (dx + dy) + (5 - 2 * 25) * Math.min(dx, dy);
     }
 
     public void calcCostF() {
