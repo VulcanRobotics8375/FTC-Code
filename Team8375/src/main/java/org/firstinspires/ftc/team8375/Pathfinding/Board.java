@@ -31,7 +31,6 @@ public class Board {
         this.dstX = (int) this.dst.getPos().x;
         this.dstY = (int) this.dst.getPos().y;
 
-
     }
 
     private ArrayList<ArrayList<Tile>> tiles = new ArrayList<>();

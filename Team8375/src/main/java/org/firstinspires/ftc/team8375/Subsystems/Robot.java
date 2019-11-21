@@ -32,7 +32,7 @@ public class Robot {
                 hwMap.dcMotor.get("lift"),
                 hwMap.dcMotor.get("pitch"),
                 hwMap.get(Servo.class, "claw"),
-                hwMap.get(CRServo.class, "yaw"),
+                hwMap.get(Servo.class, "yaw"),
                 hwMap.get(Servo.class, "level")
         );
 

@@ -19,9 +19,6 @@ public class Tile {
         FLOOR, WALL
     }
 
-//    public static final int tileSize = 64;
-    public static final int tileOrigin = 32;
-
     private Point pos;
     private Point realPos;
     private Point center;
@@ -73,7 +70,7 @@ public class Tile {
     }
     public float moveCost(Tile from) {
 
-        float cost = 25f;
+        float cost = 10f;
 
         if (this.isWall())
             cost *= 10f;

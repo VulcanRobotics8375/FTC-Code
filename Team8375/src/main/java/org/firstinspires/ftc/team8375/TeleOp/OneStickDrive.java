@@ -55,22 +55,22 @@ public class OneStickDrive extends OpMode {
         );
 
 
-        robot.arm.run(
-                //lift
-                gamepad2.left_stick_y,
-                //pitch
-                -gamepad2.right_stick_y,
-                //claw button
-                gamepad2.right_bumper,
-                //flip joystick
-                -gamepad2.right_stick_x,
-                900,
-                300,
-                2150,
-                9850,
-                500,
-                gamepad2.y
-        );
+//        robot.arm.run(
+//                //lift
+//                gamepad2.left_stick_y,
+//                //pitch
+//                -gamepad2.right_stick_y,
+//                //claw button
+//                gamepad2.right_bumper,
+//                //flip joystick
+//                -gamepad2.right_stick_x,
+//                900,
+//                300,
+//                2150,
+//                9850,
+//                500,
+//                gamepad2.y
+//        );
 
         robot.intake.run(
                 -0.4,
@@ -104,8 +104,6 @@ public class OneStickDrive extends OpMode {
         //Intake
         telemetry.addData("deployLeft", robot.intake.getDeployLeftPos());
         telemetry.addData("deployRight", robot.intake.getDeployRightPos());
-
-        telemetry.addData("yawClockwise", robot.arm.getYawClockwise());
 
         telemetry.addData("Runtime", getRuntime());
 

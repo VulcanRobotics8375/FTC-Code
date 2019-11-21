@@ -62,14 +62,14 @@ public class TankDrive extends OpMode {
                 -gamepad2.right_stick_y,
                 //claw button
                 gamepad2.right_bumper,
-                //flip joystick
-                -gamepad2.right_stick_x,
-                900,
-                300,
+                //flip button
+                gamepad2.b,
+                500,
                 2150,
                 9850,
                 500,
-                gamepad2.y
+                gamepad2.y,
+                gamepad2.x
         );
 
         robot.intake.run(
@@ -110,8 +110,6 @@ public class TankDrive extends OpMode {
         //Intake
         telemetry.addData("deployLeft", robot.intake.getDeployLeftPos());
         telemetry.addData("deployRight", robot.intake.getDeployRightPos());
-
-        telemetry.addData("yawClockwise", robot.arm.getYawClockwise());
 
         telemetry.addData("Runtime", getRuntime());
 

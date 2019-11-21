@@ -4,22 +4,22 @@
 
 package org.firstinspires.ftc.team8375.Pathfinding;
 
+import org.opencv.core.Point;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static org.firstinspires.ftc.team8375.Pathfinding.Tile.TileType.FLOOR;
+
 public class pathFinder {
 
-    public ArrayList<Tile> allTiles;
-    private ArrayList<Tile> closed;
-    private ArrayList<Tile> open;
+    private ArrayList<ArrayList<Tile>> map = new ArrayList<>();
+    private ArrayList<Tile> path;
+    private ArrayList<Tile> open = new ArrayList<>();
+    private ArrayList<Tile> closed = new ArrayList<>();
+    private ArrayList<Tile> neighbors = new ArrayList<>();
 
-    public pathFinder(ArrayList<Tile> all) {
-
-        this.allTiles = all;
-        this.closed = new ArrayList<Tile>();
-        this.open = new ArrayList<Tile>();
-
-    }
+    float G = 0f;
 
     public Tile getBest() {
 
@@ -36,92 +36,47 @@ public class pathFinder {
 
     }
 
-    public ArrayList<Tile> getPath(Tile dst, Tile start) {
-        closed.clear();
+
+    public ArrayList<Tile> getPath(Tile start, Tile dst) {
         open.clear();
+        closed.clear();
 
-        ArrayList<Tile> path = new ArrayList<Tile>();
+        open.add(0, start);
 
-        Tile currentStep = start;
-        open.add(0, currentStep);
-
-        float G = 0f;
-
-        int depth = 0;
-        int depthMax = 1000;
+        Tile currentNode;
 
         while (true) {
 
-            /*
-             * Limit the amount of loops for better performance
-             */
-            if (depth >= depthMax) {
-                return null;
-            }
+            currentNode = getBest();
+            open.remove(currentNode);
+            closed.add(currentNode);
 
-            /*
-             * If the tile which is currently checked (currentStep) is the
-             * destination tile search can be stopped (break). The same goes for
-             * an empty list of potential tiles suited for path (openlist).
-             */
-            if (currentStep.equals(dst)) {
+            if(currentNode == dst)
                 break;
-            } else if (open.isEmpty()) {
-                break;
-            } else {
 
-                /*
-                 * Get tile with lowest F cost from openlist.
-                 */
-                currentStep = getBest();
+            setTileNeighbors(currentNode);
 
-                /*
-                 * Add to closed list (tile already part of path).
-                 */
-                closed.add(currentStep);
 
-                /*
-                 * Check all neighbors of the currentstep.
-                 */
-                for (int i = 0; i < currentStep.getNeighbors().size(); i++) {
+            for (Tile neighbor : neighbors) {
+                if(closed.contains(neighbor))
+                    continue;
 
-                    Tile neighbor = currentStep.getNeighbors().get(i);
+                G = neighbor.moveCost(currentNode);
 
-                    if (neighbor.equals(dst)) {
-                        neighbor.setParent(currentStep);
-                        currentStep = neighbor;
-                        break;
-                    }
+                if (!open.contains(neighbor)) {
 
-                    if (closed.contains(neighbor))
-                        continue;
-
-                    /*
-                     * Get the moving costs from the currentstep to the
-                     * neighbor.
-                     */
-                    G = neighbor.moveCost(currentStep);
-
-                    if (!open.contains(neighbor)) {
-                        open.add(neighbor);
-                    } else if (G >= neighbor.G) {
-                        continue;
-                    }
-
-                    neighbor.parent = currentStep;
-                    neighbor.G = G;
+                    open.add(neighbor);
+                    neighbor.setParent(currentNode);
+                    neighbor.setG(this.G);
                     neighbor.calcCostH(dst);
                     neighbor.calcCostF();
+
                 }
 
             }
-            depth += 1;
+
         }
 
-        /*
-         * Build the path reversly iterating over the tiles by accessing their
-         * parent tile.
-         */
         Tile startTmp = dst;
 
         while (!start.equals(startTmp)) {
@@ -150,5 +105,41 @@ public class pathFinder {
         return path;
     }
 
+
+    public void setBoard() {
+
+        //turns the 2d board int[][] array into an ArrayList
+        for(int i = 0; i < 11; i++) {
+            map.add(new ArrayList<Tile>());
+
+            for(int k = 0; k < 11; k++) {
+                if(BoardArray.getArray(i, k) == 1) {
+
+                    map.get(i).add(new Tile(new Point(k, i), FLOOR));
+
+                } else if(BoardArray.getArray(i, k) == 0) {
+                    map.get(i).add(new Tile(new Point(k, i), Tile.TileType.WALL));
+                }
+            }
+        }
+
+    }
+
+    private void setTileNeighbors(Tile parent) {
+
+        Tile parentBoardPos;
+
+        for (int i = -1; i < 1; i++) {
+            for (int k = -1; k < 1; k++) {
+                if(i != 0 && k != 0) {
+                    parentBoardPos = map.get(((int) parent.getPos().y) + i).get(((int) parent.getPos().x) + k);
+
+                    if (!parentBoardPos.isWall() && !neighbors.contains(parentBoardPos)) {
+                        neighbors.add(parentBoardPos);
+                    }
+                }
+            }
+        }
+    }
 
 }
