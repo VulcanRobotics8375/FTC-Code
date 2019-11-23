@@ -47,7 +47,7 @@ public class Robot {
         foundation = new Foundation(hwMap.get(Servo.class, "foundation_move"));
 
         SkystoneDetect = new SkystoneDetect(
-                hwMap.get(ColorSensor.class, "detector")
+                hwMap.get(ColorSensor.class, "stone_detector")
         );
 
     }
