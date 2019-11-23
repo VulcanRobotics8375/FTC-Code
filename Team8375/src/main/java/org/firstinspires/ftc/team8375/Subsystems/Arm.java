@@ -138,6 +138,7 @@ public class Arm {
 
         if(resetIsDone) {
             this.reset = false;
+            resetStep = 0;
         }
 
         if(resetIsDone) {
@@ -223,7 +224,15 @@ public class Arm {
         }
     }
 
+    public void motorTest(double liftPower, double pitchPower) {
 
+        LiftPos = lift.getCurrentPosition();
+        pitchPos = pitch.getCurrentPosition();
+
+        lift.setPower(liftPower);
+        pitch.setPower(pitchPower);
+
+    }
 
     public void ArmMotorInit(int position) {
 

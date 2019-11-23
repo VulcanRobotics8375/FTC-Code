@@ -17,6 +17,9 @@ public class testDrive extends OpMode {
     @Override
     public void init() {
         robot = new Robot(hardwareMap);
+        robot.arm.ArmMotorInit(0);
+        robot.drivetrain.init();
+
     }
 
     @Override
@@ -26,6 +29,8 @@ public class testDrive extends OpMode {
 
     @Override
     public void loop() {
+
+        robot.arm.motorTest(gamepad2.left_stick_y, gamepad2.right_stick_y);
 
         //Drivetrain
         telemetry.addData("front Left", robot.drivetrain.getPositionFl());
