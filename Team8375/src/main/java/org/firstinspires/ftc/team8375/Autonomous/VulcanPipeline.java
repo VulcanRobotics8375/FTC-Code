@@ -11,6 +11,10 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
 
+enum driveType {
+    MECANUM, TANK
+}
+
 public abstract class VulcanPipeline extends LinearOpMode {
     private double speed = 0;
     private double pidOut;
@@ -23,6 +27,9 @@ public abstract class VulcanPipeline extends LinearOpMode {
     private ElapsedTime stoneTime = new ElapsedTime();
 
     public boolean isDone = false;
+
+    private driveType driveMode;
+
 
     public void initialize() {
         robot = new Robot(hardwareMap);
@@ -39,10 +46,10 @@ public abstract class VulcanPipeline extends LinearOpMode {
         this.speed = speed;
         do {
             if (Math.abs(robot.drivetrain.getError()) <= 20) {
-                if(this.speed > 0) {
+                if (this.speed > 0) {
                     this.speed--;
                     this.speed = Range.clip(this.speed, 5, 100);
-                } else if(speed < 0) {
+                } else if (speed < 0) {
                     this.speed++;
                     this.speed = Range.clip(this.speed, -100, -5);
                 }
@@ -54,7 +61,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
             telemetry.addData("imu", robot.drivetrain.getImuAngle());
             updateTelemetry();
 
-        } while(!robot.drivetrain.isTurnDone());
+        } while (!robot.drivetrain.isTurnDone());
         robot.drivetrain.setPowers(0, 0);
         robot.drivetrain.setImuOffset(robot.drivetrain.getImuAngle());
         step++;
@@ -132,6 +139,16 @@ public abstract class VulcanPipeline extends LinearOpMode {
         telemetry.addData("Runtime", getRuntime());
 
         telemetry.update();
+
+    }
+
+    public driveType getDriveType(driveType mode) {
+        return mode;
+    }
+
+    public void setDriveMode(driveType mode) {
+
+        driveMode = mode;
 
     }
 

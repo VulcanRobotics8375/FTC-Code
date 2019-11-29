@@ -33,6 +33,7 @@ public class TankDrive extends OpMode {
 //        robot.arm.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    @Override
     public void loop() {
 
         if(firstRun) {
@@ -57,23 +58,24 @@ public class TankDrive extends OpMode {
 
         robot.arm.run(
                 //lift
-                gamepad2.left_stick_y,
+                -gamepad2.left_stick_y,
                 //pitch
-                -gamepad2.right_stick_y,
+                -0.5 * gamepad2.right_stick_y,
                 //claw button
                 gamepad2.right_bumper,
                 //flip button
                 gamepad2.b,
-                500,
-                2150,
-                9850,
+                600,
+                3100,
+                -800,
+                870,
                 500,
                 gamepad2.y,
                 gamepad2.x
         );
 
         robot.intake.run(
-                -0.4,
+                -1,
                 //reverse
                 gamepad1.a,
                 //toggle
@@ -106,6 +108,7 @@ public class TankDrive extends OpMode {
         telemetry.addData("claw", robot.arm.getClawPos());
         telemetry.addData("pitch", robot.arm.getPitchPos());
         telemetry.addData("level", robot.arm.getLevelPos());
+        telemetry.addData("resetStep", robot.arm.getResetStep());
 
         //Intake
         telemetry.addData("deployLeft", robot.intake.getDeployLeftPos());

@@ -65,11 +65,11 @@ public class Intake {
         if(intakeOn > 0) {
 
             if (reverse) {
-                intake_left.setPower(-intakePower);
+                intake_left.setPower(intakePower);
                 intake_right.setPower(-intakePower);
 
             } else {
-                intake_left.setPower(intakePower);
+                intake_left.setPower(-intakePower);
                 intake_right.setPower(intakePower);
             }
 
