@@ -12,7 +12,8 @@ import org.firstinspires.ftc.team8375.Subsystems.Robot;
 @TeleOp(name="TankDrive", group="Drive")
 public class TankDrive extends OpMode {
     protected Robot robot;
-    private boolean firstRun;
+    private boolean buttonPressed;
+    private int inverse = 1;
 
     @Override
     public void init() {
@@ -28,7 +29,6 @@ public class TankDrive extends OpMode {
 
     @Override
     public void start() {
-        firstRun = true;
 //        robot.arm.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        robot.arm.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
@@ -36,21 +36,17 @@ public class TankDrive extends OpMode {
     @Override
     public void loop() {
 
-        if(firstRun) {
-            robot.intake.resetDeployTime();
-            firstRun = false;
-        }
-
         robot.intake.deploy(gamepad1.dpad_left, gamepad1.dpad_right);
 
         robot.drivetrain.tankDrive(
                 //forward
-                gamepad1.left_stick_y,
+                gamepad1.left_stick_y * inverse,
                 //turn
                 -gamepad1.right_stick_x,
                 //acceleration time
                 0.5,
-                0.25,
+                //slow mode
+                gamepad1.right_bumper,
                 //head switch
                 gamepad1.left_bumper
         );
@@ -66,12 +62,15 @@ public class TankDrive extends OpMode {
                 //flip button
                 gamepad2.b,
                 600,
-                3100,
+                3750,
                 -800,
                 870,
                 500,
                 gamepad2.y,
-                gamepad2.x
+                gamepad2.x,
+                gamepad2.dpad_up,
+                gamepad2.dpad_down,
+                gamepad2.right_stick_x
         );
 
         robot.intake.run(
@@ -79,7 +78,7 @@ public class TankDrive extends OpMode {
                 //reverse
                 gamepad1.a,
                 //toggle
-                gamepad1.right_bumper
+                gamepad2.a
         );
 
         if(gamepad2.left_bumper) {
@@ -88,9 +87,16 @@ public class TankDrive extends OpMode {
             robot.foundation.setFoundationMoveAngle(180);
         }
 
-        if(robot.drivetrain.getInverse() > 0) {
+        if(gamepad1.left_bumper) {
+            buttonPressed = true;
+        }
+        else if(buttonPressed) {
+            inverse *= -1;
+            buttonPressed = false;
+        }
+        if(inverse > 0) {
             robot.intake.autoArm(0.85);
-        } else if(robot.drivetrain.getInverse() < 0) {
+        } else if(inverse < 0) {
             robot.intake.autoArm(0.7);
         }
 
@@ -109,6 +115,7 @@ public class TankDrive extends OpMode {
         telemetry.addData("pitch", robot.arm.getPitchPos());
         telemetry.addData("level", robot.arm.getLevelPos());
         telemetry.addData("resetStep", robot.arm.getResetStep());
+        telemetry.addData("resetIsDone", robot.arm.isResetDone());
 
         //Intake
         telemetry.addData("deployLeft", robot.intake.getDeployLeftPos());

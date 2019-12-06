@@ -17,8 +17,6 @@ public class detectorTest extends LinearOpMode {
     public void runOpMode() {
         robot = new Robot(hardwareMap);
 
-        robot.SkystoneDetect.setScorerThreshold(12.5);
-
         waitForStart();
 
         while(opModeIsActive()) {

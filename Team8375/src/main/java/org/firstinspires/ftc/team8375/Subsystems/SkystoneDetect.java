@@ -19,11 +19,11 @@ public class SkystoneDetect {
     private int scale = 255;
     private static final double scorerGain = 1;
     private static final double saturationGain = 10;
-    private double threshold;
+    private double threshold = 15;
     private float[] hsv = {0F, 0F, 0F};
 
     //stone color in RGB
-    private static final float[] stoneHSV = {320, 0.6f, 210};
+    private float[] stoneHSV = {300, 0.8f, 11};
     private int[] sensorInput = {0, 0, 0};
 
     public SkystoneDetect(ColorSensor colorSensor) {
@@ -64,6 +64,12 @@ public class SkystoneDetect {
 
     public void setScorerThreshold(double threshold) {
         this.threshold = threshold;
+    }
+
+    public void setStoneHSV(float h, float s, float v) {
+        stoneHSV[0] = h;
+        stoneHSV[1] = s;
+        stoneHSV[2] = v;
     }
 
     public int getSensorInput(int i) {

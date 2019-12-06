@@ -7,11 +7,16 @@ package org.firstinspires.ftc.team8375.Subsystems;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
+import java.sql.Time;
+import java.util.concurrent.TimeUnit;
 
 public class PID {
     private BNO055IMU imu;
@@ -24,6 +29,8 @@ public class PID {
     private double previousHeading = 0;
     private double integratedHeading = 0;
     private double startHeading = 0;
+    private double lastTime;
+    private ElapsedTime timer = new ElapsedTime();
 
     public PID(BNO055IMU IMU) { imu = IMU; }
 
@@ -72,14 +79,14 @@ public class PID {
 
         if(error < 5 && error > -5) {
             integral = 0;
-            output = 0;
+//            output = 0;
         } else {
-            integral += ((error + previousError) / 2.0) * (iterationTime / 100.0);
+            integral += ((error + previousError) / 2.0) * ((timer.time(TimeUnit.MILLISECONDS) - lastTime) / 100.0);
             derivative = (error - previousError);
-            output = Kp * error + Ki * integral + Kd * derivative;
+            output = Range.clip(Kp * error + Ki * integral + Kd * derivative, -1.0, 1.0);
             previousError = error;
         }
-//        sleep(iterationTime);
+        lastTime = timer.time(TimeUnit.MILLISECONDS);
         return output;
     }
     //default params

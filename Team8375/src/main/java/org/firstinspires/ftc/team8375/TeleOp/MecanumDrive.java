@@ -32,6 +32,8 @@ public class MecanumDrive extends OpMode {
 //        robot.arm.setPowers(gamepad2.left_stick_y, -gamepad2.right_stick_y, gamepad2.a, gamepad2.left_stick_x, 300, 5000, 500);
 //         telemetry.addData("Arm Position", robot.arm.lift.getCurrentPosition());
 //         telemetry.addData("Time Active", robot.drivetrain.Time.time());
+        telemetry.addData("output pid", robot.drivetrain.pid.getOutput());
+        telemetry.addData("angle", robot.drivetrain.getImuAngle());
          telemetry.update();
     }
 

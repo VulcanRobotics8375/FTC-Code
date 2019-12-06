@@ -10,6 +10,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -34,6 +35,7 @@ public class Drivetrain {
             tPower,
             divisor,
             turnCoefficient,
+            targetAngle,
             percent;
 
     private int inverse = 1;
@@ -114,30 +116,30 @@ public class Drivetrain {
     public void mecanumDrive(double forward, double turn, double strafe, double multiplier) {
         double vd = Math.hypot(forward, strafe);
         double theta = Math.atan2(forward, strafe) - (Math.PI / 4);
+        turnPower = turn;
 
 //        if(forward == 0 && strafe == 0 && turn == 0) {
 //            Time.reset();
 //        }
-
+//
 //        double accLim = (Time.time()/1.07)*((0.62*Math.pow(Time.time(), 2))+0.45);
-
+//
 //        if(forward < 0 || turn < 0 || strafe < 0) {
 //
 //        }
 //
-//        if(turn == 0) {
-//            //targetAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-//            pid.run(0.01, 0.001, 0.01, 10, targetAngle);
-//            turn = pid.getOutput();
-//        } else {
-//            targetAngle = pid.getIntegratedHeading();
-//        }
+        if(turn == 0) {
+            targetAngle = getImuAngle();
+            turnPower = pid.run(1, 1, 1, 10, targetAngle);
+        } else {
+            targetAngle = getImuAngle();
+        }
 
         double[] v = {
-                vd * Math.sin(theta) - turn,
-                vd * Math.cos(theta) + turn,
-                vd * Math.cos(theta) - turn,
-                vd * Math.sin(theta) + turn
+                vd * Math.sin(theta) - turnPower,
+                vd * Math.cos(theta) + turnPower,
+                vd * Math.cos(theta) - turnPower,
+                vd * Math.sin(theta) + turnPower
         };
 
         double[] motorOut = {
@@ -153,11 +155,11 @@ public class Drivetrain {
         bl.setPower(motorOut[3]);
     }
 
-    public void tankDrive(float leftPower, float rightPower, double acc, double greyZone, boolean headSwitchButton) {
+    public void tankDrive(float leftPower, float rightPower, double acc, boolean slowModeButton, boolean headSwitchButton) {
         divisor = (acc/1.07)*((0.62*Math.pow(acc, 2))+0.45);
         // modifies the controller input for a more natural feel
         // graph for acceleration curve - https://www.desmos.com/calculator/gdwizzld3f
-        movePower = (leftPower/1.07)*((0.62*Math.pow(leftPower, 2))+0.45) * inverse;
+        movePower = (leftPower/1.07)*((0.62*Math.pow(leftPower, 2))+0.45);
         turnPower = (rightPower/1.07)*((0.62*Math.pow(rightPower, 2))+0.45);
         if(Math.abs(movePower) == 0 && Math.abs(turnPower) == 0) {
             Time.reset();
@@ -165,20 +167,20 @@ public class Drivetrain {
         mPower = movePower;
         tPower = turnPower;
 
-        if(headSwitchButton) {
-            buttonPressed = true;
-        }
-
-        if(buttonPressed && !headSwitchButton) {
-            buttonPressed = false;
-
-            inverse *= -1;
-        }
+//        if(headSwitchButton) {
+//            buttonPressed = true;
+//        }
+//
+//        if(buttonPressed && !headSwitchButton) {
+//            buttonPressed = false;
+//
+//            inverse *= -1;
+//        }
 
 //        same acceleration curve, but based on time instead of controller input.
 //         limits the speed at which the robot accelerates
 
-        if(Math.abs(movePower) > greyZone || Math.abs(turnPower) > greyZone) {
+        if(Math.abs(movePower) > 0 || Math.abs(turnPower) > 0) {
             accLim = (Time.time() / 1.07) * ((0.62 * Math.pow(Time.time(), 2)) + 0.45) / divisor;
 
             //logic gates to determine when to use time-based or controller-based power
@@ -195,20 +197,38 @@ public class Drivetrain {
         }
 
         //makes sure the motors are going the correct way
-        if(mPower < 0 || tPower < 0){
-            if(movePower == accLim){
+        if (mPower < 0 || tPower < 0) {
+            if (movePower == accLim) {
                 movePower = -movePower;
             }
-            if(turnPower == accLim){
+            if (turnPower == accLim) {
                 turnPower = -turnPower;
             }
         }
+//        if(inverse < 0) {
+//            if(tPower < 0 || mPower < 0) {
+////                if(movePower == accLim) {
+////                    movePower *= -1;
+////                }
+//                if(turnPower == accLim) {
+//                    turnPower *= -1;
+//                }
+//            }
+//        }
 
         //set powers
-        fl.setPower(movePower + turnPower);
-        bl.setPower(movePower + turnPower);
-        fr.setPower(movePower - turnPower);
-        br.setPower(movePower - turnPower);
+        if(slowModeButton) {
+            movePower *= 0.3;
+            turnPower *= 0.3;
+        } else {
+            turnPower *= 0.5;
+        }
+
+
+        fl.setPower(Range.clip(movePower + turnPower, -1.0, 1.0));
+        bl.setPower(Range.clip(movePower + turnPower, -1.0, 1.0));
+        fr.setPower(Range.clip(movePower - turnPower, -1.0, 1.0));
+        br.setPower(Range.clip(movePower - turnPower, -1.0, 1.0));
     }
 
 

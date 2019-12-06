@@ -6,8 +6,8 @@ package org.firstinspires.ftc.team8375.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "loading -- blue", group = "loading")
-public class Auto_Loading_Blue extends VulcanPipeline {
+@Autonomous(name = "loading -- blue -- inside", group = "loading")
+public class Auto_Loading_Blue_Inside extends VulcanPipeline {
 
     private int i;
 
@@ -20,45 +20,46 @@ public class Auto_Loading_Blue extends VulcanPipeline {
 
                 moveIn(26.4, 40);
                 turn(83, 15);
-                moveIn(-5, -15);
+                moveIn(-2, -15);
 
-                findSkystone(12.5, -0.1);
+                findSkystone(20, -0.1);
 
                 i = returnInt();
-                moveIn(2.3, 15);
-                robot.drivetrain.percentSteer(-50, -10);
-                sleepOpMode(1000);
+//                moveIn(2.3, 15);
+//                robot.drivetrain.percentSteer(-50, -10);
+//                sleepOpMode(1000);
                 setAutoArmPos(0.15);
+                sleepOpMode(400);
 
                 switch (i) {
                     case 1:
                         turn(45, 10);
-                        moveIn(25, 20);
-                        turn(-45, 15);
-                        moveIn(33, 30);
+                        moveIn(12, 20);
+                        turn(-40, 10);
+                        moveIn(38, 30);
                         setAutoArmPos(0.9);
                         sleepOpMode(500);
-                        moveIn(-30, -20);
+                        moveIn(-26, -20);
                         break;
 
                     case 2:
                         turn(45, 10);
-                        moveIn(39, 20);
-                        turn(-45, 15);
-                        moveIn(35, 30);
-                        setAutoArmPos(0.9);
-                        sleepOpMode(500);
-                        moveIn(-27, -20);
-                        break;
-
-                    case 3:
-                        turn(35, 10);
-                        moveIn(43, 20);
-                        turn(-35, 15);
+                        moveIn(13, 20);
+                        turn(-40, 10);
                         moveIn(42, 30);
                         setAutoArmPos(0.9);
                         sleepOpMode(500);
-                        moveIn(-26, -20);
+                        moveIn(-22, -20);
+                        break;
+
+                    case 3:
+                        turn(45, 10);
+                        moveIn(13, 20);
+                        turn(-39, 10);
+                        moveIn(52, 30);
+                        setAutoArmPos(0.9);
+                        sleepOpMode(500);
+                        moveIn(-22, -20);
                         break;
 
                 }

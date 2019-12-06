@@ -96,7 +96,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
         stoneTime.reset();
         robot.SkystoneDetect.resetScore();
 
-        while (!robot.SkystoneDetect.detect()) {
+        while (robot.SkystoneDetect.detect()) {
             robot.SkystoneDetect.setScorerThreshold(threshold);
             robot.drivetrain.setPowers(power, 0);
             robot.SkystoneDetect.resetScore();
@@ -107,11 +107,11 @@ public abstract class VulcanPipeline extends LinearOpMode {
         robot.drivetrain.setPowers(0, 0);
         step++;
 
-        if(stoneTime.milliseconds() <= 2000) {
+        if(stoneTime.milliseconds() <= 1000) {
             i = 1;
-        } else if(stoneTime.milliseconds() >= 2000 && stoneTime.milliseconds() < 4000) {
+        } else if(stoneTime.milliseconds() >= 1000 && stoneTime.milliseconds() < 2000) {
             i = 2;
-        } else if(stoneTime.milliseconds() > 4000) {
+        } else if(stoneTime.milliseconds() > 2000) {
             i = 3;
         }
 

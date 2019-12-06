@@ -29,7 +29,7 @@ public class Arm {
     private static final double ticks = 870;
     private static final double coefficient = theta/ticks;
                                 // degrees / 180.0
-    private static final double levelBias = 95;
+    private double levelBias = 95;
 
     private static final double resetPos = 1300;
 
@@ -39,14 +39,16 @@ public class Arm {
     private double yawClockwise;
     private double yawCounterClockwise;
 
-    private boolean clawPressed, yawPressed, bypass, reset;
+    private boolean clawPressed, yawPressed, bypass;
+    private boolean reset = false;
     private boolean resetIsDone = true;
 
     private int resetStep = 0;
     private int clawOn = -1;
     private int yawOn = -1;
     private int clawPos;
-    private int yawPos;
+    private int yawPos = 180;
+    private int cycleTime = 0;
 
     public Arm(DcMotor lift, DcMotor pitch, Servo claw, Servo yaw, Servo level) {
         this.lift = lift;
@@ -58,7 +60,7 @@ public class Arm {
         //motor initialization
     }
 
-    public void run(double liftPower, double pitchPower, boolean clawButton, boolean yawButton, float limitRange, float liftHigh, float liftLow, float pitchHigh, double autoGain, boolean bypass, boolean reset) {
+    public void run(double liftPower, double pitchPower, boolean clawButton, boolean yawButton, float limitRange, float liftHigh, float liftLow, float pitchHigh, double autoGain, boolean bypass, boolean reset, boolean levelUp, boolean levelDown, double flipGive) {
 
         //limits
         LiftPos = lift.getCurrentPosition();
@@ -74,8 +76,9 @@ public class Arm {
         }
         if (this.reset && !reset) {
             if(!resetIsDone) {
+                levelBias = 95;
 
-                if(!pitch.isBusy()) {
+                if(!pitch.isBusy() && resetStep > 1) {
                     if (pitchPos == 0) {
                         pitch.setPower(0);
                         pitch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -92,7 +95,7 @@ public class Arm {
                         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                         resetStep++;
                     }
-                    else if (LiftPos <= resetPos + 5 || LiftPos >= resetPos - 5) {
+                    else if (LiftPos <= resetPos + 5 && LiftPos >= resetPos - 5) {
 
                         lift.setPower(0);
                         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -101,14 +104,14 @@ public class Arm {
                     } else {
                         lift.setTargetPosition((int) resetPos);
                         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        lift.setPower(0.3);
+                        lift.setPower(0.5);
                     }
                 }
 
                 if (resetStep == 1) {
-                    if(yaw.getPosition() != 0 && claw.getPosition() != 125) {
+                    if(yaw.getPosition() != 0 && claw.getPosition() != 170) {
                         yawPos = 0;
-                        clawPos = 125;
+                        clawPos = 170;
                     } else {
                         resetStep++;
                         clawOn = 1;
@@ -120,7 +123,7 @@ public class Arm {
                     if (Math.abs(LiftPos) > 5) {
                         lift.setTargetPosition(0);
                         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        lift.setPower(-0.2);
+                        lift.setPower(-0.5);
                     } else {
                         lift.setPower(0);
                         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -137,7 +140,7 @@ public class Arm {
 
             }
 
-            if(resetIsDone) {
+            if(resetIsDone && this.reset) {
                 pitch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 lift.setPower(0);
@@ -147,12 +150,14 @@ public class Arm {
         }
 
         if(pitchPower != 0 || liftPower != 0) {
-            pitch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            lift.setPower(0);
-            pitch.setPower(0);
-            resetIsDone = true;
-            this.reset = false;
+            if(!resetIsDone) {
+                pitch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                lift.setPower(0);
+                pitch.setPower(0);
+                resetIsDone = true;
+                this.reset = false;
+            }
         }
 
         if(resetIsDone) {
@@ -160,7 +165,7 @@ public class Arm {
             if(liftPower < 0 && yawOn > 0) {
                 if(LiftPos <= limitRange + liftLow) {
 
-                    this.liftPower = (liftLow - pitchPos) / (limitRange / liftPower);
+                    this.liftPower = (liftLow - pitchPos) / limitRange;
 
                 } else {
                     this.liftPower = liftPower;
@@ -176,7 +181,7 @@ public class Arm {
             else if (liftPower > 0 && LiftPos >= liftHighLimit) {
 
                 //takes the distance from the upper limit and divides it by the limit range for a gradual slow down of the motor.
-                this.liftPower = -((liftHigh - LiftPos) / (limitRange)) / 1.0;
+                this.liftPower = ((liftHigh - LiftPos) / (limitRange)) / 1.0;
                 lastLiftPos = LiftPos;
             } else {
                 this.liftPower = liftPower;
@@ -230,11 +235,21 @@ public class Arm {
             if (yawOn < 0) {
                 setServoAngle(yaw, 0);
             } else if (yawOn > 0) {
-                setServoAngle(yaw, 180);
+                setServoAngle(yaw, 170 + (flipGive * 18));
+
+
             }
 
             lift.setPower(this.liftPower);
             pitch.setPower(this.pitchPower);
+        }
+
+        if(levelUp) {
+            levelBias = 80;
+        } else if(levelDown) {
+            levelBias = 115;
+        } else{
+            levelBias = 95;
         }
 
         //leveler
@@ -320,5 +335,9 @@ public class Arm {
 
     public int getResetStep() {
         return resetStep;
+    }
+
+    public boolean isResetDone() {
+        return resetIsDone;
     }
 }
