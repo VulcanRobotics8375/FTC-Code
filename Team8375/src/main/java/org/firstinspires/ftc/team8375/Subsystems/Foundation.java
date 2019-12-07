@@ -18,11 +18,11 @@ public class Foundation {
     }
 
     public void deployCapstone(boolean button) {
-        if(button) {
+        if(button && !this.button) {
+            capStonePos *= -1;
             this.button = true;
         }
         if(this.button && !button) {
-            capStonePos *= -1;
             this.button = false;
         }
         if(capStonePos > 0) {
