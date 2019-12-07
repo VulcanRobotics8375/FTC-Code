@@ -35,7 +35,6 @@ public class Robot {
                 hwMap.get(Servo.class, "yaw"),
                 hwMap.get(Servo.class, "level")
         );
-
         intake = new Intake(
                 hwMap.dcMotor.get("intake_left"),
                 hwMap.dcMotor.get("intake_right"),
@@ -44,7 +43,10 @@ public class Robot {
                 hwMap.get(Servo.class, "auto_arm")
         );
 
-        foundation = new Foundation(hwMap.get(Servo.class, "foundation_move"));
+        foundation = new Foundation(
+                hwMap.get(Servo.class, "foundation_move"),
+                hwMap.get(Servo.class, "capStone")
+        );
 
         SkystoneDetect = new SkystoneDetect(
                 hwMap.get(ColorSensor.class, "stone_detector")

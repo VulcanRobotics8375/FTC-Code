@@ -87,6 +87,8 @@ public class TankDrive extends OpMode {
             robot.foundation.setFoundationMoveAngle(180);
         }
 
+        robot.foundation.deployCapstone(gamepad1.b);
+
         if(gamepad1.left_bumper) {
             buttonPressed = true;
         }

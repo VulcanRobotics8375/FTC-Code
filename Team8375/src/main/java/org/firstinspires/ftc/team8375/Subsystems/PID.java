@@ -81,7 +81,7 @@ public class PID {
             integral = 0;
 //            output = 0;
         } else {
-            integral += ((error + previousError) / 2.0) * ((timer.time(TimeUnit.MILLISECONDS) - lastTime) / 100.0);
+            integral += ((error + previousError) / 2.0) * ((timer.time(TimeUnit.MILLISECONDS) - lastTime) / 1000.0);
             derivative = (error - previousError);
             output = Range.clip(Kp * error + Ki * integral + Kd * derivative, -1.0, 1.0);
             previousError = error;

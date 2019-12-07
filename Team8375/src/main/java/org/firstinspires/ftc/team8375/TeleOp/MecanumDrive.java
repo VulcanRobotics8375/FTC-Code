@@ -34,6 +34,7 @@ public class MecanumDrive extends OpMode {
 //         telemetry.addData("Time Active", robot.drivetrain.Time.time());
         telemetry.addData("output pid", robot.drivetrain.pid.getOutput());
         telemetry.addData("angle", robot.drivetrain.getImuAngle());
+        telemetry.addData("error", robot.drivetrain.getError());
          telemetry.update();
     }
 

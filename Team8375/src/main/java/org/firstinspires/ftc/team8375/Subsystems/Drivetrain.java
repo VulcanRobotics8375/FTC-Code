@@ -129,8 +129,8 @@ public class Drivetrain {
 //        }
 //
         if(turn == 0) {
-            targetAngle = getImuAngle();
-            turnPower = pid.run(1, 1, 1, 10, targetAngle);
+//            targetAngle = getImuAngle();
+            turnPower = pid.run(0.001, 0, 0, 10, targetAngle);
         } else {
             targetAngle = getImuAngle();
         }
