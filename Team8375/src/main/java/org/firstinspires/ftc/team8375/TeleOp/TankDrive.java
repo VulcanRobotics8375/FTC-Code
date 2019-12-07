@@ -66,10 +66,15 @@ public class TankDrive extends OpMode {
                 -800,
                 870,
                 500,
+                //pitch reset
                 gamepad2.y,
+                //reset button
                 gamepad2.x,
+                //claw tilt up
                 gamepad2.dpad_up,
+                //claw tilt down
                 gamepad2.dpad_down,
+                //flip give
                 gamepad2.right_stick_x
         );
 
@@ -89,11 +94,11 @@ public class TankDrive extends OpMode {
 
         robot.foundation.deployCapstone(gamepad1.b);
 
-        if(gamepad1.left_bumper) {
+        if(gamepad1.left_bumper && !buttonPressed) {
+            inverse *= -1;
             buttonPressed = true;
         }
-        else if(buttonPressed) {
-            inverse *= -1;
+        else if(buttonPressed && !gamepad1.left_bumper) {
             buttonPressed = false;
         }
         if(inverse > 0) {

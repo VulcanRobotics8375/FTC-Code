@@ -208,11 +208,11 @@ public class Arm {
             }
 
             //claw button
-            if (clawButton) {
+            if (clawButton && !clawPressed) {
+                clawOn *= -1;
                 clawPressed = true;
             }
             if (clawPressed && !clawButton) {
-                clawOn *= -1;
                 clawPressed = false;
             }
 
@@ -224,11 +224,11 @@ public class Arm {
 
             //set powers
 
-            if (yawButton) {
+            if (yawButton && !yawPressed) {
+                yawOn *= -1;
                 yawPressed = true;
             }
             if (yawPressed && !yawButton) {
-                yawOn *= -1;
                 yawPressed = false;
             }
 
