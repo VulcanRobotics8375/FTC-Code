@@ -54,11 +54,11 @@ public class Intake {
 
     }
 
-    public void run(double intakePower, boolean reverse, boolean isOn) {
+    public void run(double intakePower, boolean reverse, double isOn) {
 
-        if(isOn) {
+        if(isOn > 0) {
             intakeOn = 1;
-        } else {
+        } else if(isOn == 0){
             intakeOn = -1;
         }
 

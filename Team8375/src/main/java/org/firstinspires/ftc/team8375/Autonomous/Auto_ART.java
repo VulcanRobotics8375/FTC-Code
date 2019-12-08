@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 *   and everything should work.
 */
 
-@Autonomous(name = "aragonAuto", group = "yeet")
+@Autonomous(name = "aragonAuto", group = "cringe")
 public class Auto_ART extends VulcanPipeline {
 
     @Override

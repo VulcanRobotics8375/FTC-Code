@@ -96,8 +96,8 @@ public abstract class VulcanPipeline extends LinearOpMode {
         stoneTime.reset();
         robot.SkystoneDetect.resetScore();
 
-        while (robot.SkystoneDetect.detect()) {
-            robot.SkystoneDetect.setScorerThreshold(threshold);
+        while (!robot.SkystoneDetect.detect()) {
+//            robot.SkystoneDetect.setScorerThreshold(threshold);
             robot.drivetrain.setPowers(power, 0);
             robot.SkystoneDetect.resetScore();
             sleep(100);

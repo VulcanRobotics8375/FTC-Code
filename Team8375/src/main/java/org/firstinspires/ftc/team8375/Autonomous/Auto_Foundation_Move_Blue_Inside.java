@@ -26,7 +26,7 @@ public class Auto_Foundation_Move_Blue_Inside extends VulcanPipeline {
                 robot.foundation.setFoundationMoveAngle(30);
                 sleep(800);
                 moveIn(-2, -15);
-                turn(65, 15);
+                turn(65, 30);
                 moveIn(24, 30);
                 robot.foundation.setFoundationMoveAngle(180);
                 moveIn(-4, -20);

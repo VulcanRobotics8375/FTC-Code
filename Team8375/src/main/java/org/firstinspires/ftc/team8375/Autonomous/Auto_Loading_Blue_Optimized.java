@@ -33,27 +33,38 @@ public class Auto_Loading_Blue_Optimized extends VulcanPipeline {
 
                 switch (i) {
                     case 1:
-                        turn(190, 10);
-                        moveIn(-45, -20);
+                        turn(185, 15);
+                        moveIn(-45, -70);
+                        turn(180, 13);
                         setAutoArmPos(0.9);
                         sleepOpMode(500);
-                        moveIn(22, 20);
+                        moveIn(-22, -30);
+//                        setAutoArmPos(0.15);
+//                        sleepOpMode(400);
+//                        turn(180, 15);
+//                        moveIn(-75, -65);
+//                        turn(180, 25);
+//                        setAutoArmPos(0.9);
+//                        sleepOpMode(500);
+//                        moveIn(-22, -40);
                         break;
 
                     case 2:
-                        turn(190, 10);
+                        turn(185, 10);
                         moveIn(-48, -20);
+                        turn(180, 10);
                         setAutoArmPos(0.9);
                         sleepOpMode(500);
-                        moveIn(22, 20);
+                        moveIn(-22, -20);
                         break;
 
                     case 3:
                         turn(185, 10);
                         moveIn(-50, -20);
+                        turn(180, 10);
                         setAutoArmPos(0.9);
                         sleepOpMode(500);
-                        moveIn(26, 20);
+                        moveIn(-26, -20);
                         break;
 
                 }

@@ -83,7 +83,7 @@ public class TankDrive extends OpMode {
                 //reverse
                 gamepad1.a,
                 //toggle
-                gamepad2.a
+                gamepad1.right_trigger
         );
 
         if(gamepad2.left_bumper) {

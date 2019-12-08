@@ -77,7 +77,7 @@ public class OneStickDrive extends OpMode {
                 //reverse
                 gamepad1.a,
                 //toggle
-                gamepad2.a
+                gamepad2.right_trigger
         );
 
         if(gamepad2.left_bumper) {

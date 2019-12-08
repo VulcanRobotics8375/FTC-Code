@@ -5,8 +5,10 @@
 package org.firstinspires.ftc.team8375.Examples;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+@Disabled
 @Autonomous(name = "LinearOpModeExample", group = "example")
 public class linearOpModeExample extends LinearOpMode {
 

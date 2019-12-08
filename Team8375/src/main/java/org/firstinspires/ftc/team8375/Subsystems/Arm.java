@@ -39,7 +39,7 @@ public class Arm {
     private double yawClockwise;
     private double yawCounterClockwise;
 
-    private boolean clawPressed, yawPressed, bypass;
+    private boolean clawPressed, yawPressed, bypass, levelUp, levelDown;
     private boolean reset = false;
     private boolean resetIsDone = true;
 
@@ -49,6 +49,7 @@ public class Arm {
     private int clawPos;
     private int yawPos = 180;
     private int cycleTime = 0;
+    private int levelCenter = 0;
 
     public Arm(DcMotor lift, DcMotor pitch, Servo claw, Servo yaw, Servo level) {
         this.lift = lift;
@@ -244,12 +245,42 @@ public class Arm {
             pitch.setPower(this.pitchPower);
         }
 
-        if(levelUp) {
-            levelBias = 80;
-        } else if(levelDown) {
-            levelBias = 115;
-        } else{
+        if(levelUp && !this.levelUp) {
+            if(levelCenter == 0) {
+                if (yawOn > 0) {
+                    levelCenter = -1;
+                } else if (yawOn < 0) {
+                    levelCenter = 1;
+                }
+            } else if(Math.abs(levelCenter) == 1) {
+                levelCenter = 0;
+            }
+            this.levelUp = true;
+        } if(!levelUp && this.levelUp) {
+            this.levelUp = false;
+        }
+
+        if(levelDown && !this.levelDown) {
+            if(levelCenter == 0) {
+                if (yawOn > 0) {
+                    levelCenter = 1;
+                } else if (yawOn < 0) {
+                    levelCenter = -1;
+                }
+            } else if(Math.abs(levelCenter) == 1) {
+                levelCenter = 0;
+            }
+            this.levelDown = true;
+        } if(!levelDown && this.levelDown) {
+            this.levelDown = false;
+        }
+
+        if(levelCenter == 0) {
             levelBias = 95;
+        } else if(levelCenter == 1) {
+            levelBias = 80;
+        } else if(levelCenter == -1) {
+            levelBias = 115;
         }
 
         //leveler

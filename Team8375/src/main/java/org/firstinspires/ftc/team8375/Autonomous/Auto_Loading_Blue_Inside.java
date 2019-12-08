@@ -5,8 +5,11 @@
 package org.firstinspires.ftc.team8375.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-@Autonomous(name = "loading -- blue -- inside", group = "loading")
+@Deprecated
+@Disabled
+@Autonomous(name = "loading -- blue -- old", group = "loading")
 public class Auto_Loading_Blue_Inside extends VulcanPipeline {
 
     private int i;
