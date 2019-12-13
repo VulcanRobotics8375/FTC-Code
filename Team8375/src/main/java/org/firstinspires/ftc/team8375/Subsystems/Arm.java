@@ -89,6 +89,9 @@ public class Arm {
                         pitch.setPower(0.5);
                     }
                 }
+                if(yaw.getPosition() > 0 && resetStep < 1) {
+                    setServoAngle(yaw, 180);
+                }
 
                 if(!lift.isBusy() && resetStep == 0) {
                     if(LiftPos >= resetPos) {
@@ -111,8 +114,8 @@ public class Arm {
 
                 if (resetStep == 1) {
                     if(yaw.getPosition() != 0 && claw.getPosition() != 170) {
-                        yawPos = 0;
-                        clawPos = 170;
+                        setServoAngle(yaw, 0);
+                        setServoAngle(claw, 170);
                     } else {
                         resetStep++;
                         clawOn = 1;
@@ -135,10 +138,6 @@ public class Arm {
                 if(resetStep == 3 && Math.abs(pitchPos) < 5 && Math.abs(LiftPos) < 6) {
                     resetIsDone = true;
                 }
-
-                setServoAngle(yaw, yawPos);
-                setServoAngle(claw, clawPos);
-
             }
 
             if(resetIsDone && this.reset) {
@@ -150,7 +149,7 @@ public class Arm {
             }
         }
 
-        if(pitchPower != 0 || liftPower != 0) {
+        if(pitchPower != 0 || liftPower != 0 || clawButton || yawButton) {
             if(!resetIsDone) {
                 pitch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

@@ -4,11 +4,14 @@
 
 package org.firstinspires.ftc.team8375.TeleOp;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
 
+@Disabled
+@Deprecated
 @TeleOp(name="One Stick Tank", group="Drive")
 public class OneStickDrive extends OpMode {
     protected Robot robot;

@@ -81,15 +81,27 @@ public abstract class VulcanPipeline extends LinearOpMode {
         double sensorVal = robot.drivetrain.pid.getIntegratedHeading() + robot.drivetrain.pid.initHeading();
 
         double error = sensorVal - heading;
-        integral += ((error + previousError) / 2.0) * (iterationTime / 100.0);
+        integral += ((error + previousError) / 2.0) * (iterationTime / 1000.0);
         integral = Range.clip(integral, -1, 1);
         derivative = (error - previousError);
         pidOut = Kp * error + Ki * integral + Kd * derivative;
         previousError = error;
 
-        pidOut = Range.clip(pidOut, -1.0, 1.0);
+        if(Math.abs(error) < 10) {
+            pidOut = Range.clip(pidOut, -50, 50);
+        } else {
+            pidOut = Range.clip(pidOut, -100, 100);
+        }
         sleep(iterationTime);
         updateTelemetry();
+    }
+
+    public void turnPID(double speed, double heading) {
+
+        while(robot.drivetrain.getImuAngle() != heading) {
+            pid(1, 1, 1, 7, heading);
+            robot.drivetrain.percentSteer(pidOut, speed);
+        }
     }
 
     public void findSkystone(double threshold, double power) {
