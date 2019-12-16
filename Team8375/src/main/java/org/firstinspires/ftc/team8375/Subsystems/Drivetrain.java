@@ -325,6 +325,13 @@ public class Drivetrain {
 
     }
 
+    public void turnPercent(double speed, double turn) {
+        fl.setPower((-turn * (0.01 * speed)) / 100.0);
+        fr.setPower((turn * (0.01 * speed)) / 100.0);
+        bl.setPower((-turn * (0.01 * speed)) / 100.0);
+        br.setPower((turn * (0.01 * speed)) / 100.0);
+    }
+
     public void setPowers(double forward, double turn) {
         fl.setPower(forward - turn);
         fr.setPower(forward + turn);

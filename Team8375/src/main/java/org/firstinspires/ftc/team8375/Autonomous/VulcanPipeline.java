@@ -15,12 +15,19 @@ enum driveType {
     MECANUM, TANK
 }
 
+enum PIDCoefficient {
+    Kp,
+    Ki,
+    Kd
+}
+
 public abstract class VulcanPipeline extends LinearOpMode {
     private double speed = 0;
     private double pidOut;
     private double integral = 0;
     private double derivative = 0;
     private double previousError = 0;
+    private double Kp, Ki, Kd;
     private int step = 0;
     private int i;
     protected Robot robot;
@@ -77,7 +84,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
 
     }
 
-    private void pid(double Kp, double Ki, double Kd, long iterationTime, double heading) {
+    public void pid(double Kp, double Ki, double Kd, long iterationTime, double heading) {
         double sensorVal = robot.drivetrain.pid.getIntegratedHeading() + robot.drivetrain.pid.initHeading();
 
         double error = sensorVal - heading;
@@ -88,7 +95,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
         previousError = error;
 
         if(Math.abs(error) < 10) {
-            pidOut = Range.clip(pidOut, -50, 50);
+            pidOut = Range.clip(pidOut, -40, 40);
         } else {
             pidOut = Range.clip(pidOut, -100, 100);
         }
@@ -99,9 +106,10 @@ public abstract class VulcanPipeline extends LinearOpMode {
     public void turnPID(double speed, double heading) {
 
         while(robot.drivetrain.getImuAngle() != heading) {
-            pid(1, 1, 1, 7, heading);
-            robot.drivetrain.percentSteer(pidOut, speed);
+            pid(1, 1, 1.2, 7, heading * 2);
+            robot.drivetrain.turnPercent(speed, pidOut);
         }
+        robot.drivetrain.setPowers(0, 0);
     }
 
     public void findSkystone(double threshold, double power) {
@@ -162,6 +170,29 @@ public abstract class VulcanPipeline extends LinearOpMode {
 
         driveMode = mode;
 
+    }
+
+    public double getPIDCoefficient(PIDCoefficient k) {
+        if(k == PIDCoefficient.Kp) {
+            return Kp;
+        } else if(k == PIDCoefficient.Ki) {
+            return Ki;
+        } else if(k == PIDCoefficient.Kd) {
+            return Kd;
+        }
+        else {
+            return 404;
+        }
+    }
+
+    public void setPIDCoefficient(PIDCoefficient k, double gain) {
+        if(k == PIDCoefficient.Kp) {
+            Kp = gain;
+        } else if(k == PIDCoefficient.Ki) {
+            Ki = gain;
+        } else if(k == PIDCoefficient.Kd) {
+            Kd = gain;
+        }
     }
 
 }
