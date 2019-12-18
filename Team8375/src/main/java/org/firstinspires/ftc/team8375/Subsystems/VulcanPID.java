@@ -5,8 +5,6 @@
 package org.firstinspires.ftc.team8375.Subsystems;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -18,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import java.sql.Time;
 import java.util.concurrent.TimeUnit;
 
-public class PID {
+public class VulcanPID {
     private BNO055IMU imu;
     private BNO055IMU.Parameters parameters;
     private Orientation angles;
@@ -32,12 +30,13 @@ public class PID {
     private double lastTime;
     private ElapsedTime timer = new ElapsedTime();
 
-    public PID(BNO055IMU IMU) { imu = IMU; }
+    public VulcanPID(BNO055IMU IMU) {
+        imu = IMU;
+    }
 
 //    public void runOpMode() {
-//        telemetry.addData("PID output", output);
+//        telemetry.addData("VulcanPID output", output);
 //    }
-
     public double getIntegratedHeading() {
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         imu.getPosition();
@@ -71,31 +70,20 @@ public class PID {
     }
 
     //pid calculations
-    public double run(double Kp, double Ki, double Kd, long iterationTime, double heading) {
+    public void run(double heading, VulcanPIDCoefficients vals) {
 
-        double sensorVal = getIntegratedHeading() + startHeading;
+        double sensorVal = getIntegratedHeading() + initHeading();
 
         double error = sensorVal - heading;
-
-        if(error < 5 && error > -5) {
-            integral = 0;
-//            output = 0;
-        } else {
-            integral += ((error + previousError) / 2.0) * ((timer.time(TimeUnit.MILLISECONDS) - lastTime) / 1000.0);
-            derivative = (error - previousError);
-            output = Range.clip(Kp * error + Ki * integral + Kd * derivative, -1.0, 1.0);
-            previousError = error;
-        }
+        integral += Range.clip(((error + previousError) / 2.0) * ((timer.time(TimeUnit.MILLISECONDS) - lastTime) / 1000.0), -100, 100);
+        derivative = (error - previousError);
+        output = Range.clip(
+                vals.getCoefficient(PIDCoefficient.Kp) * error +
+                vals.getCoefficient(PIDCoefficient.Ki) * integral +
+                vals.getCoefficient(PIDCoefficient.Kd) * derivative,
+                -100, 100);
+        previousError = error;
         lastTime = timer.time(TimeUnit.MILLISECONDS);
-        return output;
-    }
-    //default params
-    public double run(double Kp, double Ki, double Kd, long iterationTime) {
-        return run(Kp, Ki, Kd, iterationTime, 0);
-    }
-
-    public double run(double Kp, double Ki, double Kd) {
-        return run(Kp, Ki, Kd, 10, 0);
     }
 
 }

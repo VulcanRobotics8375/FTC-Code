@@ -10,28 +10,23 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
+import org.firstinspires.ftc.team8375.Subsystems.VulcanPIDCoefficients;
 
 enum driveType {
     MECANUM, TANK
 }
 
-enum PIDCoefficient {
-    Kp,
-    Ki,
-    Kd
-}
-
 public abstract class VulcanPipeline extends LinearOpMode {
     private double speed = 0;
-    private double pidOut;
-    private double integral = 0;
-    private double derivative = 0;
-    private double previousError = 0;
-    private double Kp, Ki, Kd;
+//    private double pidOut;
+//    private double integral = 0;
+//    private double derivative = 0;
+//    private double previousError = 0;
     private int step = 0;
     private int i;
     protected Robot robot;
     private ElapsedTime stoneTime = new ElapsedTime();
+    private VulcanPIDCoefficients pidCoefficients = new VulcanPIDCoefficients(1, 1, 1);
 
     public boolean isDone = false;
 
@@ -85,30 +80,30 @@ public abstract class VulcanPipeline extends LinearOpMode {
 
     }
 
-    public void pid(double Kp, double Ki, double Kd, long iterationTime, double heading) {
-        double sensorVal = robot.drivetrain.pid.getIntegratedHeading() + robot.drivetrain.pid.initHeading();
-
-        double error = sensorVal - heading;
-        integral += ((error + previousError) / 2.0) * (iterationTime / 1000.0);
-        integral = Range.clip(integral, -1, 1);
-        derivative = (error - previousError);
-        pidOut = Kp * error + Ki * integral + Kd * derivative;
-        previousError = error;
-
-        if(Math.abs(error) < 10) {
-            pidOut = Range.clip(pidOut, -40, 40);
-        } else {
-            pidOut = Range.clip(pidOut, -100, 100);
-        }
-        sleep(iterationTime);
-        updateTelemetry();
-    }
+//    public void pid(double Kp, double Ki, double Kd, long iterationTime, double heading) {
+//        double sensorVal = robot.drivetrain.pid.getIntegratedHeading() + robot.drivetrain.pid.initHeading();
+//
+//        double error = sensorVal - heading;
+//        integral += ((error + previousError) / 2.0) * (iterationTime / 1000.0);
+//        integral = Range.clip(integral, -100, 100);
+//        derivative = (error - previousError);
+//        pidOut = Kp * error + Ki * integral + Kd * derivative;
+//        previousError = error;
+//
+//        if(Math.abs(error) < 10) {
+//            pidOut = Range.clip(pidOut, -40, 40);
+//        } else {
+//            pidOut = Range.clip(pidOut, -100, 100);
+//        }
+//        sleep(iterationTime);
+//        updateTelemetry();
+//    }
 
     public void turnPID(double speed, double heading) {
 
         while(robot.drivetrain.getImuAngle() != heading) {
-            pid(1, 1, 1.2, 7, heading * 2);
-            robot.drivetrain.turnPercent(speed, pidOut);
+            robot.drivetrain.pid.run(heading * 2, pidCoefficients);
+            robot.drivetrain.turnPercent(speed, robot.drivetrain.pid.getOutput());
         }
         robot.drivetrain.setPowers(0, 0);
     }
@@ -163,8 +158,8 @@ public abstract class VulcanPipeline extends LinearOpMode {
 
     }
 
-    public driveType getDriveType(driveType mode) {
-        return mode;
+    public driveType getDriveMode() {
+        return driveMode;
     }
 
     public void setDriveMode(driveType mode) {
@@ -172,28 +167,4 @@ public abstract class VulcanPipeline extends LinearOpMode {
         driveMode = mode;
 
     }
-
-    public double getPIDCoefficient(PIDCoefficient k) {
-        if(k == PIDCoefficient.Kp) {
-            return Kp;
-        } else if(k == PIDCoefficient.Ki) {
-            return Ki;
-        } else if(k == PIDCoefficient.Kd) {
-            return Kd;
-        }
-        else {
-            return 404;
-        }
-    }
-
-    public void setPIDCoefficient(PIDCoefficient k, double gain) {
-        if(k == PIDCoefficient.Kp) {
-            Kp = gain;
-        } else if(k == PIDCoefficient.Ki) {
-            Ki = gain;
-        } else if(k == PIDCoefficient.Kd) {
-            Kd = gain;
-        }
-    }
-
 }
