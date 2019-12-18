@@ -78,6 +78,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
     public void moveIn(double inches, double speed, double turn) {
         robot.drivetrain.moveIn(inches, speed, turn);
         step++;
+        updateTelemetry();
     }
     public void moveIn(double inches, double speed) {
         moveIn(inches, speed, 0);

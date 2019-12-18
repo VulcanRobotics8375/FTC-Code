@@ -62,7 +62,7 @@ public class TankDrive extends OpMode {
                 //flip button
                 gamepad2.b,
                 600,
-                3750,
+                6700,
                 -800,
                 870,
                 500,
