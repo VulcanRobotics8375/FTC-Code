@@ -44,30 +44,30 @@ public abstract class VulcanPipeline extends LinearOpMode {
 
 
     //turn
-    public void turn(double angle, double speed) {
-        this.speed = speed;
-        do {
-            if (Math.abs(robot.drivetrain.getError()) <= 20) {
-                if (this.speed > 0) {
-                    this.speed--;
-                    this.speed = Range.clip(this.speed, 5, 100);
-                } else if (speed < 0) {
-                    this.speed++;
-                    this.speed = Range.clip(this.speed, -100, -5);
-                }
-
-                sleep(7);
-            }
-            robot.drivetrain.turn(angle, this.speed);
-            sleep(10);
-            telemetry.addData("imu", robot.drivetrain.getImuAngle());
-            updateTelemetry();
-
-        } while (!robot.drivetrain.isTurnDone());
-        robot.drivetrain.setPowers(0, 0);
-        robot.drivetrain.setImuOffset(robot.drivetrain.getImuAngle());
-        step++;
-    }
+//    public void turn(double angle, double speed) {
+//        this.speed = speed;
+//        do {
+//            if (Math.abs(robot.drivetrain.getError()) <= 20) {
+//                if (this.speed > 0) {
+//                    this.speed--;
+//                    this.speed = Range.clip(this.speed, 5, 100);
+//                } else if (speed < 0) {
+//                    this.speed++;
+//                    this.speed = Range.clip(this.speed, -100, -5);
+//                }
+//
+//                sleep(7);
+//            }
+//            robot.drivetrain.turn(angle, this.speed);
+//            sleep(10);
+//            telemetry.addData("imu", robot.drivetrain.getImuAngle());
+//            updateTelemetry();
+//
+//        } while (!robot.drivetrain.isTurnDone());
+//        robot.drivetrain.setPowers(0, 0);
+//        robot.drivetrain.setImuOffset(robot.drivetrain.getImuAngle());
+//        step++;
+//    }
 
     //moveIn
     public void moveIn(double inches, double speed, double turn) {
@@ -99,7 +99,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
 //        updateTelemetry();
 //    }
 
-    public void turnPID(double speed, double heading) {
+    public void turn(double heading, double speed) {
 
         while(robot.drivetrain.getImuAngle() != heading) {
             robot.drivetrain.pid.run(heading * 2, pidCoefficients);
