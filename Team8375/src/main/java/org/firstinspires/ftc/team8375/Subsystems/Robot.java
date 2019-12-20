@@ -5,6 +5,7 @@
 package org.firstinspires.ftc.team8375.Subsystems;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -43,7 +44,7 @@ public class Robot {
                 hwMap.get(CRServo.class, "deploy_left"),
                 hwMap.get(CRServo.class, "deploy_right"),
                 hwMap.get(Servo.class, "auto_arm"),
-                hwMap.get(DistanceSensor.class, "intake_sensor")
+                hwMap.get(Rev2mDistanceSensor.class, "intake_sensor")
         );
 
         foundation = new Foundation(

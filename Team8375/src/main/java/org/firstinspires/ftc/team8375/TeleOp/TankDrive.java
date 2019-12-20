@@ -35,7 +35,7 @@ public class TankDrive extends OpMode {
 
     @Override
     public void loop() {
-/*
+
         robot.intake.deploy(gamepad1.dpad_left, gamepad1.dpad_right);
 
         robot.drivetrain.tankDrive(
@@ -77,7 +77,7 @@ public class TankDrive extends OpMode {
                 //flip give
                 gamepad2.right_stick_x
         );
-*/
+
         robot.intake.run(
                 -1,
                 //reverse
@@ -86,26 +86,26 @@ public class TankDrive extends OpMode {
                 gamepad1.right_trigger
         );
 
-//        if(gamepad2.left_bumper) {
-//            robot.foundation.setFoundationMoveAngle(30);
-//        } else {
-//            robot.foundation.setFoundationMoveAngle(180);
-//        }
-//
-//        robot.foundation.deployCapstone(gamepad1.b);
-//
-//        if(gamepad1.left_bumper && !buttonPressed) {
-//            inverse *= -1;
-//            buttonPressed = true;
-//        }
-//        else if(buttonPressed && !gamepad1.left_bumper) {
-//            buttonPressed = false;
-//        }
-//        if(inverse > 0) {
-//            robot.intake.autoArm(0.85);
-//        } else if(inverse < 0) {
-//            robot.intake.autoArm(0.7);
-//        }
+        if(gamepad2.left_bumper) {
+            robot.foundation.setFoundationMoveAngle(30);
+        } else {
+            robot.foundation.setFoundationMoveAngle(180);
+        }
+
+        robot.foundation.deployCapstone(gamepad1.b);
+
+        if(gamepad1.left_bumper && !buttonPressed) {
+            inverse *= -1;
+            buttonPressed = true;
+        }
+        else if(buttonPressed && !gamepad1.left_bumper) {
+            buttonPressed = false;
+        }
+        if(inverse > 0) {
+            robot.intake.autoArm(0.85);
+        } else if(inverse < 0) {
+            robot.intake.autoArm(0.7);
+        }
 
         //Telemetry
 

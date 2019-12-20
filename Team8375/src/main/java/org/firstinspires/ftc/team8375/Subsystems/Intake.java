@@ -4,11 +4,9 @@
 
 package org.firstinspires.ftc.team8375.Subsystems;
 
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.IrSeekerSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -39,9 +37,9 @@ public class Intake {
     private final double b = 1.0;
     private final double min = 0.2;
 
-    private DistanceSensor irSensor;
+    private Rev2mDistanceSensor irSensor;
 
-    public Intake(DcMotor intakeLeft, DcMotor intakeRight, CRServo deployLeft, CRServo deployRight, Servo autoArm, DistanceSensor irSensor) {
+    public Intake(DcMotor intakeLeft, DcMotor intakeRight, CRServo deployLeft, CRServo deployRight, Servo autoArm, Rev2mDistanceSensor irSensor) {
          intake_left = intakeLeft;
          intake_right = intakeRight;
 
