@@ -7,6 +7,7 @@ package org.firstinspires.ftc.team8375.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
 
 @TeleOp(name="TankDrive", group="Drive")
@@ -81,9 +82,9 @@ public class TankDrive extends OpMode {
         robot.intake.run(
                 -1,
                 //reverse
-                gamepad1.a,
+                gamepad2.a,
                 //toggle
-                gamepad1.right_trigger
+                gamepad2.right_trigger
         );
 
         if(gamepad2.left_bumper) {
@@ -127,6 +128,7 @@ public class TankDrive extends OpMode {
         //Intake
         telemetry.addData("deployLeft", robot.intake.getDeployLeftPos());
         telemetry.addData("deployRight", robot.intake.getDeployRightPos());
+        telemetry.addData("intake_sensor", robot.intake.getIRDistance(DistanceUnit.CM));
 
         telemetry.addData("Runtime", getRuntime());
 
