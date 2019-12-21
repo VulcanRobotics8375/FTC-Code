@@ -37,6 +37,17 @@ public class VulcanPID {
 //    public void runOpMode() {
 //        telemetry.addData("VulcanPID output", output);
 //    }
+
+    public void init() {
+        integral = 0;
+        derivative = 0;
+        output = 0;
+        previousError = 0;
+        previousHeading = 0;
+        lastTime = 0;
+        timer.reset();
+    }
+
     public double getIntegratedHeading() {
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         imu.getPosition();
@@ -74,9 +85,10 @@ public class VulcanPID {
 
         double sensorVal = getIntegratedHeading() + initHeading();
 
+        lastTime = timer.time(TimeUnit.MILLISECONDS);
         double error = sensorVal - heading;
         integral += Range.clip(((error + previousError) / 2.0) * ((timer.time(TimeUnit.MILLISECONDS) - lastTime) / 1000.0), -100, 100);
-        derivative = (error - previousError);
+        derivative = (error - previousError) / ((timer.time(TimeUnit.MILLISECONDS) - lastTime) / 1000.0);
         if(Math.abs(error) < 10) {
             output = Range.clip(
                 vals.getCoefficient(PIDCoefficient.Kp) * error +
@@ -91,7 +103,6 @@ public class VulcanPID {
                     -100, 100);
         }
         previousError = error;
-        lastTime = timer.time(TimeUnit.MILLISECONDS);
     }
 
     public void run(double inches, double pos, VulcanPIDCoefficients vals) {

@@ -327,6 +327,10 @@ public class Drivetrain {
         br.setPower((turn * (0.01 * speed)) / 100.0);
     }
 
+    public void movePercent(double speed, double percent) {
+        setPowers((percent * (0.01 * speed)) / 100.0, 0);
+    }
+
     public void setPowers(double forward, double turn) {
         fl.setPower(forward - turn);
         fr.setPower(forward + turn);
@@ -349,6 +353,12 @@ public class Drivetrain {
     }
     public double getPositionFr() {
         return fr.getCurrentPosition();
+    }
+
+    public double getPosition() {
+        double pos = (getPositionBl() + getPositionBr() + getPositionFl() + getPositionFr()) / 4.0;
+
+        return pos;
     }
     public double getOutput() {
         return output;

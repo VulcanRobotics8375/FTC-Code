@@ -27,6 +27,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
     protected Robot robot;
     private ElapsedTime stoneTime = new ElapsedTime();
     private VulcanPIDCoefficients pidCoefficients = new VulcanPIDCoefficients(1, 1, 1);
+    private VulcanPIDCoefficients moveCoefficients = new VulcanPIDCoefficients(-1, -1, -1, 5);
 
     public boolean isDone = false;
 
@@ -81,8 +82,18 @@ public abstract class VulcanPipeline extends LinearOpMode {
     }
 
     public void move(double inches, double speed) {
-        robot.drivetrain.pid.run(inches, robot.drivetrain.getPositionBl(), pidCoefficients);
-        robot.drivetrain.percentSteer(0, Range.clip(robot.drivetrain.pid.getOutput(), -speed, speed));
+
+        double wheelSize = (100.0/25.4) * Math.PI;
+        int targetPos = (int) Math.round((inches/wheelSize) * 537.6);
+        while(robot.drivetrain.getPosition() != targetPos) {
+            double inchesTravelled = (robot.drivetrain.getPosition() / 537.6) * wheelSize;
+            robot.drivetrain.pid.run(inches, inchesTravelled, moveCoefficients);
+            robot.drivetrain.movePercent(speed, robot.drivetrain.pid.getOutput());
+            telemetry.addData("pos", robot.drivetrain.getPosition());
+            telemetry.addData("output", robot.drivetrain.pid.getOutput());
+            telemetry.update();
+        }
+        robot.drivetrain.setPowers(0, 0);
     }
 
 //    public void pid(double Kp, double Ki, double Kd, long iterationTime, double heading) {
