@@ -13,7 +13,6 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-import java.sql.Time;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -34,7 +33,7 @@ public class Intake {
     private CRServo deploy_right;
     private Servo autoArm;
     //b --
-    private final double b = 1.0;
+    private final double b = 0.5;
     private final double min = 0.2;
 
     private Rev2mDistanceSensor irSensor;
@@ -83,11 +82,12 @@ public class Intake {
                 intake_right.setPower(-this.intakePower);
 
             } else {
-                if(getIRDistance(DistanceUnit.CM) < 10.0) {
-                    this.intakePower = Math.pow(min, ((1/b) * intakeTime.time(TimeUnit.SECONDS)));
+                if(getIRDistance(DistanceUnit.CM) < 15.0) {
+                    this.intakePower = Math.pow(min, ((1/b) * (intakeTime.time(TimeUnit.MILLISECONDS) / 1000.0)));
+
                     if(intakePower < 0) {
                         this.intakePower *= -1;
-                        this.intakePower = Range.clip(this.intakePower, intakePower, min);
+                        this.intakePower = Range.clip(this.intakePower, intakePower, -min);
                     } else {
                         this.intakePower = Range.clip(this.intakePower, min, intakePower);
                     }
@@ -96,10 +96,8 @@ public class Intake {
                     this.intakePower = intakePower;
                 }
                 intake_left.setPower(this.intakePower);
-                intake_right.setPower(this.intakePower);
+                intake_right.setPower(-this.intakePower);
             }
-
-
 
         } else {
             intake_left.setPower(0);

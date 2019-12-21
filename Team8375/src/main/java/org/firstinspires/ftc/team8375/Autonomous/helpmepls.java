@@ -24,7 +24,7 @@ public class helpmepls extends VulcanPipeline {
             if(!isDone) {
 
                 //instructions go here
-                turnPID(50, 90);
+                turnPID(70, 45);
                 isDone = true;
                 telemetry.addLine("Done!");
                 telemetry.update();

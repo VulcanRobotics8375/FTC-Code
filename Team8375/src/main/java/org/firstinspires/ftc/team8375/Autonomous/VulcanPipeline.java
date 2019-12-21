@@ -85,6 +85,10 @@ public abstract class VulcanPipeline extends LinearOpMode {
 
     }
 
+    public void move(double inches, double speed) {
+
+    }
+
     public void pid(double Kp, double Ki, double Kd, long iterationTime, double heading) {
         double sensorVal = robot.drivetrain.pid.getIntegratedHeading() + robot.drivetrain.pid.initHeading();
 
@@ -106,8 +110,8 @@ public abstract class VulcanPipeline extends LinearOpMode {
 
     public void turnPID(double speed, double heading) {
 
-        while(robot.drivetrain.getImuAngle() != heading) {
-            pid(1, 1, 1.2, 7, heading * 2);
+        while(Math.ceil(robot.drivetrain.getImuAngle()) != heading) {
+            pid(0.5, 0.6, 1, 7, heading * 2);
             robot.drivetrain.turnPercent(speed, pidOut);
         }
         robot.drivetrain.setPowers(0, 0);
