@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.util.Range;
 @SuppressWarnings("FieldCanBeLocal")
 public class Drivetrain {
     private DcMotor fl, fr, bl, br;
-    private BNO055IMU imu;
+    public BNO055IMU imu;
     private BNO055IMU.Parameters parameters;
 
     //doubles

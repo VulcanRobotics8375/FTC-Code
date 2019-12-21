@@ -7,12 +7,6 @@ package org.firstinspires.ftc.team8375.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-/*
-*   Sample Autonomous program:
-*   Copy this opMode, rename it and remove the @Disabled tag
-*   and everything should work.
-*/
-
 @Autonomous(name = "pidTest", group = "cringe")
 public class helpmepls extends VulcanPipeline {
 
@@ -24,7 +18,9 @@ public class helpmepls extends VulcanPipeline {
             if(!isDone) {
 
                 //instructions go here
-              move(500, 20);
+                turn(90, 80);
+                move(5, 20);
+                turn(45, 50);
                 isDone = true;
                 telemetry.addLine("Done!");
                 telemetry.update();

@@ -4,12 +4,13 @@
 
 package org.firstinspires.ftc.team8375.Autonomous;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
+import org.firstinspires.ftc.team8375.Subsystems.VulcanPID;
 import org.firstinspires.ftc.team8375.Subsystems.VulcanPIDCoefficients;
 
 enum driveType {
@@ -26,18 +27,23 @@ public abstract class VulcanPipeline extends LinearOpMode {
     private int i;
     protected Robot robot;
     private ElapsedTime stoneTime = new ElapsedTime();
-    private VulcanPIDCoefficients pidCoefficients = new VulcanPIDCoefficients(0.5, 0.6, 1);
+    private VulcanPIDCoefficients turnCoefficients = new VulcanPIDCoefficients(0.5, 0.6, 1);
     private VulcanPIDCoefficients moveCoefficients = new VulcanPIDCoefficients(-1, -1, -1, 5);
+    private BNO055IMU imu;
+    private VulcanPID movePid;
+    private VulcanPID turnPid;
 
     public boolean isDone = false;
 
     private driveType driveMode;
 
-
     public void initialize() {
         robot = new Robot(hardwareMap);
         robot.drivetrain.init();
         robot.drivetrain.resetEncoders(DcMotor.RunMode.RUN_USING_ENCODER);
+        imu = robot.drivetrain.imu;
+        movePid = new VulcanPID(imu);
+        turnPid = new VulcanPID(imu);
         isDone = false;
     }
 
@@ -87,12 +93,13 @@ public abstract class VulcanPipeline extends LinearOpMode {
         int targetPos = (int) Math.round((inches/wheelSize) * 537.6);
         while(robot.drivetrain.getPosition() != targetPos) {
             double inchesTravelled = (robot.drivetrain.getPosition() / 537.6) * wheelSize;
-            robot.drivetrain.pid.run(inches, inchesTravelled, moveCoefficients);
+            movePid.run(inches, inchesTravelled, moveCoefficients);
             robot.drivetrain.movePercent(speed, robot.drivetrain.pid.getOutput());
             telemetry.addData("pos", robot.drivetrain.getPosition());
             telemetry.addData("output", robot.drivetrain.pid.getOutput());
             telemetry.update();
         }
+        robot.drivetrain.setPowers(0, 0);
     }
 
 //    public void pid(double Kp, double Ki, double Kd, long iterationTime, double heading) {
@@ -117,7 +124,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
     public void turn(double heading, double speed) {
 
         while(robot.drivetrain.getImuAngle() != heading) {
-            robot.drivetrain.pid.run(heading * 2, pidCoefficients);
+            turnPid.run(heading * 2, turnCoefficients);
             robot.drivetrain.turnPercent(speed, robot.drivetrain.pid.getOutput());
         }
         robot.drivetrain.setPowers(0, 0);
