@@ -33,7 +33,6 @@ public abstract class VulcanPipeline extends LinearOpMode {
     private VulcanPID movePid;
     private VulcanPID turnPid;
 
-    //test
     public boolean isDone = false;
 
     private driveType driveMode;
