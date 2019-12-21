@@ -92,8 +92,6 @@ public abstract class VulcanPipeline extends LinearOpMode {
             telemetry.addData("pos", robot.drivetrain.getPosition());
             telemetry.addData("output", robot.drivetrain.pid.getOutput());
             telemetry.update();
-        }
-        robot.drivetrain.setPowers(0, 0);
     }
 
 //    public void pid(double Kp, double Ki, double Kd, long iterationTime, double heading) {

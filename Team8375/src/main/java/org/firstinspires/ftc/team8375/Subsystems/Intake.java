@@ -4,10 +4,14 @@
 
 package org.firstinspires.ftc.team8375.Subsystems;
 
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.concurrent.TimeUnit;
 
@@ -15,25 +19,34 @@ import java.util.concurrent.TimeUnit;
 public class Intake {
 
     private ElapsedTime time = new ElapsedTime();
+    private ElapsedTime intakeTime = new ElapsedTime();
     private boolean onPressed;
     private int intakeOn = 1;
     private boolean reset = false;
     //motors
     private DcMotor intake_left;
     private DcMotor intake_right;
+    private double intakePower;
 
     //servos
     private CRServo deploy_left;
     private CRServo deploy_right;
     private Servo autoArm;
+    //b --
+    private final double b = 0.5;
+    private final double min = 0.2;
 
-    public Intake(DcMotor intakeLeft, DcMotor intakeRight, CRServo deployLeft, CRServo deployRight, Servo autoArm) {
-         intake_left = intakeLeft;
-         intake_right = intakeRight;
+    private Rev2mDistanceSensor irSensor;
 
-         this.autoArm = autoArm;
-         deploy_left = deployLeft;
-         deploy_right = deployRight;
+    public Intake(DcMotor intakeLeft, DcMotor intakeRight, CRServo deployLeft, CRServo deployRight, Servo autoArm, Rev2mDistanceSensor irSensor) {
+        intake_left = intakeLeft;
+        intake_right = intakeRight;
+
+        this.autoArm = autoArm;
+        deploy_left = deployLeft;
+        deploy_right = deployRight;
+
+        this.irSensor = irSensor;
     }
 
     public void resetDeployTime() {
@@ -55,22 +68,35 @@ public class Intake {
     }
 
     public void run(double intakePower, boolean reverse, double isOn) {
-
+        this.intakePower = intakePower;
         if(isOn > 0) {
             intakeOn = 1;
-        } else if(isOn == 0){
+        } else if(isOn == 0) {
             intakeOn = -1;
         }
 
         if(intakeOn > 0) {
 
             if (reverse) {
-                intake_left.setPower(intakePower);
-                intake_right.setPower(-intakePower);
+                intake_left.setPower(-this.intakePower);
+                intake_right.setPower(-this.intakePower);
 
             } else {
-                intake_left.setPower(-intakePower);
-                intake_right.setPower(intakePower);
+                if(getIRDistance(DistanceUnit.CM) < 15.0) {
+                    this.intakePower = Math.pow(min, ((1/b) * (intakeTime.time(TimeUnit.MILLISECONDS) / 1000.0)));
+
+                    if(intakePower < 0) {
+                        this.intakePower *= -1;
+                        this.intakePower = Range.clip(this.intakePower, intakePower, -min);
+                    } else {
+                        this.intakePower = Range.clip(this.intakePower, min, intakePower);
+                    }
+                } else {
+                    intakeTime.reset();
+                    this.intakePower = intakePower;
+                }
+                intake_left.setPower(this.intakePower);
+                intake_right.setPower(-this.intakePower);
             }
 
         } else {
@@ -83,6 +109,15 @@ public class Intake {
     public void setPowers(double power) {
         intake_left.setPower(power);
         intake_right.setPower(power);
+    }
+
+    public void init() {
+        intake_right.setDirection(DcMotor.Direction.REVERSE);
+        resetDeployTime();
+    }
+
+    public double getIRDistance(DistanceUnit unit) {
+        return irSensor.getDistance(unit);
     }
 
     public void stop() {

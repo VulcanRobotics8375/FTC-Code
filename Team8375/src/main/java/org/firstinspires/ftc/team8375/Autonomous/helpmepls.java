@@ -24,8 +24,7 @@ public class helpmepls extends VulcanPipeline {
             if(!isDone) {
 
                 //instructions go here
-//                turn(50, 90);
-                move(500, 20);
+              move(500, 20);
                 isDone = true;
                 telemetry.addLine("Done!");
                 telemetry.update();
