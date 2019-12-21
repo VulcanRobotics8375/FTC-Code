@@ -77,13 +77,44 @@ public class VulcanPID {
         double error = sensorVal - heading;
         integral += Range.clip(((error + previousError) / 2.0) * ((timer.time(TimeUnit.MILLISECONDS) - lastTime) / 1000.0), -100, 100);
         derivative = (error - previousError);
-        output = Range.clip(
+        if(Math.abs(error) < 10) {
+            output = Range.clip(
                 vals.getCoefficient(PIDCoefficient.Kp) * error +
-                vals.getCoefficient(PIDCoefficient.Ki) * integral +
-                vals.getCoefficient(PIDCoefficient.Kd) * derivative,
-                -100, 100);
+                        vals.getCoefficient(PIDCoefficient.Ki) * integral +
+                        vals.getCoefficient(PIDCoefficient.Kd) * derivative,
+                    -40, 40);
+        } else {
+            output = Range.clip(
+                    vals.getCoefficient(PIDCoefficient.Kp) * error +
+                            vals.getCoefficient(PIDCoefficient.Ki) * integral +
+                            vals.getCoefficient(PIDCoefficient.Kd) * derivative,
+                    -100, 100);
+        }
         previousError = error;
         lastTime = timer.time(TimeUnit.MILLISECONDS);
+    }
+
+    public void run(double inches, double pos, VulcanPIDCoefficients vals) {
+
+        double error = pos - inches;
+        integral += Range.clip(((error + previousError) / 2.0) * ((timer.time(TimeUnit.MILLISECONDS) - lastTime) / 1000.0), -100, 100);
+        derivative = (error - previousError);
+        if(Math.abs(error) < 10) {
+            output = Range.clip(
+                    vals.getCoefficient(PIDCoefficient.Kp) * error +
+                            vals.getCoefficient(PIDCoefficient.Ki) * integral +
+                            vals.getCoefficient(PIDCoefficient.Kd) * derivative,
+                    -40, 40);
+        } else {
+            output = Range.clip(
+                    vals.getCoefficient(PIDCoefficient.Kp) * error +
+                            vals.getCoefficient(PIDCoefficient.Ki) * integral +
+                            vals.getCoefficient(PIDCoefficient.Kd) * derivative,
+                    -100, 100);
+        }
+        previousError = error;
+        lastTime = timer.time(TimeUnit.MILLISECONDS);
+
     }
 
 }

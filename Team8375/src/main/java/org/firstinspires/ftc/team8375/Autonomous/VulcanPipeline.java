@@ -80,6 +80,11 @@ public abstract class VulcanPipeline extends LinearOpMode {
 
     }
 
+    public void move(double inches, double speed) {
+        robot.drivetrain.pid.run(inches, robot.drivetrain.getPositionBl(), pidCoefficients);
+        robot.drivetrain.percentSteer(0, Range.clip(robot.drivetrain.pid.getOutput(), -speed, speed));
+    }
+
 //    public void pid(double Kp, double Ki, double Kd, long iterationTime, double heading) {
 //        double sensorVal = robot.drivetrain.pid.getIntegratedHeading() + robot.drivetrain.pid.initHeading();
 //
