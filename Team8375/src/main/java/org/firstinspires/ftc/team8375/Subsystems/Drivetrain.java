@@ -8,13 +8,8 @@ package org.firstinspires.ftc.team8375.Subsystems;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class Drivetrain {
@@ -45,7 +40,7 @@ public class Drivetrain {
     private ElapsedTime Time = new ElapsedTime();
     private double output = 0;
     private boolean motorIsBusy;
-    public PID pid;
+    public VulcanPID pid;
 
     public Drivetrain(DcMotor frontLeft, DcMotor frontRight, DcMotor backLeft, DcMotor backRight, BNO055IMU IMU) {
         fl = frontLeft;
@@ -83,7 +78,7 @@ public class Drivetrain {
 
         if(imu) {
             setupIMU();
-            pid = new PID(this.imu);
+            pid = new VulcanPID(this.imu);
         }
 
     }
@@ -130,7 +125,7 @@ public class Drivetrain {
 //
         if(turn == 0) {
 //            targetAngle = getImuAngle();
-            turnPower = pid.run(0.001, 0, 0, 10, targetAngle);
+//            turnPower = pid.run(0.001, 0, 0, 10, targetAngle);
         } else {
             targetAngle = getImuAngle();
         }
@@ -332,6 +327,10 @@ public class Drivetrain {
         br.setPower((turn * (0.01 * speed)) / 100.0);
     }
 
+    public void movePercent(double speed, double percent) {
+        setPowers((percent * (0.01 * speed)) / 100.0, 0);
+    }
+
     public void setPowers(double forward, double turn) {
         fl.setPower(forward - turn);
         fr.setPower(forward + turn);
@@ -354,6 +353,12 @@ public class Drivetrain {
     }
     public double getPositionFr() {
         return fr.getCurrentPosition();
+    }
+
+    public double getPosition() {
+        double pos = (getPositionBl() + getPositionBr() + getPositionFl() + getPositionFr()) / 4.0;
+
+        return pos;
     }
     public double getOutput() {
         return output;
