@@ -33,6 +33,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
     private VulcanPID movePid;
     private VulcanPID turnPid;
 
+    //test
     public boolean isDone = false;
 
     private driveType driveMode;
@@ -48,7 +49,6 @@ public abstract class VulcanPipeline extends LinearOpMode {
     }
 
     public abstract void runOpMode();
-
 
     //turn
 //    public void turn(double angle, double speed) {
