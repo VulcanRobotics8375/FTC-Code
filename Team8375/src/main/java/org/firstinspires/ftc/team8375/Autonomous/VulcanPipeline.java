@@ -26,7 +26,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
     private int i;
     protected Robot robot;
     private ElapsedTime stoneTime = new ElapsedTime();
-    private VulcanPIDCoefficients pidCoefficients = new VulcanPIDCoefficients(1, 1, 1);
+    private VulcanPIDCoefficients pidCoefficients = new VulcanPIDCoefficients(0.5, 0.6, 1);
     private VulcanPIDCoefficients moveCoefficients = new VulcanPIDCoefficients(-1, -1, -1, 5);
 
     public boolean isDone = false;
@@ -92,6 +92,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
             telemetry.addData("pos", robot.drivetrain.getPosition());
             telemetry.addData("output", robot.drivetrain.pid.getOutput());
             telemetry.update();
+        }
     }
 
 //    public void pid(double Kp, double Ki, double Kd, long iterationTime, double heading) {
