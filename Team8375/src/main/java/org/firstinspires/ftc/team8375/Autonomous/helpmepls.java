@@ -39,5 +39,8 @@ public class helpmepls extends VulcanPipeline {
         if(armTime.now(TimeUnit.MILLISECONDS) > 4000 && armTime.now(TimeUnit.MILLISECONDS) < 8200) {
             deployAutoArm();
         }
+        if(armTime.now(TimeUnit.MILLISECONDS) > 9000 && armTime.now(TimeUnit.MILLISECONDS) < 13200) {
+            releaseAutoArm();
+        }
     }
 }

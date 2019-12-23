@@ -183,6 +183,19 @@ public abstract class VulcanPipeline extends LinearOpMode {
         robot.autoArm.setLiftPower(0);
     }
 
+    public void releaseAutoArm() {
+        robot.autoArm.setFlipPos(135);
+        robot.autoArm.setLiftTime(1, 1600);
+        robot.autoArm.setClawPos(90);
+    }
+
+    public void retractAutoArm() {
+        robot.autoArm.setLiftTime(-1, 1600);
+        robot.autoArm.setFlipPos(45);
+        robot.autoArm.setClawPos(70);
+    }
+
+
     public abstract void async();
 
     public void sleepOpMode(long millis) {
