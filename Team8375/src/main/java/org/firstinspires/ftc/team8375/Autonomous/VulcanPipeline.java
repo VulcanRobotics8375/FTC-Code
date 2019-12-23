@@ -103,7 +103,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
         robot.drivetrain.setPowers(0, 0);
     }
 
-    public void pid(double Kp, double Ki, double Kd, long iterationTime, double heading) {
+    private void pid(double Kp, double Ki, double Kd, long iterationTime, double heading) {
         double sensorVal = robot.drivetrain.pid.getIntegratedHeading() + robot.drivetrain.pid.initHeading();
 
         double error = sensorVal - heading;
@@ -162,13 +162,13 @@ public abstract class VulcanPipeline extends LinearOpMode {
         robot.autoArm.setFlipPos(135);
         robot.autoArm.setClawPos(170);
         robot.autoArm.setLiftPower(1);
-        sleepOpMode(3250);
+        sleepOpMode(1600);
         robot.autoArm.setLiftPower(0);
         robot.autoArm.setClawPos(90);
         sleepOpMode(200);
         robot.autoArm.setLiftPower(-1);
         robot.autoArm.setFlipPos(45);
-        sleepOpMode(3250);
+        sleepOpMode(1600);
         robot.autoArm.setLiftPower(0);
     }
 
