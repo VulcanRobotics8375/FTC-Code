@@ -28,6 +28,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
     private int i;
     protected Robot robot;
     private ElapsedTime stoneTime = new ElapsedTime();
+    protected ElapsedTime armTime = new ElapsedTime();
     private VulcanPIDCoefficients turnCoefficients = new VulcanPIDCoefficients(0.5, 0.6, 1);
     private VulcanPIDCoefficients moveCoefficients = new VulcanPIDCoefficients(-1, -1, -1, 5);
     private BNO055IMU imu;
@@ -99,6 +100,9 @@ public abstract class VulcanPipeline extends LinearOpMode {
             telemetry.addData("pos", robot.drivetrain.getPosition());
             telemetry.addData("output", robot.drivetrain.pid.getOutput());
             telemetry.update();
+            if(async) {
+                async();
+            }
         }
         robot.drivetrain.setPowers(0, 0);
     }
@@ -127,8 +131,12 @@ public abstract class VulcanPipeline extends LinearOpMode {
         while(Math.ceil(robot.drivetrain.getImuAngle()) != heading) {
             pid(0.5, 0.6, 1, 7, heading * 2);
             robot.drivetrain.turnPercent(speed, pidOut);
+            if(async) {
+                async();
+            }
         }
         robot.drivetrain.setPowers(0, 0);
+        step++;
 
     }
 
@@ -142,6 +150,9 @@ public abstract class VulcanPipeline extends LinearOpMode {
             robot.SkystoneDetect.resetScore();
             sleep(100);
             telemetry.addData("score", robot.SkystoneDetect.getScorer());
+            if(async) {
+                async();
+            }
 
         }
         robot.drivetrain.setPowers(0, 0);
@@ -154,8 +165,6 @@ public abstract class VulcanPipeline extends LinearOpMode {
         } else if(stoneTime.milliseconds() > 2000) {
             i = 3;
         }
-
-
     }
 
     public void deployAutoArm() {
@@ -171,6 +180,9 @@ public abstract class VulcanPipeline extends LinearOpMode {
         sleepOpMode(1600);
         robot.autoArm.setLiftPower(0);
     }
+
+    public abstract void async();
+
 
 
 

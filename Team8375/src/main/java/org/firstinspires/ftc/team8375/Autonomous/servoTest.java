@@ -30,4 +30,5 @@ public class servoTest extends VulcanPipeline {
         }
 
     }
+    public void async() {}
 }

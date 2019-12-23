@@ -76,6 +76,6 @@ public class Auto_Loading_Red extends VulcanPipeline {
 
     }
 
-
+    public void async() {}
 
 }

@@ -32,4 +32,5 @@ public class Auto_ART extends VulcanPipeline {
         robot.stop();
 
     }
+    public void async() {}
 }

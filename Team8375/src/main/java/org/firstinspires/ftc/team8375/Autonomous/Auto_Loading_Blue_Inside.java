@@ -74,4 +74,5 @@ public class Auto_Loading_Blue_Inside extends VulcanPipeline {
         robot.stop();
 
     }
+    public void async() {}
 }

@@ -7,6 +7,8 @@ package org.firstinspires.ftc.team8375.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+import java.util.concurrent.TimeUnit;
+
 @Autonomous(name = "testOpMode", group = "cringe")
 public class helpmepls extends VulcanPipeline {
 
@@ -17,6 +19,7 @@ public class helpmepls extends VulcanPipeline {
         while(opModeIsActive()) {
             if(!isDone) {
 
+                armTime.reset();
                 //instructions go here
 //                turn(90, 70);
 //                move(5, 20);
@@ -30,5 +33,11 @@ public class helpmepls extends VulcanPipeline {
 
         robot.stop();
 
+    }
+
+    public void async() {
+        if(armTime.now(TimeUnit.MILLISECONDS) < 1000) {
+
+        }
     }
 }

@@ -43,5 +43,6 @@ public class Auto_Foundation_Move_Red_Outside extends VulcanPipeline {
         robot.stop();
 
     }
+    public void async() {}
 }
 
