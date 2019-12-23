@@ -81,14 +81,14 @@ public class VulcanPID {
     }
 
     //pid calculations
-    public void run(double heading, VulcanPIDCoefficients vals) {
+    public void run(double heading, VulcanPIDCoefficients vals, double iterationTime) {
 
         double sensorVal = getIntegratedHeading() + initHeading();
 
         lastTime = timer.time(TimeUnit.MILLISECONDS);
         double error = sensorVal - heading;
-        integral += Range.clip(((error + previousError) / 2.0) * ((timer.time(TimeUnit.MILLISECONDS) - lastTime) / 1000.0), -100, 100);
-        derivative = (error - previousError) / ((timer.time(TimeUnit.MILLISECONDS) - lastTime) / 1000.0);
+        integral += Range.clip(((error + previousError) / 2.0) * (iterationTime), -100, 100);
+        derivative = (error - previousError);
         if(Math.abs(error) < 10) {
             output = Range.clip(
                 vals.getCoefficient(PIDCoefficient.Kp) * error +

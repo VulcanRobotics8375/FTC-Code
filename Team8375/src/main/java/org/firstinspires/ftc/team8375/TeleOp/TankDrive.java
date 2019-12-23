@@ -103,9 +103,9 @@ public class TankDrive extends OpMode {
             buttonPressed = false;
         }
         if(inverse > 0) {
-            robot.intake.autoArm(0.85);
+//            robot.intake.autoArm(0.85);
         } else if(inverse < 0) {
-            robot.intake.autoArm(0.7);
+//            robot.intake.autoArm(0.7);
         }
 
         //Telemetry

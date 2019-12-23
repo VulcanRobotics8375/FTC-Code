@@ -8,6 +8,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
 import org.firstinspires.ftc.team8375.Subsystems.VulcanPID;
@@ -19,10 +20,10 @@ enum driveType {
 
 public abstract class VulcanPipeline extends LinearOpMode {
     private double speed = 0;
-//    private double pidOut;
-//    private double integral = 0;
-//    private double derivative = 0;
-//    private double previousError = 0;
+    private double pidOut;
+    private double integral = 0;
+    private double derivative = 0;
+    private double previousError = 0;
     private int step = 0;
     private int i;
     protected Robot robot;
@@ -33,7 +34,8 @@ public abstract class VulcanPipeline extends LinearOpMode {
     private VulcanPID movePid;
     private VulcanPID turnPid;
 
-    public boolean isDone = false;
+    protected boolean isDone = false;
+    private boolean async;
 
     private driveType driveMode;
 
@@ -101,32 +103,33 @@ public abstract class VulcanPipeline extends LinearOpMode {
         robot.drivetrain.setPowers(0, 0);
     }
 
-//    public void pid(double Kp, double Ki, double Kd, long iterationTime, double heading) {
-//        double sensorVal = robot.drivetrain.pid.getIntegratedHeading() + robot.drivetrain.pid.initHeading();
-//
-//        double error = sensorVal - heading;
-//        integral += ((error + previousError) / 2.0) * (iterationTime / 1000.0);
-//        integral = Range.clip(integral, -100, 100);
-//        derivative = (error - previousError);
-//        pidOut = Kp * error + Ki * integral + Kd * derivative;
-//        previousError = error;
-//
-//        if(Math.abs(error) < 10) {
-//            pidOut = Range.clip(pidOut, -40, 40);
-//        } else {
-//            pidOut = Range.clip(pidOut, -100, 100);
-//        }
-//        sleep(iterationTime);
-//        updateTelemetry();
-//    }
+    public void pid(double Kp, double Ki, double Kd, long iterationTime, double heading) {
+        double sensorVal = robot.drivetrain.pid.getIntegratedHeading() + robot.drivetrain.pid.initHeading();
+
+        double error = sensorVal - heading;
+        integral += ((error + previousError) / 2.0) * (iterationTime / 1000.0);
+        integral = Range.clip(integral, -100, 100);
+        derivative = (error - previousError);
+        pidOut = Kp * error + Ki * integral + Kd * derivative;
+        previousError = error;
+
+        if(Math.abs(error) < 10) {
+            pidOut = Range.clip(pidOut, -40, 40);
+        } else {
+            pidOut = Range.clip(pidOut, -100, 100);
+        }
+        sleep(iterationTime);
+        updateTelemetry();
+    }
 
     public void turn(double heading, double speed) {
 
-        while(robot.drivetrain.getImuAngle() != heading) {
-            turnPid.run(heading * 2, turnCoefficients);
-            robot.drivetrain.turnPercent(speed, robot.drivetrain.pid.getOutput());
+        while(Math.ceil(robot.drivetrain.getImuAngle()) != heading) {
+            pid(0.5, 0.6, 1, 7, heading * 2);
+            robot.drivetrain.turnPercent(speed, pidOut);
         }
         robot.drivetrain.setPowers(0, 0);
+
     }
 
     public void findSkystone(double threshold, double power) {
@@ -155,11 +158,21 @@ public abstract class VulcanPipeline extends LinearOpMode {
 
     }
 
-    public void setAutoArmPos(double pos){
-        while(robot.intake.getAutoArm() != pos) {
-            robot.intake.autoArm(pos);
-        }
+    public void deployAutoArm() {
+        robot.autoArm.setFlipPos(135);
+        robot.autoArm.setClawPos(170);
+        robot.autoArm.setLiftPower(1);
+        sleepOpMode(3250);
+        robot.autoArm.setLiftPower(0);
+        robot.autoArm.setClawPos(90);
+        sleepOpMode(200);
+        robot.autoArm.setLiftPower(-1);
+        robot.autoArm.setFlipPos(45);
+        sleepOpMode(3250);
+        robot.autoArm.setLiftPower(0);
     }
+
+
 
     public void sleepOpMode(long millis) {
         sleep(millis);

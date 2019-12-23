@@ -28,7 +28,7 @@ public class Auto_Loading_Blue_Optimized extends VulcanPipeline {
 //                moveIn(2.3, 15);
 //                robot.drivetrain.percentSteer(-50, -10);
 //                sleepOpMode(1000);
-                setAutoArmPos(0.15);
+//                setAutoArmPos(0.15);
                 sleepOpMode(400);
 
                 switch (i) {
@@ -36,7 +36,7 @@ public class Auto_Loading_Blue_Optimized extends VulcanPipeline {
                         turn(185, 15);
                         moveIn(-45, -70);
                         turn(180, 13);
-                        setAutoArmPos(0.9);
+//                        setAutoArmPos(0.9);
                         sleepOpMode(500);
                         moveIn(-22, -30);
 //                        setAutoArmPos(0.15);
@@ -53,7 +53,7 @@ public class Auto_Loading_Blue_Optimized extends VulcanPipeline {
                         turn(185, 10);
                         moveIn(-48, -20);
                         turn(180, 10);
-                        setAutoArmPos(0.9);
+//                        setAutoArmPos(0.9);
                         sleepOpMode(500);
                         moveIn(-22, -20);
                         break;
@@ -62,7 +62,7 @@ public class Auto_Loading_Blue_Optimized extends VulcanPipeline {
                         turn(185, 10);
                         moveIn(-50, -20);
                         turn(180, 10);
-                        setAutoArmPos(0.9);
+//                        setAutoArmPos(0.9);
                         sleepOpMode(500);
                         moveIn(-26, -20);
                         break;

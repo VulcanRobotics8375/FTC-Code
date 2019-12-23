@@ -28,10 +28,10 @@ public class Auto_Loading_Red_Outside extends VulcanPipeline {
                 i = returnInt();
                 moveIn(4, 15);
                 robot.drivetrain.percentSteer(-50, -18);
-                setAutoArmPos(0.15);
+//                setAutoArmPos(0.15);
                 sleepOpMode(900);
                 robot.drivetrain.setPowers(0, 0);
-                setAutoArmPos(0.15);
+//                setAutoArmPos(0.15);
                 sleepOpMode(400);
                 moveIn(2, 20);
 
@@ -41,7 +41,7 @@ public class Auto_Loading_Red_Outside extends VulcanPipeline {
                         moveIn(22, 20);
                         turn(-82, 10);
                         moveIn(45, 30);
-                        setAutoArmPos(0.9);
+//                        setAutoArmPos(0.9);
                         sleepOpMode(500);
                         moveIn(-25, -20);
                         break;
@@ -51,7 +51,7 @@ public class Auto_Loading_Red_Outside extends VulcanPipeline {
                         moveIn(22, 20);
                         turn(-82, 10);
                         moveIn(50, 30);
-                        setAutoArmPos(0.9);
+//                        setAutoArmPos(0.9);
                         sleepOpMode(500);
                         moveIn(-25, -20);
                         break;
@@ -60,7 +60,7 @@ public class Auto_Loading_Red_Outside extends VulcanPipeline {
                         moveIn(22, 20);
                         turn(-82, 10);
                         moveIn(60, 30);
-                        setAutoArmPos(0.9);
+//                        setAutoArmPos(0.9);
                         sleepOpMode(500);
                         moveIn(-25, -20);
                         break;

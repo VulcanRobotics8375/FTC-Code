@@ -7,7 +7,7 @@ package org.firstinspires.ftc.team8375.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-@Autonomous(name = "pidTest", group = "cringe")
+@Autonomous(name = "testOpMode", group = "cringe")
 public class helpmepls extends VulcanPipeline {
 
     @Override
@@ -18,9 +18,10 @@ public class helpmepls extends VulcanPipeline {
             if(!isDone) {
 
                 //instructions go here
-                turn(90, 80);
-                move(5, 20);
-                turn(45, 50);
+//                turn(90, 70);
+//                move(5, 20);
+//                turn(45, 50);
+                deployAutoArm();
                 isDone = true;
                 telemetry.addLine("Done!");
                 telemetry.update();

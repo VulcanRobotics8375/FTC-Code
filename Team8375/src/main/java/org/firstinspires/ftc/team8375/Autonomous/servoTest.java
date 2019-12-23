@@ -21,7 +21,11 @@ public class servoTest extends VulcanPipeline {
         initialize();
         waitForStart();
         while(opModeIsActive()) {
-                setAutoArmPos(0.3);
+
+            if(!isDone)
+//                setAutoArmPos(0.3);
+            deployAutoArm();
+            isDone = true;
 
         }
 

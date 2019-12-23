@@ -31,23 +31,23 @@ public class Intake {
     //servos
     private CRServo deploy_left;
     private CRServo deploy_right;
-    private Servo autoArm;
     //b --
     private final double b = 0.5;
     private final double min = 0.2;
 
     private Rev2mDistanceSensor irSensor;
 
-    public Intake(DcMotor intakeLeft, DcMotor intakeRight, CRServo deployLeft, CRServo deployRight, Servo autoArm, Rev2mDistanceSensor irSensor) {
+    public Intake(DcMotor intakeLeft, DcMotor intakeRight, CRServo deployLeft, CRServo deployRight, Rev2mDistanceSensor irSensor) {
         intake_left = intakeLeft;
         intake_right = intakeRight;
 
-        this.autoArm = autoArm;
         deploy_left = deployLeft;
         deploy_right = deployRight;
 
         this.irSensor = irSensor;
     }
+
+
 
     public void resetDeployTime() {
         time.reset();
@@ -124,15 +124,6 @@ public class Intake {
         setPowers(0);
         deploy_left.setPower(0);
         deploy_right.setPower(0);
-    }
-
-    public void autoArm(double pos) {
-        autoArm.setPosition(pos);
-
-    }
-
-    public double getAutoArm() {
-        return autoArm.getPosition();
     }
 
     public double getDeployLeftPos() {

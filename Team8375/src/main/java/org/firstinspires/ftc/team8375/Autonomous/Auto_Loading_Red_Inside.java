@@ -30,7 +30,7 @@ public class Auto_Loading_Red_Inside extends VulcanPipeline {
 //                setAutoArmPos(0.15);
 //                sleepOpMode(900);
 //                robot.drivetrain.setPowers(0, 0);
-                setAutoArmPos(0.15);
+//                setAutoArmPos(0.15);
                 sleepOpMode(400);
 //                moveIn(2, 20);
                 switch (i) {
@@ -38,7 +38,7 @@ public class Auto_Loading_Red_Inside extends VulcanPipeline {
                         turn(-180, 15);
                         moveIn(45, 70);
                         turn(-180, 13);
-                        setAutoArmPos(0.9);
+//                        setAutoArmPos(0.9);
                         sleepOpMode(500);
                         moveIn(22, 30);
 //                        setAutoArmPos(0.15);
@@ -55,7 +55,7 @@ public class Auto_Loading_Red_Inside extends VulcanPipeline {
                         turn(-180, 10);
                         moveIn( 50, 50);
                         turn(-180, 10);
-                        setAutoArmPos(0.9);
+//                        setAutoArmPos(0.9);
                         sleepOpMode(500);
                         moveIn(22, 20);
                         break;
@@ -64,7 +64,7 @@ public class Auto_Loading_Red_Inside extends VulcanPipeline {
                         turn(-180, 10);
                         moveIn(52, 50);
                         turn(-180, 10);
-                        setAutoArmPos(0.9);
+//                        setAutoArmPos(0.9);
                         sleepOpMode(500);
                         moveIn(26, 20);
                         break;

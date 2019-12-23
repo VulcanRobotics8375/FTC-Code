@@ -11,14 +11,13 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-
-
 public class Robot {
     public Drivetrain drivetrain;
     public Arm arm;
     public Intake intake;
     public Foundation foundation;
     public SkystoneDetect SkystoneDetect;
+    public AutoArm autoArm;
 
     public Robot(HardwareMap hwMap) {
         drivetrain = new Drivetrain(
@@ -41,8 +40,13 @@ public class Robot {
                 hwMap.dcMotor.get("intake_right"),
                 hwMap.get(CRServo.class, "deploy_left"),
                 hwMap.get(CRServo.class, "deploy_right"),
-                hwMap.get(Servo.class, "auto_arm"),
                 hwMap.get(Rev2mDistanceSensor.class, "intake_sensor")
+        );
+
+        autoArm = new AutoArm(
+                hwMap.get(Servo.class, "auto_flip"),
+                hwMap.get(Servo.class, "auto_claw"),
+                hwMap.get(CRServo.class, "auto_lift")
         );
 
         foundation = new Foundation(
