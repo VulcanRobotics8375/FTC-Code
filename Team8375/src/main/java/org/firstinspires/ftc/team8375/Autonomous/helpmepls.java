@@ -22,9 +22,9 @@ public class helpmepls extends VulcanPipeline {
                 armTime.reset();
                 //instructions go here
 //                turn(90, 70);
-//                move(5, 20);
+                move(5, 5);
 //                turn(45, 50);
-                deployAutoArm();
+
                 isDone = true;
                 telemetry.addLine("Done!");
                 telemetry.update();
@@ -36,8 +36,8 @@ public class helpmepls extends VulcanPipeline {
     }
 
     public void async() {
-        if(armTime.now(TimeUnit.MILLISECONDS) < 1000) {
-
+        if(armTime.now(TimeUnit.MILLISECONDS) > 4000 && armTime.now(TimeUnit.MILLISECONDS) < 8200) {
+            deployAutoArm();
         }
     }
 }

@@ -74,20 +74,22 @@ public class VulcanPID {
         return imu.getCalibrationStatus();
     }
 
-    public double initHeading() {
+    public void initHeading() {
         startHeading = getIntegratedHeading();
-        return startHeading;
+    }
 
+    public double getStartHeading() {
+        return startHeading;
     }
 
     //pid calculations
-    public void run(double heading, VulcanPIDCoefficients vals, double iterationTime) {
+    public void run(double heading, VulcanPIDCoefficients vals) {
 
-        double sensorVal = getIntegratedHeading() + initHeading();
+        double sensorVal = getIntegratedHeading() + startHeading;
 
-        lastTime = timer.time(TimeUnit.MILLISECONDS);
+        lastTime = timer.now(TimeUnit.MILLISECONDS);
         double error = sensorVal - heading;
-        integral += Range.clip(((error + previousError) / 2.0) * (iterationTime), -100, 100);
+        integral += Range.clip(((error + previousError) / 2.0) * ((timer.now(TimeUnit.MILLISECONDS) - lastTime) / 1000.0), -100, 100);
         derivative = (error - previousError);
         if(Math.abs(error) < 10) {
             output = Range.clip(
@@ -112,15 +114,15 @@ public class VulcanPID {
         derivative = (error - previousError);
         if(Math.abs(error) < 10) {
             output = Range.clip(
-                    vals.getCoefficient(PIDCoefficient.Kp) * error +
-                            vals.getCoefficient(PIDCoefficient.Ki) * integral +
+                    (vals.getCoefficient(PIDCoefficient.Kp) * error) +
+                            (vals.getCoefficient(PIDCoefficient.Ki) * integral) +
                             vals.getCoefficient(PIDCoefficient.Kd) * derivative,
                     -40, 40);
         } else {
             output = Range.clip(
-                    vals.getCoefficient(PIDCoefficient.Kp) * error +
-                            vals.getCoefficient(PIDCoefficient.Ki) * integral +
-                            vals.getCoefficient(PIDCoefficient.Kd) * derivative,
+                    (vals.getCoefficient(PIDCoefficient.Kp) * error) +
+                            (vals.getCoefficient(PIDCoefficient.Ki) * integral) +
+                            (vals.getCoefficient(PIDCoefficient.Kd) * derivative),
                     -100, 100);
         }
         previousError = error;

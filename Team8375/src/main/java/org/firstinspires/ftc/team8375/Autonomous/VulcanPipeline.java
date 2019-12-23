@@ -24,7 +24,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
     private double integral = 0;
     private double derivative = 0;
     private double previousError = 0;
-    private int step = 0;
+    protected int step = 0;
     private int i;
     protected Robot robot;
     private ElapsedTime stoneTime = new ElapsedTime();
@@ -47,6 +47,8 @@ public abstract class VulcanPipeline extends LinearOpMode {
         imu = robot.drivetrain.imu;
         movePid = new VulcanPID(imu);
         turnPid = new VulcanPID(imu);
+        movePid.init();
+        turnPid.init();
         isDone = false;
     }
 
@@ -100,6 +102,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
             telemetry.addData("pos", robot.drivetrain.getPosition());
             telemetry.addData("output", robot.drivetrain.pid.getOutput());
             telemetry.update();
+            step++;
             if(async) {
                 async();
             }
@@ -108,7 +111,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
     }
 
     private void pid(double Kp, double Ki, double Kd, long iterationTime, double heading) {
-        double sensorVal = robot.drivetrain.pid.getIntegratedHeading() + robot.drivetrain.pid.initHeading();
+        double sensorVal = robot.drivetrain.pid.getIntegratedHeading() + robot.drivetrain.pid.getStartHeading();
 
         double error = sensorVal - heading;
         integral += ((error + previousError) / 2.0) * (iterationTime / 1000.0);
@@ -127,10 +130,12 @@ public abstract class VulcanPipeline extends LinearOpMode {
     }
 
     public void turn(double heading, double speed) {
+        robot.drivetrain.pid.initHeading();
 
         while(Math.ceil(robot.drivetrain.getImuAngle()) != heading) {
-            pid(0.5, 0.6, 1, 7, heading * 2);
+            pid(0.5, 0.6, 1, 7, heading);
             robot.drivetrain.turnPercent(speed, pidOut);
+            step++;
             if(async) {
                 async();
             }
@@ -170,21 +175,15 @@ public abstract class VulcanPipeline extends LinearOpMode {
     public void deployAutoArm() {
         robot.autoArm.setFlipPos(135);
         robot.autoArm.setClawPos(170);
-        robot.autoArm.setLiftPower(1);
-        sleepOpMode(1600);
+        robot.autoArm.setLiftTime(1, 1600);
         robot.autoArm.setLiftPower(0);
         robot.autoArm.setClawPos(90);
-        sleepOpMode(200);
-        robot.autoArm.setLiftPower(-1);
+        robot.autoArm.setLiftTime(-1, 1600);
         robot.autoArm.setFlipPos(45);
-        sleepOpMode(1600);
         robot.autoArm.setLiftPower(0);
     }
 
     public abstract void async();
-
-
-
 
     public void sleepOpMode(long millis) {
         sleep(millis);
