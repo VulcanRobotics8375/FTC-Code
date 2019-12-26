@@ -8,10 +8,8 @@
 
 package org.firstinspires.ftc.team8375.Autonomous;
 
-import android.hardware.Camera;
-import android.hardware.Camera.Parameters;
-
 import com.disnodeteam.dogecv.detectors.skystone.SkystoneDetector;
+import com.disnodeteam.dogecv.detectors.skystone.StoneDetector;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.openftc.easyopencv.OpenCvCamera;
@@ -20,15 +18,11 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.openftc.easyopencv.OpenCvCamera;
-
 @TeleOp(name="vision test", group="test")
 public class visionTest extends LinearOpMode {
 
     private OpenCvCamera phoneCam;
     private SkystoneDetector detector;
-    private Camera camera;
-    private Parameters params;
 
     @Override
     public void runOpMode() {
@@ -39,23 +33,13 @@ public class visionTest extends LinearOpMode {
         detector = new SkystoneDetector();
         phoneCam.setPipeline(detector);
 
-        phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-
-
-        if (camera == null) {
-            try {
-                camera = Camera.open();
-                params = camera.getParameters();
-            } catch (RuntimeException e) {
-                telemetry.addData("error", e.getMessage());
-                telemetry.update();
-            }
-        }
+        phoneCam.startStreaming(720, 480, OpenCvCameraRotation.UPRIGHT);
+        waitForStart();
 
         while(opModeIsActive()) {
-            params.setFlashMode(Parameters.FLASH_MODE_TORCH);
-            camera.setParameters(params);
-            camera.startPreview();
+            telemetry.addData("rect", detector.foundRectangle());
+            telemetry.addData("point", detector.getScreenPosition());
+            telemetry.update();
 
         }
 

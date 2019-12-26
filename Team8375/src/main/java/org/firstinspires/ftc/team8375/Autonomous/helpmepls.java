@@ -26,6 +26,10 @@ public class helpmepls extends VulcanPipeline {
 
                 armTime.reset();
                 //instructions go here
+
+                move(18, 30);
+                turn(-90, 80);
+
 //                turn(90, 70);
                 move(5, 5);
 //                turn(45, 50);

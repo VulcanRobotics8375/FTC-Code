@@ -25,4 +25,6 @@ public class opModePathfind extends VulcanPipeline {
         }
 
     }
+
+    public void async() {}
 }
