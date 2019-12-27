@@ -21,9 +21,10 @@ public class AutoArm {
     private CRServo lift;
 
 //    private double a, k;
-    private static final double a = 2100;
-    private static final double k = 1200;
+    private static final double a = 1685.64;
+    private static final double k = 937.812;
     private double liftPos;
+    private boolean moveDone;
 
     private ElapsedTime liftTime = new ElapsedTime();
     private boolean firstRun = true;
@@ -73,12 +74,15 @@ public class AutoArm {
 
     public void setLiftPos(double pos, double power) {
         liftTime.reset();
+        moveDone = false;
         double target = Math.abs(pos - liftPos);
         double powerCoeff = (a/power) + k;
         double time = target * powerCoeff;
 
         if(liftTime.now(TimeUnit.MILLISECONDS) < time) {
             lift.setPower(power);
+        } else {
+            moveDone = true;
         }
         liftPos = pos;
 
@@ -87,6 +91,10 @@ public class AutoArm {
     public void reset() {
         setFlipPos(0);
         setClawPos(30);
+    }
+
+    public boolean isMoveDone() {
+        return moveDone;
     }
 
     public void extendLift(double power) {

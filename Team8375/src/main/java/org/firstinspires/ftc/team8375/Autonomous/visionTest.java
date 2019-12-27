@@ -38,6 +38,7 @@ public class visionTest extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()) {
+            telemetry.addData("Thread", Thread.currentThread());
             telemetry.addData("rect", detector.foundRectangle());
             telemetry.addData("point", detector.getScreenPosition());
             telemetry.addData("pos", stonePos);

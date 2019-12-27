@@ -8,66 +8,77 @@
 
 package org.firstinspires.ftc.team8375.TeleOp;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
 
-public class ArmTest extends OpMode {
+@TeleOp(name="auto arm", group="test")
+public class ArmTest extends LinearOpMode {
     private Robot robot;
 
     private double power = 1;
-    private double ms = 2000;
+    private long ms = 2000;
 
     private boolean up = false;
     private boolean down = false;
     private boolean left = false;
     private boolean right = false;
+    private boolean start = false;
 
-    public void init() {
-        robot  = new Robot(hardwareMap);
-    }
+    public void runOpMode() {
+        robot = new Robot(hardwareMap);
+//        Thread t = new Thread();
 
-    public void start() {
+        waitForStart();
+        while (opModeIsActive()) {
+//        telemetry.addData("thread", Thread.currentThread());
+            if (gamepad1.dpad_up && !up) {
+                ms += 50;
+                up = true;
+            }
+            if (up && !gamepad1.dpad_up) {
+                up = false;
+            }
 
-    }
+            if (gamepad1.dpad_down && !down) {
+                ms -= 50;
+                down = true;
+            }
+            if (down && !gamepad1.dpad_down) {
+                down = false;
+            }
 
-    public void loop() {
+            if (gamepad1.dpad_left && !left) {
+                power -= 0.1;
+                left = true;
+            }
+            if (left && !gamepad1.dpad_left) {
+                left = false;
+            }
 
-        if(gamepad1.dpad_up && !up) {
-            ms += 50;
-            up = true;
-        } if(up && !gamepad1.dpad_up) {
-            up = false;
+            if (gamepad1.dpad_right && !right) {
+                power += 0.1;
+                right = true;
+            }
+            if (right && !gamepad1.dpad_right) {
+                right = false;
+            }
+
+            if (gamepad1.a && !start) {
+                start = true;
+            }
+            if (start && !robot.autoArm.isMoveDone()) {
+                robot.autoArm.setLiftPos(0.5, power);
+            } if(start && robot.autoArm.isMoveDone()) {
+                start = false;
+            }
+
+            telemetry.addData("power", power);
+            telemetry.addData("ms", ms);
+            telemetry.update();
         }
-
-        if(gamepad1.dpad_down && !down) {
-            ms -= 50;
-            down = true;
-        } if(down && !gamepad1.dpad_down) {
-            down = false;
-        }
-
-        if(gamepad1.dpad_left && !left) {
-            power -= 0.1;
-            left = true;
-        } if(left && !gamepad1.dpad_left) {
-            left = false;
-        }
-
-        if(gamepad1.dpad_right && !right) {
-            power += 0.1;
-            right = true;
-        } if(right && !gamepad1.dpad_right) {
-            right = false;
-        }
-
-        if(gamepad1.a) {
-            robot.autoArm.timeLiftWhileLoop(power, ms);
-        }
-
-        telemetry.addData("power", power);
-        telemetry.addData("ms", ms);
-        telemetry.update();
     }
 
 }
