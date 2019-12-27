@@ -23,6 +23,7 @@ public class visionTest extends LinearOpMode {
 
     private OpenCvCamera phoneCam;
     private SkystoneDetector detector;
+    private int stonePos;
 
     @Override
     public void runOpMode() {
@@ -33,13 +34,25 @@ public class visionTest extends LinearOpMode {
         detector = new SkystoneDetector();
         phoneCam.setPipeline(detector);
 
-        phoneCam.startStreaming(720, 480, OpenCvCameraRotation.UPRIGHT);
+        phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
         waitForStart();
 
         while(opModeIsActive()) {
             telemetry.addData("rect", detector.foundRectangle());
             telemetry.addData("point", detector.getScreenPosition());
+            telemetry.addData("pos", stonePos);
             telemetry.update();
+            double detectorPosY = detector.getScreenPosition().y;
+
+            if(detectorPosY < 150) {
+                stonePos = 1;
+            } else if(detectorPosY > 150 && detectorPosY < 250) {
+                stonePos = 2;
+
+            } else if(detectorPosY > 250) {
+                stonePos = 3;
+
+            }
 
         }
 
