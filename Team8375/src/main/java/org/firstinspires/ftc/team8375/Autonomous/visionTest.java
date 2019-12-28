@@ -8,11 +8,16 @@
 
 package org.firstinspires.ftc.team8375.Autonomous;
 
+import android.graphics.Point;
+
 import com.disnodeteam.dogecv.detectors.skystone.SkystoneDetector;
 import com.disnodeteam.dogecv.detectors.skystone.StoneDetector;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.team8375.SkystoneDetect;
 import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
@@ -21,39 +26,42 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp(name="vision test", group="test")
 public class visionTest extends LinearOpMode {
 
-    private OpenCvCamera phoneCam;
-    private SkystoneDetector detector;
+    OpenCvCamera webcam;
+    OpenCvCamera phoneCam;
+    private SkystoneDetect detector;
     private int stonePos;
 
     @Override
     public void runOpMode() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
 
+//        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+
+        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDevice();
-        detector = new SkystoneDetector();
+        detector = new SkystoneDetect();
         phoneCam.setPipeline(detector);
 
         phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
         waitForStart();
 
+
+
         while(opModeIsActive()) {
             telemetry.addData("Thread", Thread.currentThread());
             telemetry.addData("rect", detector.foundRectangle());
+            telemetry.addData("x", detector.foundRectangle().x);
             telemetry.addData("point", detector.getScreenPosition());
             telemetry.addData("pos", stonePos);
-            telemetry.update();
-            double detectorPosY = detector.getScreenPosition().y;
-
-            if(detectorPosY < 150) {
+            if(detector.foundRectangle().x < 120) {
                 stonePos = 1;
-            } else if(detectorPosY > 150 && detectorPosY < 250) {
+            } else if(detector.foundRectangle().x < 240) {
                 stonePos = 2;
-
-            } else if(detectorPosY > 250) {
+            } else if(detector.foundRectangle().x < 320) {
                 stonePos = 3;
-
             }
+            telemetry.update();
+
 
         }
 

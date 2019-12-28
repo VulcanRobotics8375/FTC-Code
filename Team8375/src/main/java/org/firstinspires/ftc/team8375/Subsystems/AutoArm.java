@@ -83,6 +83,7 @@ public class AutoArm {
             lift.setPower(power);
         } else {
             moveDone = true;
+            lift.setPower(0);
         }
         liftPos = pos;
 

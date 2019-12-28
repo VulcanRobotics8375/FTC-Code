@@ -29,55 +29,13 @@ public class ArmTest extends LinearOpMode {
 
     public void runOpMode() {
         robot = new Robot(hardwareMap);
-//        Thread t = new Thread();
 
         waitForStart();
+
         while (opModeIsActive()) {
-//        telemetry.addData("thread", Thread.currentThread());
-            if (gamepad1.dpad_up && !up) {
-                ms += 50;
-                up = true;
-            }
-            if (up && !gamepad1.dpad_up) {
-                up = false;
-            }
 
-            if (gamepad1.dpad_down && !down) {
-                ms -= 50;
-                down = true;
-            }
-            if (down && !gamepad1.dpad_down) {
-                down = false;
-            }
+            robot.autoArm.setLiftPos(0.5, power);
 
-            if (gamepad1.dpad_left && !left) {
-                power -= 0.1;
-                left = true;
-            }
-            if (left && !gamepad1.dpad_left) {
-                left = false;
-            }
-
-            if (gamepad1.dpad_right && !right) {
-                power += 0.1;
-                right = true;
-            }
-            if (right && !gamepad1.dpad_right) {
-                right = false;
-            }
-
-            if (gamepad1.a && !start) {
-                start = true;
-            }
-            if (start && !robot.autoArm.isMoveDone()) {
-                robot.autoArm.setLiftPos(0.5, power);
-            } if(start && robot.autoArm.isMoveDone()) {
-                start = false;
-            }
-
-            telemetry.addData("power", power);
-            telemetry.addData("ms", ms);
-            telemetry.update();
         }
     }
 
