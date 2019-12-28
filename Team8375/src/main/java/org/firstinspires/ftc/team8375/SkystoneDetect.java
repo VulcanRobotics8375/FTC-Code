@@ -85,6 +85,8 @@ public class SkystoneDetect extends DogeCVDetector {
         // Current result
         Rect bestRect = foundRect;
         double bestDifference = Double.MAX_VALUE; // MAX_VALUE since less difference = better
+        Rect bestYellow = foundRect;
+        double bestYellowDiff = Double.MAX_VALUE;
 
         // Loop through the contours and score them, searching for the best result
         for(MatOfPoint cont : contoursYellow){
@@ -95,9 +97,9 @@ public class SkystoneDetect extends DogeCVDetector {
             Imgproc.rectangle(displayMat, rect.tl(), rect.br(), new Scalar(0,0,255),2); // Draw rect
 
             // If the result is better then the previously tracked one, set this rect as the new best
-            if(score < bestDifference){
-                bestDifference = score;
-                bestRect = rect;
+            if(score < bestYellowDiff){
+                bestYellowDiff = score;
+                bestYellow = rect;
             }
         }
 
@@ -125,6 +127,7 @@ public class SkystoneDetect extends DogeCVDetector {
             // Show chosen result
             Imgproc.rectangle(displayMat, bestRect.tl(), bestRect.br(), new Scalar(255,0,0),4);
             Imgproc.putText(displayMat, "Chosen", bestRect.tl(),0,1,new Scalar(255,255,255));
+            Imgproc.rectangle(displayMat, bestYellow.tl(), bestYellow.br(), new Scalar(0, 0, 255), 4);
 
             screenPosition = new Point(bestRect.x, bestRect.y);
             foundRect = bestRect;
@@ -143,11 +146,7 @@ public class SkystoneDetect extends DogeCVDetector {
             case RAW_IMAGE: {
                 return rawImage;
             }
-            case CONTOURS: {
-                Imgproc.cvtColor(yellowMask, yellowMask, Imgproc.COLOR_GRAY2BGR);
 
-                return yellowMask;
-            }
             default: {
                 return displayMat;
             }
