@@ -65,6 +65,23 @@ public class Arm {
         //motor initialization
     }
 
+    /**
+     * Arm.run is not independent, relies on a loop such as an OpMode.
+     * @param liftPower Input for the power of the lift motor, ususally a joystick
+     * @param pitchPower Input for the pitch motor
+     * @param clawButton boolean for opening and closing the claw -- system doesn't rely on this value being true or false, it has a state switch for every true false cycle of the boolean.
+     * @param yawButton boolean for the flip servo toggle, same true false cycle state as the clawButton param
+     * @param limitRange The point where both the lift motor and the pitch motor begin to slow down,
+     * @param liftHigh upper limit of the lift motor, in encoder ticks
+     * @param liftLow Lower limit of the lift, when the claw is flipped out
+     * @param pitchHigh upper limit of the pitch motor, in encoder ticks
+     * @param autoGain deprecated.
+     * @param bypass
+     * @param reset
+     * @param levelUp
+     * @param levelDown
+     * @param flipGive
+     */
     public void run(double liftPower, double pitchPower, boolean clawButton, boolean yawButton, float limitRange, float liftHigh, float liftLow, float pitchHigh, double autoGain, boolean bypass, boolean reset, boolean levelUp, boolean levelDown, double flipGive) {
 
         //limits

@@ -41,7 +41,6 @@ public class SkystoneDetect extends DogeCVDetector {
     public MaxAreaScorer maxAreaScorer = new MaxAreaScorer( 0.01);                    // Used to find largest objects
     public PerfectAreaScorer perfectAreaScorer = new PerfectAreaScorer(5000,0.05); // Used to find objects near a tuned area value
 
-
     // Results of the detector
     private Point screenPosition = new Point(); // Screen position of the mineral
     private Rect foundRect = new Rect(); // Found rect
@@ -63,7 +62,7 @@ public class SkystoneDetect extends DogeCVDetector {
 
 
     public SkystoneDetect() {
-        detectorName = "Skystone Detector";
+        detectorName = "Vulcan Detector";
     }
 
     @Override

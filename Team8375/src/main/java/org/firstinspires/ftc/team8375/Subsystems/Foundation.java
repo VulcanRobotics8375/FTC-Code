@@ -10,18 +10,32 @@ package org.firstinspires.ftc.team8375.Subsystems;
 
 import com.qualcomm.robotcore.hardware.Servo;
 
+import java.io.InputStream;
+import java.util.Properties;
+import java.io.IOException;
+
 public class Foundation {
     private Servo foundationMove;
     private Servo capStone;
     int capStonePos = 1;
     private boolean button;
+    private Properties prop;
 
     public Foundation(Servo foundationMove, Servo capStone) {
         this.foundationMove = foundationMove;
         this.capStone = capStone;
+
+        try (InputStream input = Foundation.class.getClassLoader().getResourceAsStream("config.properties")) {
+            prop = new Properties();
+            prop.load(input);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     public void deployCapstone(boolean button) {
+
         if(button && !this.button) {
             capStonePos *= -1;
             this.button = true;
