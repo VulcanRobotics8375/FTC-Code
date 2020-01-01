@@ -13,6 +13,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 @SuppressWarnings("FieldCanBeLocal")
 public class Arm {
     // variable initialization
@@ -54,6 +58,7 @@ public class Arm {
     private int yawPos = 180;
     private int cycleTime = 0;
     private int levelCenter = 0;
+    private Properties prop;
 
     public Arm(DcMotor lift, DcMotor pitch, Servo claw, Servo yaw, Servo level) {
         this.lift = lift;
@@ -62,6 +67,12 @@ public class Arm {
         this.yaw = yaw;
         this.level = level;
 
+        try (InputStream input = Arm.class.getClassLoader().getResourceAsStream("values/config.properties")) {
+            prop = new Properties();
+            prop.load(input);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
         //motor initialization
     }
 
@@ -134,9 +145,9 @@ public class Arm {
                 }
 
                 if (resetStep == 1) {
-                    if(yaw.getPosition() != 0 && claw.getPosition() != 170) {
-                        setServoAngle(yaw, 0);
-                        setServoAngle(claw, 170);
+                    if(yaw.getPosition() != Double.parseDouble(prop.getProperty("arm.yawRetracted")) && claw.getPosition() != Double.parseDouble(prop.getProperty("arm.clawIn"))) {
+                        setServoAngle(yaw, Double.parseDouble(prop.getProperty("arm.yawRetracted")));
+                        setServoAngle(claw, Double.parseDouble(prop.getProperty("arm.clawIn")));
                     } else {
                         resetStep++;
                         clawOn = 1;
@@ -238,9 +249,9 @@ public class Arm {
             }
 
             if (clawOn < 0) {
-                setServoAngle(claw, 170);
+                setServoAngle(claw, Double.parseDouble(prop.getProperty("arm.clawIn")));
             } else if (clawOn > 0) {
-                setServoAngle(claw, 125);
+                setServoAngle(claw, Double.parseDouble(prop.getProperty("arm.clawOut")));
             }
 
             //set powers
@@ -256,7 +267,7 @@ public class Arm {
             if (yawOn < 0) {
                 setServoAngle(yaw, 0);
             } else if (yawOn > 0) {
-                setServoAngle(yaw, 170 + (flipGive * 18));
+                setServoAngle(yaw, Double.parseDouble(prop.getProperty("arm.yawDeployed")) + (flipGive * 18));
 
 
             }
@@ -296,11 +307,11 @@ public class Arm {
         }
 
         if(levelCenter == 0) {
-            levelBias = 95;
+            levelBias = Double.parseDouble(prop.getProperty("arm.levelBias"));
         } else if(levelCenter == 1) {
-            levelBias = 80;
+            levelBias = Double.parseDouble(prop.getProperty("arm.levelBias")) - 15;
         } else if(levelCenter == -1) {
-            levelBias = 115;
+            levelBias = Double.parseDouble(prop.getProperty("arm.levelBias")) + 15;
         }
 
         //leveler

@@ -25,7 +25,7 @@ public class Foundation {
         this.foundationMove = foundationMove;
         this.capStone = capStone;
 
-        try (InputStream input = Foundation.class.getClassLoader().getResourceAsStream("config.properties")) {
+        try (InputStream input = Foundation.class.getClassLoader().getResourceAsStream("values/config.properties")) {
             prop = new Properties();
             prop.load(input);
         } catch (IOException ex) {
@@ -35,7 +35,6 @@ public class Foundation {
     }
 
     public void deployCapstone(boolean button) {
-
         if(button && !this.button) {
             capStonePos *= -1;
             this.button = true;
@@ -44,9 +43,9 @@ public class Foundation {
             this.button = false;
         }
         if(capStonePos > 0) {
-            capStone.setPosition(1);
+            capStone.setPosition(Double.parseDouble(prop.getProperty("foundation.capStoneIn")));
         } else {
-            capStone.setPosition(0.7);
+            capStone.setPosition(Double.parseDouble(prop.getProperty("foundation.capStoneOut")));
         }
     }
 

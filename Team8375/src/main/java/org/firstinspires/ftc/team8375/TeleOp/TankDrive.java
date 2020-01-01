@@ -14,17 +14,30 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 @TeleOp(name="TankDrive", group="Drive")
 public class TankDrive extends OpMode {
     protected Robot robot;
     private boolean buttonPressed;
     private int inverse = 1;
+    private Properties prop;
 
     @Override
     public void init() {
         robot = new Robot(hardwareMap);
         robot.arm.ArmMotorInit(0);
         robot.drivetrain.init();
+        try (InputStream input = TankDrive.class.getClassLoader().getResourceAsStream("values/config.properties")) {
+            prop = new Properties();
+            prop.load(input);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+
     }
 
 //    @Override
@@ -92,9 +105,9 @@ public class TankDrive extends OpMode {
         );
 
         if(gamepad2.left_bumper) {
-            robot.foundation.setFoundationMoveAngle(30);
+            robot.foundation.setFoundationMoveAngle(Double.parseDouble(prop.getProperty("foundation.deployed")));
         } else {
-            robot.foundation.setFoundationMoveAngle(180);
+            robot.foundation.setFoundationMoveAngle(Double.parseDouble(prop.getProperty("foundation.retracted")));
         }
 
         robot.foundation.deployCapstone(gamepad1.b);

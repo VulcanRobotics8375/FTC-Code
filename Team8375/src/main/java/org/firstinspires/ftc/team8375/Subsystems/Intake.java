@@ -17,6 +17,9 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -39,6 +42,8 @@ public class Intake {
     private final double b = 0.5;
     private final double min = 0.2;
 
+    Properties prop;
+
     private Rev2mDistanceSensor irSensor;
 
     public Intake(DcMotor intakeLeft, DcMotor intakeRight, CRServo deployLeft, CRServo deployRight, Rev2mDistanceSensor irSensor) {
@@ -49,6 +54,14 @@ public class Intake {
         deploy_right = deployRight;
 
         this.irSensor = irSensor;
+
+        try (InputStream input = Intake.class.getClassLoader().getResourceAsStream("values/config.properties")) {
+            prop = new Properties();
+            prop.load(input);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
     }
 
 

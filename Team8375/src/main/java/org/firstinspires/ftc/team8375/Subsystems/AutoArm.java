@@ -12,6 +12,9 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 public class AutoArm {
@@ -26,6 +29,7 @@ public class AutoArm {
     private double liftPos;
     private boolean moveDone;
 
+    private Properties prop;
     private ElapsedTime liftTime = new ElapsedTime();
     private boolean firstRun = true;
 
@@ -35,6 +39,13 @@ public class AutoArm {
         this.flip = flip;
         this.claw = claw;
         this.lift = lift;
+        try (InputStream input = AutoArm.class.getClassLoader().getResourceAsStream("values/config.properties")) {
+            prop = new Properties();
+            prop.load(input);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     public void setServoAngle(Servo servo, double angle) {

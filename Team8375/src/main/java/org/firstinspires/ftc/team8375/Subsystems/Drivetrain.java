@@ -15,6 +15,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 @SuppressWarnings("FieldCanBeLocal")
 public class Drivetrain {
     private DcMotor fl, fr, bl, br;
@@ -45,6 +49,7 @@ public class Drivetrain {
     private double output = 0;
     private boolean motorIsBusy;
     public VulcanPID pid;
+    private Properties prop;
 
     public Drivetrain(DcMotor frontLeft, DcMotor frontRight, DcMotor backLeft, DcMotor backRight, BNO055IMU IMU) {
         fl = frontLeft;
@@ -52,6 +57,13 @@ public class Drivetrain {
         bl = backLeft;
         br = backRight;
         imu = IMU;
+        try (InputStream input = Drivetrain.class.getClassLoader().getResourceAsStream("values/config.properties")) {
+            prop = new Properties();
+            prop.load(input);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
 
     }
 

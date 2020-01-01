@@ -18,6 +18,10 @@ import org.firstinspires.ftc.team8375.Subsystems.Robot;
 import org.firstinspires.ftc.team8375.Subsystems.VulcanPID;
 import org.firstinspires.ftc.team8375.Subsystems.VulcanPIDCoefficients;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 enum driveType {
     MECANUM, TANK
 }
@@ -38,6 +42,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
     private BNO055IMU imu;
     private VulcanPID movePid;
     private VulcanPID turnPid;
+    protected Properties prop;
 
     protected boolean isDone = false;
     private boolean async;
@@ -54,6 +59,15 @@ public abstract class VulcanPipeline extends LinearOpMode {
         movePid.init();
         turnPid.init();
         isDone = false;
+
+        try (InputStream input = VulcanPipeline.class.getClassLoader().getResourceAsStream("values/config.properties")) {
+            prop = new Properties();
+            prop.load(input);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+
     }
 
     public abstract void runOpMode();
