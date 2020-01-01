@@ -34,4 +34,19 @@ public class dataParser {
         return f;
     }
 
+    public static byte parseByte(Properties p, String s) {
+        byte b = Byte.parseByte(p.getProperty(s));
+        return b;
+    }
+
+    public static short parseShort(Properties p, String s) {
+        short S = Short.parseShort(p.getProperty(s));
+        return S;
+    }
+
+    public static long parseLong(Properties p, String s) {
+        long l = Long.parseLong(p.getProperty(s));
+        return l;
+    }
+
 }
