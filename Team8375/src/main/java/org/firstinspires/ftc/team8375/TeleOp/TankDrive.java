@@ -79,11 +79,6 @@ public class TankDrive extends OpMode {
                 gamepad2.right_bumper,
                 //flip button
                 gamepad2.b,
-                600,
-                6700,
-                -800,
-                870,
-                500,
                 //pitch reset
                 gamepad2.y,
                 //reset button

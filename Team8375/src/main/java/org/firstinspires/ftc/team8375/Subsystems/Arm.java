@@ -13,6 +13,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.team8375.dataParser;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -33,13 +35,13 @@ public class Arm {
     private double pitchPower;
 
     //degrees per tick calculation
-    private static final double theta = 22;
-    private static final double ticks = 870;
-    private static final double coefficient = theta/ticks;
+    private double theta;
+    private double ticks;
+    private double coefficient;
                                 // degrees / 180.0
     private double levelBias = 95;
 
-    private static final double resetPos = 1300;
+    private double resetPos;
 
     private float liftHighLimit;
     private float pitchHighLimit;
@@ -54,9 +56,6 @@ public class Arm {
     private int resetStep = 0;
     private int clawOn = -1;
     private int yawOn = -1;
-    private int clawPos;
-    private int yawPos = 180;
-    private int cycleTime = 0;
     private int levelCenter = 0;
     private Properties prop;
 
@@ -74,6 +73,11 @@ public class Arm {
             ex.printStackTrace();
         }
         //motor initialization
+        theta = dataParser.parseDouble(prop, "arm.theta");
+        ticks = dataParser.parseDouble(prop, "arm.pitchHigh");
+        coefficient = theta / ticks;
+        resetPos = dataParser.parseDouble(prop, "arm.resetPos");
+
     }
 
     /**
@@ -82,24 +86,19 @@ public class Arm {
      * @param pitchPower Input for the pitch motor
      * @param clawButton boolean for opening and closing the claw -- system doesn't rely on this value being true or false, it has a state switch for every true false cycle of the boolean.
      * @param yawButton boolean for the flip servo toggle, same true false cycle state as the clawButton param
-     * @param limitRange The point where both the lift motor and the pitch motor begin to slow down,
-     * @param liftHigh upper limit of the lift motor, in encoder ticks
-     * @param liftLow Lower limit of the lift, when the claw is flipped out
-     * @param pitchHigh upper limit of the pitch motor, in encoder ticks
-     * @param autoGain deprecated.
      * @param bypass
      * @param reset
      * @param levelUp
      * @param levelDown
      * @param flipGive
      */
-    public void run(double liftPower, double pitchPower, boolean clawButton, boolean yawButton, float limitRange, float liftHigh, float liftLow, float pitchHigh, double autoGain, boolean bypass, boolean reset, boolean levelUp, boolean levelDown, double flipGive) {
+    public void run(double liftPower, double pitchPower, boolean clawButton, boolean yawButton, boolean bypass, boolean reset, boolean levelUp, boolean levelDown, double flipGive) {
 
         //limits
         LiftPos = lift.getCurrentPosition();
         pitchPos = pitch.getCurrentPosition();
-        liftHighLimit = liftHigh - limitRange;
-        pitchHighLimit = pitchHigh - limitRange;
+        liftHighLimit = dataParser.parseFLoat(prop, "arm.liftHigh") - dataParser.parseFLoat(prop, "arm.limitRange");
+        pitchHighLimit = dataParser.parseFLoat(prop, "arm.pitchHigh") - dataParser.parseFLoat(prop, "arm.limitRange");
 
         //lower bound
         if(reset) {
@@ -109,7 +108,7 @@ public class Arm {
         }
         if (this.reset && !reset) {
             if(!resetIsDone) {
-                levelBias = 95;
+                levelBias = dataParser.parseDouble(prop, "arm.levelBias");
 
                 if(!pitch.isBusy() && resetStep > 1) {
                     if (pitchPos == 0) {
@@ -118,7 +117,7 @@ public class Arm {
                     } else {
                         pitch.setTargetPosition(0);
                         pitch.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        pitch.setPower(0.5);
+                        pitch.setPower(dataParser.parseDouble(prop, "arm.pitchResetPower"));
                     }
                 }
                 if(yaw.getPosition() > 0 && resetStep < 1) {
@@ -140,13 +139,13 @@ public class Arm {
                     } else {
                         lift.setTargetPosition((int) resetPos);
                         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        lift.setPower(0.5);
+                        lift.setPower(dataParser.parseDouble(prop, "arm.liftResetPower"));
                     }
                 }
 
                 if (resetStep == 1) {
                     if(yaw.getPosition() != Double.parseDouble(prop.getProperty("arm.yawRetracted")) && claw.getPosition() != Double.parseDouble(prop.getProperty("arm.clawIn"))) {
-                        setServoAngle(yaw, Double.parseDouble(prop.getProperty("arm.yawRetracted")));
+                        setServoAngle(yaw, dataParser.parseDouble(prop, "arm.yawRetracted"));
                         setServoAngle(claw, Double.parseDouble(prop.getProperty("arm.clawIn")));
                     } else {
                         resetStep++;
@@ -195,17 +194,17 @@ public class Arm {
         if(resetIsDone) {
 
             if(liftPower < 0 && yawOn > 0) {
-                if(LiftPos <= limitRange + liftLow) {
+                if(LiftPos <= dataParser.parseDouble(prop, "arm.limitRange") + dataParser.parseDouble(prop, "arm.liftLow")) {
 
-                    this.liftPower = (liftLow - pitchPos) / limitRange;
+                    this.liftPower = (dataParser.parseDouble(prop, "arm.liftLow") - pitchPos) / dataParser.parseDouble(prop, "arm.limitRange");
 
                 } else {
                     this.liftPower = liftPower;
                 }
             }
-            else if (liftPower < 0 && LiftPos <= limitRange) {
+            else if (liftPower < 0 && LiftPos <= dataParser.parseDouble(prop, "arm.limitRange")) {
                 //gradual slow down
-                this.liftPower = (-(LiftPos / limitRange)) / 1.0;
+                this.liftPower = (-(LiftPos / dataParser.parseDouble(prop, "arm.limitRange"))) / 1.0;
                 lastLiftPos = LiftPos;
             }
 
@@ -213,7 +212,7 @@ public class Arm {
             else if (liftPower > 0 && LiftPos >= liftHighLimit) {
 
                 //takes the distance from the upper limit and divides it by the limit range for a gradual slow down of the motor.
-                this.liftPower = ((liftHigh - LiftPos) / (limitRange)) / 1.0;
+                this.liftPower = ((dataParser.parseDouble(prop, "arm.liftHigh") - LiftPos) / (dataParser.parseDouble(prop, "arm.limitRange"))) / 1.0;
                 lastLiftPos = LiftPos;
             } else {
                 this.liftPower = liftPower;
@@ -221,11 +220,11 @@ public class Arm {
 
             //pitch limits
             if (!bypass && !this.bypass) {
-                if (pitchPower < 0 && pitchPos <= limitRange) {
-                    this.pitchPower = (-(pitchPos / (limitRange / Math.abs(pitchPower)))) / 1.0;
+                if (pitchPower < 0 && pitchPos <= dataParser.parseDouble(prop, "arm.limitRange")) {
+                    this.pitchPower = (-(pitchPos / (dataParser.parseDouble(prop, "arm.limitRange") / Math.abs(pitchPower)))) / 1.0;
 
                 } else if (pitchPower > 0 && pitchPos >= pitchHighLimit) {
-                    this.pitchPower = (pitchHigh - pitchPos) / (limitRange / pitchPower) / 1.0;
+                    this.pitchPower = (dataParser.parseDouble(prop, "arm.pitchHigh") - pitchPos) / (dataParser.parseDouble(prop, "arm.limitRange") / pitchPower) / 1.0;
                 } else {
                     this.pitchPower = pitchPower;
                 }
@@ -265,10 +264,9 @@ public class Arm {
             }
 
             if (yawOn < 0) {
-                setServoAngle(yaw, 0);
+                setServoAngle(yaw, dataParser.parseDouble(prop, "arm.yawRetracted"));
             } else if (yawOn > 0) {
-                setServoAngle(yaw, Double.parseDouble(prop.getProperty("arm.yawDeployed")) + (flipGive * 18));
-
+                setServoAngle(yaw, dataParser.parseDouble(prop, "arm.yawDeployed") + (flipGive * 18));
 
             }
 
@@ -307,12 +305,14 @@ public class Arm {
         }
 
         if(levelCenter == 0) {
-            levelBias = Double.parseDouble(prop.getProperty("arm.levelBias"));
+            levelBias = dataParser.parseDouble(prop, "arm.levelBias");
         } else if(levelCenter == 1) {
-            levelBias = Double.parseDouble(prop.getProperty("arm.levelBias")) - 15;
+            levelBias = dataParser.parseDouble(prop, "arm.levelBias") - dataParser.parseDouble(prop, "arm.levelGive");
         } else if(levelCenter == -1) {
-            levelBias = Double.parseDouble(prop.getProperty("arm.levelBias")) + 15;
+            levelBias = dataParser.parseDouble(prop, "arm.levelBias") + dataParser.parseDouble(prop, "arm.levelGive");
         }
+
+
 
         //leveler
         levelPos = (double) pitchPos * coefficient;
