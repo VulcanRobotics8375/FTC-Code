@@ -90,7 +90,6 @@ public class TankDrive extends OpMode {
         );
 
         robot.intake.run(
-                1,
                 //reverse
                 gamepad2.a,
                 //toggle
