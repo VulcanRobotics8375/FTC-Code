@@ -61,8 +61,6 @@ public class TankDrive extends OpMode {
                 gamepad1.left_stick_y * inverse,
                 //turn
                 -gamepad1.right_stick_x,
-                //acceleration time
-                0.5,
                 //slow mode
                 gamepad1.right_bumper,
                 //head switch
