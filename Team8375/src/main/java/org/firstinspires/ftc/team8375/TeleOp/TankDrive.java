@@ -12,6 +12,7 @@ import android.content.Context;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
@@ -46,6 +47,8 @@ public class TankDrive extends OpMode {
         robot = new Robot(hardwareMap);
         telemetry.addLine("robot loaded");
         robot.arm.ArmMotorInit(0);
+        //change this to imu=true when not testing
+        robot.drivetrain.init(DcMotor.RunMode.RUN_USING_ENCODER, DcMotor.ZeroPowerBehavior.FLOAT, false);
         telemetry.update();
 
     }
@@ -57,7 +60,6 @@ public class TankDrive extends OpMode {
 
     @Override
     public void start() {
-//        robot.drivetrain.init();
 //        robot.arm.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        robot.arm.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
