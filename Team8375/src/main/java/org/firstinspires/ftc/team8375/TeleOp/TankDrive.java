@@ -33,8 +33,10 @@ public class TankDrive extends OpMode {
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
             InputStream input = loader.getResourceAsStream("config.properties");
             if(input != null) {
+                telemetry.addLine("inputstream loaded");
                 prop = new Properties();
                 prop.load(input);
+                telemetry.update();
             } else {
 
             }
@@ -42,8 +44,9 @@ public class TankDrive extends OpMode {
             ex.printStackTrace();
         }
         robot = new Robot(hardwareMap);
+        telemetry.addLine("robot loaded");
         robot.arm.ArmMotorInit(0);
-        robot.drivetrain.init();
+        telemetry.update();
 
     }
 
@@ -54,6 +57,7 @@ public class TankDrive extends OpMode {
 
     @Override
     public void start() {
+//        robot.drivetrain.init();
 //        robot.arm.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        robot.arm.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
@@ -146,6 +150,7 @@ public class TankDrive extends OpMode {
         telemetry.addData("deployRight", robot.intake.getDeployRightPos());
         telemetry.addData("intake_sensor", robot.intake.getIRDistance(DistanceUnit.CM));
 
+        telemetry.addData("dataStream test", prop.getProperty("arm.theta"));
         telemetry.addData("Runtime", getRuntime());
 
         telemetry.update();
@@ -153,7 +158,7 @@ public class TankDrive extends OpMode {
 
     @Override
     public void stop() {
-        robot.stop();
+//        robot.stop();
     }
 
 }
