@@ -8,20 +8,27 @@
 
 package org.firstinspires.ftc.team8375.Subsystems;
 
+import android.content.Context;
+
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.team8375.dataParser;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class Intake {
 
+    private Context context;
     private ElapsedTime time = new ElapsedTime();
     private ElapsedTime intakeTime = new ElapsedTime();
     private boolean onPressed;
@@ -35,9 +42,10 @@ public class Intake {
     //servos
     private CRServo deploy_left;
     private CRServo deploy_right;
-    //b --
-    private final double b = 0.5;
+
     private final double min = 0.2;
+
+    private Properties prop;
 
     private Rev2mDistanceSensor irSensor;
 
@@ -49,6 +57,20 @@ public class Intake {
         deploy_right = deployRight;
 
         this.irSensor = irSensor;
+
+        try {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            InputStream input = loader.getResourceAsStream("config.properties");
+            if(input != null) {
+                prop = new Properties();
+                prop.load(input);
+            } else {
+
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
     }
 
 
@@ -71,8 +93,8 @@ public class Intake {
 
     }
 
-    public void run(double intakePower, boolean reverse, double isOn) {
-        this.intakePower = intakePower;
+    public void run(boolean reverse, double isOn) {
+        intakePower = dataParser.parseDouble(prop, "intake.power");
         if(isOn > 0) {
             intakeOn = 1;
         } else if(isOn == 0) {
@@ -82,25 +104,26 @@ public class Intake {
         if(intakeOn > 0) {
 
             if (reverse) {
-                intake_left.setPower(-this.intakePower);
-                intake_right.setPower(-this.intakePower);
+                intake_left.setPower(-intakePower);
+                intake_right.setPower(-intakePower);
 
             } else {
-                if(getIRDistance(DistanceUnit.CM) < 15.0) {
-                    this.intakePower = Math.pow(min, ((1/b) * (intakeTime.time(TimeUnit.MILLISECONDS) / 1000.0)));
+
+                if(getIRDistance(DistanceUnit.CM) < dataParser.parseDouble(prop, "intake.irDistance")) {
+                    intakePower = Math.pow(dataParser.parseDouble(prop, "intake.minPower"), ((1/dataParser.parseDouble(prop, "intake.accSpeed")) * (intakeTime.time(TimeUnit.MILLISECONDS) / 1000.0)));
 
                     if(intakePower < 0) {
-                        this.intakePower *= -1;
-                        this.intakePower = Range.clip(this.intakePower, intakePower, -min);
+                        intakePower *= -1;
+                        intakePower = Range.clip(intakePower, intakePower, -dataParser.parseDouble(prop, "intake.minPower"));
                     } else {
-                        this.intakePower = Range.clip(this.intakePower, min, intakePower);
+                        intakePower = Range.clip(intakePower, dataParser.parseDouble(prop, "intake.minPower"), intakePower);
                     }
                 } else {
                     intakeTime.reset();
-                    this.intakePower = intakePower;
+//                    intakePower = dataParser.parseDouble(prop, "intake.power");
                 }
-                intake_left.setPower(this.intakePower);
-                intake_right.setPower(-this.intakePower);
+                intake_left.setPower(intakePower);
+                intake_right.setPower(-intakePower);
             }
 
         } else {

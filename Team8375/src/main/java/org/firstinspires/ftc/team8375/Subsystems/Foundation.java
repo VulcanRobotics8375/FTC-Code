@@ -8,17 +8,40 @@
 
 package org.firstinspires.ftc.team8375.Subsystems;
 
+import android.content.Context;
+
 import com.qualcomm.robotcore.hardware.Servo;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Properties;
+import java.io.IOException;
+
 public class Foundation {
+    private Context context;
     private Servo foundationMove;
     private Servo capStone;
     int capStonePos = 1;
     private boolean button;
+    private Properties prop;
 
     public Foundation(Servo foundationMove, Servo capStone) {
         this.foundationMove = foundationMove;
         this.capStone = capStone;
+
+        try {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            InputStream input = loader.getResourceAsStream("config.properties");
+            if(input != null) {
+                prop = new Properties();
+                prop.load(input);
+            } else {
+
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     public void deployCapstone(boolean button) {
@@ -30,9 +53,9 @@ public class Foundation {
             this.button = false;
         }
         if(capStonePos > 0) {
-            capStone.setPosition(1);
+            capStone.setPosition(Double.parseDouble(prop.getProperty("foundation.capStoneIn")));
         } else {
-            capStone.setPosition(0.7);
+            capStone.setPosition(Double.parseDouble(prop.getProperty("foundation.capStoneOut")));
         }
     }
 

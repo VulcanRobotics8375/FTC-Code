@@ -55,7 +55,6 @@ public class OneStickDrive extends OpMode {
                 //turn
                 -gamepad1.right_stick_x,
                 //acceleration time
-                0.5,
                 gamepad1.right_bumper,
                 //head switch
                 gamepad1.left_bumper
@@ -80,7 +79,6 @@ public class OneStickDrive extends OpMode {
 //        );
 
         robot.intake.run(
-                -0.4,
                 //reverse
                 gamepad1.a,
                 //toggle

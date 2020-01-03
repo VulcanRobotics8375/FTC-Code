@@ -10,13 +10,23 @@ package org.firstinspires.ftc.team8375.Subsystems;
 
 //import android.test.FlakyTest;
 
+import android.content.Context;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.team8375.dataParser;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 @SuppressWarnings("FieldCanBeLocal")
 public class Drivetrain {
+    private Context context;
     private DcMotor fl, fr, bl, br;
     public BNO055IMU imu;
     private BNO055IMU.Parameters parameters;
@@ -45,6 +55,7 @@ public class Drivetrain {
     private double output = 0;
     private boolean motorIsBusy;
     public VulcanPID pid;
+    private Properties prop;
 
     public Drivetrain(DcMotor frontLeft, DcMotor frontRight, DcMotor backLeft, DcMotor backRight, BNO055IMU IMU) {
         fl = frontLeft;
@@ -52,6 +63,19 @@ public class Drivetrain {
         bl = backLeft;
         br = backRight;
         imu = IMU;
+        try {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            InputStream input = loader.getResourceAsStream("config.properties");
+            if(input != null) {
+                prop = new Properties();
+                prop.load(input);
+            } else {
+
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
 
     }
 
@@ -154,8 +178,8 @@ public class Drivetrain {
         bl.setPower(motorOut[3]);
     }
 
-    public void tankDrive(float leftPower, float rightPower, double acc, boolean slowModeButton, boolean headSwitchButton) {
-        divisor = (acc/1.07)*((0.62*Math.pow(acc, 2))+0.45);
+    public void tankDrive(float leftPower, float rightPower, boolean slowModeButton, boolean headSwitchButton) {
+        divisor = (dataParser.parseDouble(prop, "drivetrain.accSpeed")/1.07)*((0.62*Math.pow(dataParser.parseDouble(prop, "drivetrain.accSpeed"), 2))+0.45);
         // modifies the controller input for a more natural feel
         // graph for acceleration curve - https://www.desmos.com/calculator/gdwizzld3f
         movePower = (leftPower/1.07)*((0.62*Math.pow(leftPower, 2))+0.45);
@@ -217,10 +241,10 @@ public class Drivetrain {
 
         //set powers
         if(slowModeButton) {
-            movePower *= 0.3;
-            turnPower *= 0.3;
+            movePower *= dataParser.parseDouble(prop, "drivetrain.slowSpeed");
+            turnPower *= dataParser.parseDouble(prop, "drivetrain.slowSpeed");
         } else {
-            turnPower *= 0.5;
+            turnPower *= dataParser.parseDouble(prop, "drivetrain.turnSpeed");
         }
 
 
@@ -239,8 +263,8 @@ public class Drivetrain {
 
     public void moveIn(double inches, double speed, double turn) {
 
-        double wheelSize = (100.0/25.4) * Math.PI;
-        int targetPos = (int) Math.round((inches/wheelSize) * 537.6);
+        double wheelSize = (dataParser.parseDouble(prop, "drivetrain.wheelDiameter")/25.4) * Math.PI;
+        int targetPos = (int) Math.round((inches/wheelSize) * dataParser.parseDouble(prop, "drivetrain.tpr"));
 
         setTargetPos(targetPos);
 

@@ -8,23 +8,49 @@
 
 package org.firstinspires.ftc.team8375.TeleOp;
 
+import android.content.Context;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 @TeleOp(name="TankDrive", group="Drive")
 public class TankDrive extends OpMode {
     protected Robot robot;
     private boolean buttonPressed;
     private int inverse = 1;
+    private Properties prop;
 
     @Override
     public void init() {
+        try {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            InputStream input = loader.getResourceAsStream("config.properties");
+            if(input != null) {
+                telemetry.addLine("inputstream loaded");
+                prop = new Properties();
+                prop.load(input);
+                telemetry.update();
+            } else {
+
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
         robot = new Robot(hardwareMap);
+        telemetry.addLine("robot loaded");
         robot.arm.ArmMotorInit(0);
-        robot.drivetrain.init();
+        //change this to imu=true when not testing
+        robot.drivetrain.init(DcMotor.RunMode.RUN_USING_ENCODER, DcMotor.ZeroPowerBehavior.FLOAT, false);
+        telemetry.update();
+
     }
 
 //    @Override
@@ -48,8 +74,6 @@ public class TankDrive extends OpMode {
                 gamepad1.left_stick_y * inverse,
                 //turn
                 -gamepad1.right_stick_x,
-                //acceleration time
-                0.5,
                 //slow mode
                 gamepad1.right_bumper,
                 //head switch
@@ -66,11 +90,6 @@ public class TankDrive extends OpMode {
                 gamepad2.right_bumper,
                 //flip button
                 gamepad2.b,
-                600,
-                6700,
-                -800,
-                870,
-                500,
                 //pitch reset
                 gamepad2.y,
                 //reset button
@@ -84,7 +103,6 @@ public class TankDrive extends OpMode {
         );
 
         robot.intake.run(
-                1,
                 //reverse
                 gamepad2.a,
                 //toggle
@@ -92,9 +110,9 @@ public class TankDrive extends OpMode {
         );
 
         if(gamepad2.left_bumper) {
-            robot.foundation.setFoundationMoveAngle(30);
+            robot.foundation.setFoundationMoveAngle(Double.parseDouble(prop.getProperty("foundation.deployed")));
         } else {
-            robot.foundation.setFoundationMoveAngle(180);
+            robot.foundation.setFoundationMoveAngle(Double.parseDouble(prop.getProperty("foundation.retracted")));
         }
 
         robot.foundation.deployCapstone(gamepad1.b);
@@ -134,6 +152,7 @@ public class TankDrive extends OpMode {
         telemetry.addData("deployRight", robot.intake.getDeployRightPos());
         telemetry.addData("intake_sensor", robot.intake.getIRDistance(DistanceUnit.CM));
 
+        telemetry.addData("dataStream test", prop.getProperty("arm.theta"));
         telemetry.addData("Runtime", getRuntime());
 
         telemetry.update();
@@ -141,7 +160,7 @@ public class TankDrive extends OpMode {
 
     @Override
     public void stop() {
-        robot.stop();
+//        robot.stop();
     }
 
 }
