@@ -18,6 +18,7 @@ import org.firstinspires.ftc.team8375.Subsystems.Robot;
 import org.firstinspires.ftc.team8375.Subsystems.VulcanPID;
 import org.firstinspires.ftc.team8375.Subsystems.VulcanPIDCoefficients;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -60,9 +61,15 @@ public abstract class VulcanPipeline extends LinearOpMode {
         turnPid.init();
         isDone = false;
 
-        try (InputStream input = VulcanPipeline.class.getClassLoader().getResourceAsStream("values/config.properties")) {
-            prop = new Properties();
-            prop.load(input);
+        try {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            InputStream input = loader.getResourceAsStream("config.properties");
+            if(input != null) {
+                prop = new Properties();
+                prop.load(input);
+            } else {
+
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         }

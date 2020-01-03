@@ -8,13 +8,14 @@
 
 package org.firstinspires.ftc.team8375.Subsystems;
 
-import com.qualcomm.robotcore.hardware.CRServo;
+import android.content.Context;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.team8375.dataParser;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -58,6 +59,7 @@ public class Arm {
     private int yawOn = -1;
     private int levelCenter = 0;
     private Properties prop;
+    private Context context;
 
     public Arm(DcMotor lift, DcMotor pitch, Servo claw, Servo yaw, Servo level) {
         this.lift = lift;
@@ -66,9 +68,15 @@ public class Arm {
         this.yaw = yaw;
         this.level = level;
 
-        try (InputStream input = Arm.class.getClassLoader().getResourceAsStream("values/config.properties")) {
-            prop = new Properties();
-            prop.load(input);
+        try {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            InputStream input = loader.getResourceAsStream("config.properties");
+            if(input != null) {
+                prop = new Properties();
+                prop.load(input);
+            } else {
+
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         }

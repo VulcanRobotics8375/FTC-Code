@@ -8,10 +8,13 @@
 
 package org.firstinspires.ftc.team8375.Subsystems;
 
+import android.content.Context;
+
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -19,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 public class AutoArm {
 
+    private Context context;
     private Servo flip;
     private Servo claw;
     private CRServo lift;
@@ -39,9 +43,15 @@ public class AutoArm {
         this.flip = flip;
         this.claw = claw;
         this.lift = lift;
-        try (InputStream input = AutoArm.class.getClassLoader().getResourceAsStream("values/config.properties")) {
-            prop = new Properties();
-            prop.load(input);
+        try {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            InputStream input = loader.getResourceAsStream("config.properties");
+            if(input != null) {
+                prop = new Properties();
+                prop.load(input);
+            } else {
+
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         }

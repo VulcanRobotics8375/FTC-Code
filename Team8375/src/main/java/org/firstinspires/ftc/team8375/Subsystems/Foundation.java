@@ -8,13 +8,17 @@
 
 package org.firstinspires.ftc.team8375.Subsystems;
 
+import android.content.Context;
+
 import com.qualcomm.robotcore.hardware.Servo;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 import java.io.IOException;
 
 public class Foundation {
+    private Context context;
     private Servo foundationMove;
     private Servo capStone;
     int capStonePos = 1;
@@ -25,9 +29,15 @@ public class Foundation {
         this.foundationMove = foundationMove;
         this.capStone = capStone;
 
-        try (InputStream input = Foundation.class.getClassLoader().getResourceAsStream("values/config.properties")) {
-            prop = new Properties();
-            prop.load(input);
+        try {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            InputStream input = loader.getResourceAsStream("config.properties");
+            if(input != null) {
+                prop = new Properties();
+                prop.load(input);
+            } else {
+
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         }

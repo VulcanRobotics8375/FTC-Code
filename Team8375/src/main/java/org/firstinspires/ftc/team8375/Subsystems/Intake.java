@@ -8,16 +8,18 @@
 
 package org.firstinspires.ftc.team8375.Subsystems;
 
+import android.content.Context;
+
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.team8375.dataParser;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -26,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("FieldCanBeLocal")
 public class Intake {
 
+    private Context context;
     private ElapsedTime time = new ElapsedTime();
     private ElapsedTime intakeTime = new ElapsedTime();
     private boolean onPressed;
@@ -55,9 +58,15 @@ public class Intake {
 
         this.irSensor = irSensor;
 
-        try (InputStream input = Intake.class.getClassLoader().getResourceAsStream("values/config.properties")) {
-            prop = new Properties();
-            prop.load(input);
+        try {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            InputStream input = loader.getResourceAsStream("config.properties");
+            if(input != null) {
+                prop = new Properties();
+                prop.load(input);
+            } else {
+
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -99,6 +108,7 @@ public class Intake {
                 intake_right.setPower(-intakePower);
 
             } else {
+
                 if(getIRDistance(DistanceUnit.CM) < dataParser.parseDouble(prop, "intake.irDistance")) {
                     intakePower = Math.pow(dataParser.parseDouble(prop, "intake.minPower"), ((1/dataParser.parseDouble(prop, "intake.accSpeed")) * (intakeTime.time(TimeUnit.MILLISECONDS) / 1000.0)));
 
