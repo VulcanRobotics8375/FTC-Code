@@ -47,8 +47,7 @@ public class TankDrive extends OpMode {
         robot = new Robot(hardwareMap);
         telemetry.addLine("robot loaded");
         robot.arm.ArmMotorInit(0);
-        //change this to imu=true when not testing
-        robot.drivetrain.init(DcMotor.RunMode.RUN_USING_ENCODER, DcMotor.ZeroPowerBehavior.FLOAT, false);
+        robot.drivetrain.init();
         telemetry.update();
 
     }

@@ -37,8 +37,8 @@ public class SkystoneDetect extends DogeCVDetector {
     public DogeCVColorFilter blackFilter = new GrayscaleFilter(0, 25);
     public DogeCVColorFilter yellowFilter = new LeviColorFilter(LeviColorFilter.ColorPreset.YELLOW, 70); //Default Yellow blackFilter
 
-    public RatioScorer ratioScorer = new RatioScorer(1.25, 3); // Used to find the short face of the stone
-    public MaxAreaScorer maxAreaScorer = new MaxAreaScorer( 0.01);                    // Used to find largest objects
+    public RatioScorer ratioScorer = new RatioScorer(1.9, 3); // Used to find the long face of the stone
+    public MaxAreaScorer maxAreaScorer = new MaxAreaScorer( 7);                    // Used to find largest objects
     public PerfectAreaScorer perfectAreaScorer = new PerfectAreaScorer(5000,0.05); // Used to find objects near a tuned area value
 
     // Results of the detector
@@ -79,7 +79,7 @@ public class SkystoneDetect extends DogeCVDetector {
         List<MatOfPoint> contoursYellow = new ArrayList<>();
 
         Imgproc.findContours(yellowMask, contoursYellow, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-        Imgproc.drawContours(displayMat,contoursYellow,-1,new Scalar(255,30,30),2);
+        Imgproc.drawContours(displayMat,contoursYellow,-1,new Scalar(255,255,255),2);
 
         // Current result
         Rect bestRect = foundRect;
@@ -127,6 +127,7 @@ public class SkystoneDetect extends DogeCVDetector {
             Imgproc.rectangle(displayMat, bestRect.tl(), bestRect.br(), new Scalar(255,0,0),4);
             Imgproc.putText(displayMat, "Chosen", bestRect.tl(),0,1,new Scalar(255,255,255));
             Imgproc.rectangle(displayMat, bestYellow.tl(), bestYellow.br(), new Scalar(0, 0, 255), 4);
+            Imgproc.putText(displayMat, "Yellow", bestYellow.tl(),0,1,new Scalar(255,255,255));
 
             screenPosition = new Point(bestRect.x, bestRect.y);
             foundRect = bestRect;
@@ -144,6 +145,10 @@ public class SkystoneDetect extends DogeCVDetector {
             }
             case RAW_IMAGE: {
                 return rawImage;
+            }
+
+            case CONTOURS: {
+                return yellowMask;
             }
 
             default: {

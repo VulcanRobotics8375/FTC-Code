@@ -16,12 +16,17 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.team8375.SkystoneDetect;
+import org.firstinspires.ftc.team8375.dataParser;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 @TeleOp(name="vision test", group="test")
 public class visionTest extends LinearOpMode {
@@ -30,9 +35,25 @@ public class visionTest extends LinearOpMode {
     OpenCvCamera phoneCam;
     private SkystoneDetect detector;
     private int stonePos;
+    private Properties prop;
 
     @Override
     public void runOpMode() {
+        try {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            InputStream input = loader.getResourceAsStream("config.properties");
+            if(input != null) {
+                telemetry.addLine("inputstream loaded");
+                prop = new Properties();
+                prop.load(input);
+                telemetry.update();
+            } else {
+
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
 //        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -42,7 +63,7 @@ public class visionTest extends LinearOpMode {
         detector = new SkystoneDetect();
         phoneCam.setPipeline(detector);
 
-        phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+        phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPSIDE_DOWN);
         waitForStart();
 
 
@@ -53,11 +74,11 @@ public class visionTest extends LinearOpMode {
             telemetry.addData("x", detector.foundRectangle().x);
             telemetry.addData("point", detector.getScreenPosition());
             telemetry.addData("pos", stonePos);
-            if(detector.foundRectangle().x < 120) {
+            if(detector.foundRectangle().x < dataParser.parseInt(prop, "detector.pos1")) {
                 stonePos = 1;
-            } else if(detector.foundRectangle().x < 240) {
+            } else if(detector.foundRectangle().x < dataParser.parseInt(prop, "detector.pos2")) {
                 stonePos = 2;
-            } else if(detector.foundRectangle().x < 320) {
+            } else if(detector.foundRectangle().x > dataParser.parseInt(prop, "detector.pos2")) {
                 stonePos = 3;
             }
             telemetry.update();

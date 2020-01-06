@@ -43,8 +43,6 @@ public class Intake {
     private CRServo deploy_left;
     private CRServo deploy_right;
 
-    private final double min = 0.2;
-
     private Properties prop;
 
     private Rev2mDistanceSensor irSensor;
@@ -105,7 +103,7 @@ public class Intake {
 
             if (reverse) {
                 intake_left.setPower(-intakePower);
-                intake_right.setPower(-intakePower);
+                intake_right.setPower(intakePower);
 
             } else {
 

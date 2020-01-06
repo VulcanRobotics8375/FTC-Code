@@ -14,20 +14,25 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.team8375.SkystoneDetect;
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
 import org.firstinspires.ftc.team8375.Subsystems.VulcanPID;
 import org.firstinspires.ftc.team8375.Subsystems.VulcanPIDCoefficients;
+import org.firstinspires.ftc.team8375.dataParser;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-enum driveType {
-    MECANUM, TANK
-}
-
 public abstract class VulcanPipeline extends LinearOpMode {
+    enum driveType {
+        MECANUM, TANK
+    }
     private double speed = 0;
     private double pidOut;
     private double integral = 0;
@@ -44,22 +49,28 @@ public abstract class VulcanPipeline extends LinearOpMode {
     private VulcanPID movePid;
     private VulcanPID turnPid;
     protected Properties prop;
+    private OpenCvCamera phoneCam;
+    private SkystoneDetect detector;
 
     protected boolean isDone = false;
-    private boolean async;
+    protected boolean async;
 
     private driveType driveMode;
 
     public void initialize() {
+
         robot = new Robot(hardwareMap);
         robot.drivetrain.init();
         robot.drivetrain.resetEncoders(DcMotor.RunMode.RUN_USING_ENCODER);
         imu = robot.drivetrain.imu;
+
         movePid = new VulcanPID(imu);
         turnPid = new VulcanPID(imu);
         movePid.init();
         turnPid.init();
         isDone = false;
+        step = 0;
+        async = false;
 
         try {
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -73,8 +84,15 @@ public abstract class VulcanPipeline extends LinearOpMode {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
 
-
+    public void initVision() {
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        phoneCam.openCameraDevice();
+        detector = new SkystoneDetect();
+        phoneCam.setPipeline(detector);
+        phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPSIDE_DOWN);
     }
 
     public abstract void runOpMode();
@@ -197,7 +215,24 @@ public abstract class VulcanPipeline extends LinearOpMode {
         }
     }
 
+    public void seek() {
+        while(detector.foundRectangle() == null) {
+            telemetry.addLine("finding skystone...");
+            telemetry.update();
+        }
+        if (detector.foundRectangle().x < dataParser.parseInt(prop, "detector.pos1")) {
+            i = 1;
+        } else if (detector.foundRectangle().x < dataParser.parseInt(prop, "detector.pos2")) {
+            i = 2;
+        } else if (detector.foundRectangle().x > dataParser.parseInt(prop, "detector.pos2")) {
+            i = 3;
+        }
+        telemetry.addData("stonePos", i);
+        telemetry.update();
+    }
+
     public void deployAutoArm() {
+
         robot.autoArm.setFlipPos(135);
         robot.autoArm.setClawPos(170);
         robot.autoArm.setLiftPower(1);
