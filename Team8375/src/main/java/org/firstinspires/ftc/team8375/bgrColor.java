@@ -10,6 +10,9 @@ package org.firstinspires.ftc.team8375;
 
 import org.opencv.core.Scalar;
 
+/**
+ * because why not
+ */
 public interface bgrColor {
     Scalar GREEN = new Scalar(0, 255, 0);
     Scalar RED = new Scalar(0, 0, 255);

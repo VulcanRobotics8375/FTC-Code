@@ -44,7 +44,7 @@ public class SkystoneDetect extends DogeCVDetector {
     public PerfectAreaScorer perfectAreaScorer = new PerfectAreaScorer(5000,0.05); // Used to find objects near a tuned area value
 
     // Results of the detector
-    private Point screenPosition = new Point(); // Screen position of the mineral
+    private Point screenPosition = new Point(); // Screen position of the stone
     private Rect foundRect = new Rect(); // Found rect
 
     private Mat rawImage = new Mat();
