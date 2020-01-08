@@ -33,6 +33,8 @@ import java.util.List;
 public class SkystoneDetect extends DogeCVDetector {
     public DogeCV.AreaScoringMethod areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Setting to decide to use MaxAreaScorer or PerfectAreaScorer
 
+    private int pos1, pos2;
+
     //Create the default filters and scorers
     public DogeCVColorFilter blackFilter = new GrayscaleFilter(0, 25);
     public DogeCVColorFilter yellowFilter = new LeviColorFilter(LeviColorFilter.ColorPreset.YELLOW, 70); //Default Yellow blackFilter
@@ -137,6 +139,8 @@ public class SkystoneDetect extends DogeCVDetector {
             found = false;
         }
 
+        Imgproc.line(displayMat, new Point(pos1, 0), new Point(pos1, 240), new Scalar(30, 255, 0), 2);
+        Imgproc.line(displayMat, new Point(pos2, 0), new Point(pos2, 240), new Scalar(40, 255, 0), 2);
         switch (stageToRenderToViewport) {
             case THRESHOLD: {
                 Imgproc.cvtColor(blackMask, blackMask, Imgproc.COLOR_GRAY2BGR);
@@ -157,6 +161,26 @@ public class SkystoneDetect extends DogeCVDetector {
         }
     }
 
+    public int getRelativePos() {
+        int relativePos = 1;
+        if(foundRect != null) {
+            if(foundRect.x < pos1) {
+                relativePos = 1;
+            } else if(foundRect.x < pos2) {
+                relativePos = 2;
+            } else if(foundRect.x > pos2) {
+                relativePos = 3;
+            }
+        }
+
+        return relativePos;
+    }
+
+    public void setTargetPositions(int pos1, int pos2) {
+        this.pos1 = pos1;
+        this.pos2 = pos2;
+    }
+
     @Override
     public void useDefaults() {
         addScorer(ratioScorer);
@@ -169,5 +193,8 @@ public class SkystoneDetect extends DogeCVDetector {
         if (areaScoringMethod == DogeCV.AreaScoringMethod.PERFECT_AREA){
             addScorer(perfectAreaScorer);
         }
+
+        pos1 = 70;
+        pos2 = 145;
     }
 }
