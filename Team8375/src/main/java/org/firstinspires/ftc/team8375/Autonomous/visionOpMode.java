@@ -27,6 +27,7 @@ public class visionOpMode extends VulcanPipeline {
         initVision();
         seek();
         waitForStart();
+        phoneCam.stopStreaming();
         while(opModeIsActive()) {
             if(!isDone) {
                 moveIn(21, 30);

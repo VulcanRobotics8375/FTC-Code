@@ -49,7 +49,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
     private VulcanPID movePid;
     private VulcanPID turnPid;
     protected Properties prop;
-    private OpenCvCamera phoneCam;
+    protected OpenCvCamera phoneCam;
     private SkystoneDetect detector;
 
     protected boolean isDone = false;
@@ -231,16 +231,17 @@ public abstract class VulcanPipeline extends LinearOpMode {
         telemetry.update();
     }
 
-    public void deployAutoArm() {
-
-        robot.autoArm.setFlipPos(135);
-        robot.autoArm.setClawPos(170);
-        robot.autoArm.setLiftPower(1);
-        sleep(3200);
-        robot.autoArm.setClawPos(90);
-        robot.autoArm.setLiftTime(-1, 1600);
-        robot.autoArm.setFlipPos(45);
-        robot.autoArm.setLiftPower(0);
+    public synchronized void deployAutoArm() {
+        synchronized (this) {
+            robot.autoArm.setFlipPos(135);
+            robot.autoArm.setClawPos(170);
+            robot.autoArm.setLiftPower(1);
+            sleep(3200);
+            robot.autoArm.setClawPos(90);
+            robot.autoArm.setLiftTime(-1, 1600);
+            robot.autoArm.setFlipPos(45);
+            robot.autoArm.setLiftPower(0);
+        }
     }
 
     public void releaseAutoArm() {
