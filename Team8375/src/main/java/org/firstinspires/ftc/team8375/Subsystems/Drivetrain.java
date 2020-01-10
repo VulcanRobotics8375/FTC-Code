@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class Drivetrain {
@@ -52,6 +53,7 @@ public class Drivetrain {
     private boolean turnDone = false;
     private double accLim = 0;
     private ElapsedTime Time = new ElapsedTime();
+    private ElapsedTime timeout = new ElapsedTime();
     private double output = 0;
     private boolean motorIsBusy;
     public VulcanPID pid;
@@ -178,17 +180,27 @@ public class Drivetrain {
         bl.setPower(motorOut[3]);
     }
 
-    public void tankDrive(float leftPower, float rightPower, boolean slowModeButton, boolean headSwitchButton) {
+    public void tankDrive(float movePower, float turnPower, boolean slowModeButton) {
         divisor = (dataParser.parseDouble(prop, "drivetrain.accSpeed")/1.07)*((0.62*Math.pow(dataParser.parseDouble(prop, "drivetrain.accSpeed"), 2))+0.45);
         // modifies the controller input for a more natural feel
         // graph for acceleration curve - https://www.desmos.com/calculator/gdwizzld3f
-        movePower = (leftPower/1.07)*((0.62*Math.pow(leftPower, 2))+0.45);
-        turnPower = (rightPower/1.07)*((0.62*Math.pow(rightPower, 2))+0.45);
-        if(Math.abs(movePower) == 0 && Math.abs(turnPower) == 0) {
+        this.movePower = (movePower/1.07)*((0.62*Math.pow(movePower, 2))+0.45);
+        this.turnPower = (turnPower/1.07)*((0.62*Math.pow(turnPower, 2))+0.45);
+        if(Math.abs(this.movePower) == 0 && Math.abs(this.turnPower) == 0) {
             Time.reset();
+            timeout.reset();
+        } else {
+            if(timeout.now(TimeUnit.MILLISECONDS) < dataParser.parseLong(prop, "drivetrain.deadzoneTimeout")) {
+                if (this.movePower < dataParser.parseDouble(prop, "drivetrain.deadzone")) {
+                    this.movePower = 0;
+                }
+                if (this.turnPower < dataParser.parseDouble(prop, "drivetrain.deadzone")) {
+                    this.turnPower = 0;
+                }
+            }
         }
-        mPower = movePower;
-        tPower = turnPower;
+        mPower = this.movePower;
+        tPower = this.turnPower;
 
 //        if(headSwitchButton) {
 //            buttonPressed = true;
@@ -202,30 +214,31 @@ public class Drivetrain {
 
 //        same acceleration curve, but based on time instead of controller input.
 //         limits the speed at which the robot accelerates
-
-        if(Math.abs(movePower) > 0 || Math.abs(turnPower) > 0) {
+        if(Math.abs(this.movePower) > 0 || Math.abs(this.turnPower) > 0) {
             accLim = (Time.time() / 1.07) * ((0.62 * Math.pow(Time.time(), 2)) + 0.45) / divisor;
 
             //logic gates to determine when to use time-based or controller-based power
-            if (accLim < Math.abs(movePower) && accLim < Math.abs(turnPower)) {
-                movePower = accLim;
-                turnPower = accLim;
-            } else if (accLim < Math.abs(movePower)) {
-                movePower = accLim;
-            } else if (accLim < Math.abs(turnPower)) {
-                turnPower = accLim;
+            if (accLim < Math.abs(this.movePower) && accLim < Math.abs(this.turnPower)) {
+                this.movePower = accLim;
+                this.turnPower = accLim;
+            } else if (accLim < Math.abs(this.movePower)) {
+                this.movePower = accLim;
+            } else if (accLim < Math.abs(this.turnPower)) {
+                this.turnPower = accLim;
             }
         } else {
             accLim = 0;
         }
 
+
+
         //makes sure the motors are going the correct way
         if (mPower < 0 || tPower < 0) {
-            if (movePower == accLim) {
-                movePower = -movePower;
+            if (this.movePower == accLim) {
+                this.movePower = -this.movePower;
             }
-            if (turnPower == accLim) {
-                turnPower = -turnPower;
+            if (this.turnPower == accLim) {
+                this.turnPower = -this.turnPower;
             }
         }
 //        if(inverse < 0) {
@@ -241,17 +254,17 @@ public class Drivetrain {
 
         //set powers
         if(slowModeButton) {
-            movePower *= dataParser.parseDouble(prop, "drivetrain.slowSpeed");
-            turnPower *= dataParser.parseDouble(prop, "drivetrain.slowSpeed");
+            this.movePower *= dataParser.parseDouble(prop, "drivetrain.slowSpeed");
+            this.turnPower *= dataParser.parseDouble(prop, "drivetrain.slowSpeed");
         } else {
-            turnPower *= dataParser.parseDouble(prop, "drivetrain.turnSpeed");
+            this.turnPower *= dataParser.parseDouble(prop, "drivetrain.turnSpeed");
         }
 
 
-        fl.setPower(Range.clip(movePower + turnPower, -1.0, 1.0));
-        bl.setPower(Range.clip(movePower + turnPower, -1.0, 1.0));
-        fr.setPower(Range.clip(movePower - turnPower, -1.0, 1.0));
-        br.setPower(Range.clip(movePower - turnPower, -1.0, 1.0));
+        fl.setPower(Range.clip(this.movePower + this.turnPower, -1.0, 1.0));
+        bl.setPower(Range.clip(this.movePower + this.turnPower, -1.0, 1.0));
+        fr.setPower(Range.clip(this.movePower - this.turnPower, -1.0, 1.0));
+        br.setPower(Range.clip(this.movePower - this.turnPower, -1.0, 1.0));
     }
 
 

@@ -8,11 +8,8 @@
 
 package org.firstinspires.ftc.team8375.TeleOp;
 
-import android.content.Context;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
@@ -74,9 +71,8 @@ public class TankDrive extends OpMode {
                 //turn
                 -gamepad1.right_stick_x,
                 //slow mode
-                gamepad1.right_bumper,
+                gamepad1.right_bumper
                 //head switch
-                gamepad1.left_bumper
         );
 
 

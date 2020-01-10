@@ -162,7 +162,7 @@ public class SkystoneDetect extends DogeCVDetector {
         }
     }
 
-    public int getRelativePos() {
+    public Integer getRelativePos() {
         int relativePos = 1;
         if(foundRect != null) {
             if(foundRect.x < pos1) {
@@ -172,7 +172,8 @@ public class SkystoneDetect extends DogeCVDetector {
             } else if(foundRect.x > pos2) {
                 relativePos = 3;
             }
-        }
+        } else
+            return null;
 
         return relativePos;
     }

@@ -55,9 +55,8 @@ public class OneStickDrive extends OpMode {
                 //turn
                 -gamepad1.right_stick_x,
                 //acceleration time
-                gamepad1.right_bumper,
+                gamepad1.right_bumper
                 //head switch
-                gamepad1.left_bumper
         );
 
 
