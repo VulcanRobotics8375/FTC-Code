@@ -226,8 +226,6 @@ public abstract class VulcanPipeline extends LinearOpMode {
         } else if (detector.foundRectangle().x > dataParser.parseInt(prop, "detector.pos2")) {
             i = 3;
         }
-        telemetry.addData("stonePos", i);
-        telemetry.update();
     }
 
     public synchronized void deployAutoArm() {

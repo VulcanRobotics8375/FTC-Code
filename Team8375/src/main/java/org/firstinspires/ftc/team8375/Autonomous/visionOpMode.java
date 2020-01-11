@@ -26,6 +26,7 @@ public class visionOpMode extends VulcanPipeline {
         initialize();
         initVision();
         seek();
+        telemetry.addData("stonePos", returnInt());
         waitForStart();
         phoneCam.stopStreaming();
         while(opModeIsActive()) {
