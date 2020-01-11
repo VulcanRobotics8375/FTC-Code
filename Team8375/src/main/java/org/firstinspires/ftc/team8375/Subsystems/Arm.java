@@ -95,11 +95,11 @@ public class Arm {
      * @param pitchPower Input for the pitch motor
      * @param clawButton boolean for opening and closing the claw -- system doesn't rely on this value being true or false, it has a state switch for every true false cycle of the boolean.
      * @param yawButton boolean for the flip servo toggle, same true false cycle state as the clawButton param
-     * @param bypass
-     * @param reset
-     * @param levelUp
-     * @param levelDown
-     * @param flipGive
+     * @param bypass bypass the pitch zero position
+     * @param reset reset button-- resets all lift components to starting position
+     * @param levelUp button for toggling the level give upward
+     * @param levelDown button for toggling the level give downward
+     * @param flipGive joystick input for extra flip movement
      */
     public void run(double liftPower, double pitchPower, boolean clawButton, boolean yawButton, boolean bypass, boolean reset, boolean levelUp, boolean levelDown, double flipGive) {
 
@@ -114,6 +114,7 @@ public class Arm {
             this.reset = true;
             resetIsDone = false;
             resetStep = 0;
+            clawOn = -1;
         }
         if (this.reset && !reset) {
             if(!resetIsDone) {
@@ -153,12 +154,10 @@ public class Arm {
                 }
 
                 if (resetStep == 1) {
-                    if(yaw.getPosition() != Double.parseDouble(prop.getProperty("arm.yawRetracted")) && claw.getPosition() != Double.parseDouble(prop.getProperty("arm.clawIn"))) {
+                    if(yaw.getPosition() != Double.parseDouble(prop.getProperty("arm.yawRetracted"))) {
                         setServoAngle(yaw, dataParser.parseDouble(prop, "arm.yawRetracted"));
-                        setServoAngle(claw, Double.parseDouble(prop.getProperty("arm.clawIn")));
                     } else {
                         resetStep++;
-                        clawOn = 1;
                         yawOn = -1;
                     }
                 }
@@ -257,9 +256,9 @@ public class Arm {
             }
 
             if (clawOn < 0) {
-                setServoAngle(claw, Double.parseDouble(prop.getProperty("arm.clawIn")));
-            } else if (clawOn > 0) {
                 setServoAngle(claw, Double.parseDouble(prop.getProperty("arm.clawOut")));
+            } else if (clawOn > 0) {
+                setServoAngle(claw, Double.parseDouble(prop.getProperty("arm.clawIn")));
             }
 
             //set powers
