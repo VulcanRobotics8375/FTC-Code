@@ -45,6 +45,8 @@ public class Drivetrain {
             tPower,
             divisor,
             turnCoefficient,
+            lastMovePower,
+            lastTurnPower,
             targetAngle,
             percent;
 
@@ -52,6 +54,7 @@ public class Drivetrain {
     private boolean buttonPressed = false;
     private boolean turnDone = false;
     private double accLim = 0;
+    private double deAcc = 0;
     private ElapsedTime Time = new ElapsedTime();
     private ElapsedTime timeout = new ElapsedTime();
     private double output = 0;
@@ -188,16 +191,20 @@ public class Drivetrain {
         this.turnPower = (turnPower/1.07)*((0.62*Math.pow(turnPower, 2))+0.45);
         if(Math.abs(this.movePower) == 0 && Math.abs(this.turnPower) == 0) {
             Time.reset();
+        }
+//        else {
+//            if(timeout.now(TimeUnit.MILLISECONDS) < dataParser.parseLong(prop, "drivetrain.deadzoneTimeout")) {
+//                if (this.movePower < dataParser.parseDouble(prop, "drivetrain.deadzone")) {
+//                    this.movePower = 0;
+//                }
+//                if (this.turnPower < dataParser.parseDouble(prop, "drivetrain.deadzone")) {
+//                    this.turnPower = 0;
+//                }
+//            }
+//        }
+
+        if(this.movePower != 0 || this.turnPower != 0) {
             timeout.reset();
-        } else {
-            if(timeout.now(TimeUnit.MILLISECONDS) < dataParser.parseLong(prop, "drivetrain.deadzoneTimeout")) {
-                if (this.movePower < dataParser.parseDouble(prop, "drivetrain.deadzone")) {
-                    this.movePower = 0;
-                }
-                if (this.turnPower < dataParser.parseDouble(prop, "drivetrain.deadzone")) {
-                    this.turnPower = 0;
-                }
-            }
         }
         mPower = this.movePower;
         tPower = this.turnPower;
@@ -231,7 +238,6 @@ public class Drivetrain {
         }
 
 
-
         //makes sure the motors are going the correct way
         if (mPower < 0 || tPower < 0) {
             if (this.movePower == accLim) {
@@ -251,6 +257,9 @@ public class Drivetrain {
 //                }
 //            }
 //        }
+
+        lastMovePower = this.movePower;
+        lastTurnPower = this.turnPower;
 
         //set powers
         if(slowModeButton) {

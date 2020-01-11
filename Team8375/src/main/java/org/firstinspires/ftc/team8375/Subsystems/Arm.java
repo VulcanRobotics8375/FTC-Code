@@ -67,6 +67,7 @@ public class Arm {
         this.claw = claw;
         this.yaw = yaw;
         this.level = level;
+        this.level.setDirection(Servo.Direction.REVERSE);
 
         try {
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
