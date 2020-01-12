@@ -23,8 +23,8 @@ import java.util.concurrent.TimeUnit;
 public class AutoArm {
 
     private Context context;
-    private Servo flip;
-    private Servo claw;
+    public Servo flip;
+    public Servo claw;
     private CRServo lift;
 
 //    private double a, k;
@@ -63,10 +63,10 @@ public class AutoArm {
     }
 
     public void setFlipPos(double angle) {
-        setServoAngle(flip, angle);
+        flip.setPosition(angle / 180.0);
     }
     public void setClawPos(double angle) {
-        setServoAngle(claw, angle);
+        claw.setPosition(angle / 180.0);
     }
 
     public void setLiftPower(double power) {

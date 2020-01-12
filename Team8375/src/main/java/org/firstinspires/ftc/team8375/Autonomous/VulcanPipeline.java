@@ -49,7 +49,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
     private VulcanPID turnPid;
     protected Properties prop;
     protected OpenCvCamera phoneCam;
-    private SkystoneDetect detector;
+    protected SkystoneDetect detector;
 
     protected boolean isDone = false;
     protected boolean async;
@@ -137,18 +137,19 @@ public abstract class VulcanPipeline extends LinearOpMode {
 
         double wheelSize = (100.0/25.4) * Math.PI;
         int targetPos = (int) Math.round((inches/wheelSize) * 537.6);
-        while(robot.drivetrain.getPosition() != targetPos) {
-            double inchesTravelled = (robot.drivetrain.getPosition() / 537.6) * wheelSize;
-            movePid.run(inches, inchesTravelled, moveCoefficients);
-            robot.drivetrain.movePercent(speed, robot.drivetrain.pid.getOutput());
+        double inchesTravelled = 0;
+        while(inchesTravelled != inches) {
+            inchesTravelled = (robot.drivetrain.getPosition() / 537.6) * wheelSize;
+            pid(0.5, 0.6, 1, 7, inchesTravelled, inches);
+            robot.drivetrain.movePercent(speed, pidOut);
             telemetry.addData("pos", robot.drivetrain.getPosition());
             telemetry.addData("output", robot.drivetrain.pid.getOutput());
             telemetry.update();
-            step++;
 //            if(async) {
 //                async();
 //            }
         }
+        step++;
         robot.drivetrain.setPowers(0, 0);
     }
 
@@ -156,6 +157,10 @@ public abstract class VulcanPipeline extends LinearOpMode {
         double wheelSize = (dataParser.parseDouble(prop, "drivetrain.wheelDiameter")/25.4) * Math.PI;
         int targetPos = (int) Math.round((inches/wheelSize) * dataParser.parseDouble(prop, "drivetrain.tpr"));
         robot.drivetrain.setTargetPos(targetPos);
+        robot.drivetrain.resetEncoders(DcMotor.RunMode.RUN_TO_POSITION);
+        while(robot.drivetrain.motorIsBusy()) {
+
+        }
 
     }
 
@@ -163,6 +168,23 @@ public abstract class VulcanPipeline extends LinearOpMode {
         double sensorVal = robot.drivetrain.pid.getIntegratedHeading() + robot.drivetrain.pid.getStartHeading();
 
         double error = sensorVal - heading;
+        integral += ((error + previousError) / 2.0) * (iterationTime / 1000.0);
+        integral = Range.clip(integral, -100, 100);
+        derivative = (error - previousError);
+        pidOut = Kp * error + Ki * integral + Kd * derivative;
+        previousError = error;
+
+        if(Math.abs(error) < 10) {
+            pidOut = Range.clip(pidOut, -40, 40);
+        } else {
+            pidOut = Range.clip(pidOut, -100, 100);
+        }
+        sleep(iterationTime);
+        updateTelemetry();
+    }
+    private void pid(double Kp, double Ki, double Kd, long iterationTime, double value, double target) {
+        double error = value - target;
+
         integral += ((error + previousError) / 2.0) * (iterationTime / 1000.0);
         integral = Range.clip(integral, -100, 100);
         derivative = (error - previousError);
@@ -226,26 +248,27 @@ public abstract class VulcanPipeline extends LinearOpMode {
             telemetry.addLine("finding skystone...");
             telemetry.update();
         }
-        if (detector.foundRectangle().x < dataParser.parseInt(prop, "detector.pos1")) {
+        if (detector.getScreenPosition().x < dataParser.parseInt(prop, "detector.pos1")) {
             i = 1;
-        } else if (detector.foundRectangle().x < dataParser.parseInt(prop, "detector.pos2")) {
+        } else if (detector.getScreenPosition().x < dataParser.parseInt(prop, "detector.pos2")) {
             i = 2;
-        } else if (detector.foundRectangle().x > dataParser.parseInt(prop, "detector.pos2")) {
+        } else if (detector.getScreenPosition().x > dataParser.parseInt(prop, "detector.pos2")) {
             i = 3;
         }
     }
 
-    public synchronized void deployAutoArm() {
-        synchronized (this) {
-            robot.autoArm.setFlipPos(135);
-            robot.autoArm.setClawPos(170);
-            robot.autoArm.setLiftPower(1);
-            sleep(3200);
-            robot.autoArm.setClawPos(90);
-            robot.autoArm.setLiftTime(-1, 1600);
-            robot.autoArm.setFlipPos(45);
-            robot.autoArm.setLiftPower(0);
+    public void deployAutoArm() {
+        while(robot.autoArm.flip.getPosition() != 135 && robot.autoArm.claw.getPosition() != 170) {
+            robot.autoArm.flip.setPosition(135);
+            robot.autoArm.claw.setPosition(170);
         }
+        robot.autoArm.setLiftPower(1);
+        sleep(3200);
+        robot.autoArm.setClawPos(90);
+        robot.autoArm.setLiftPower(-1);
+        sleep(3200);
+        robot.autoArm.setFlipPos(52);
+        robot.autoArm.setLiftPower(0);
     }
 
     public void releaseAutoArm() {
