@@ -145,11 +145,18 @@ public abstract class VulcanPipeline extends LinearOpMode {
             telemetry.addData("output", robot.drivetrain.pid.getOutput());
             telemetry.update();
             step++;
-            if(async) {
-                async();
-            }
+//            if(async) {
+//                async();
+//            }
         }
         robot.drivetrain.setPowers(0, 0);
+    }
+
+    public void moveRobot(double inches, double speed) {
+        double wheelSize = (dataParser.parseDouble(prop, "drivetrain.wheelDiameter")/25.4) * Math.PI;
+        int targetPos = (int) Math.round((inches/wheelSize) * dataParser.parseDouble(prop, "drivetrain.tpr"));
+        robot.drivetrain.setTargetPos(targetPos);
+
     }
 
     private void pid(double Kp, double Ki, double Kd, long iterationTime, double heading) {
@@ -178,9 +185,9 @@ public abstract class VulcanPipeline extends LinearOpMode {
             pid(0.5, 0.6, 1, 7, heading);
             robot.drivetrain.turnPercent(speed, pidOut);
             step++;
-            if(async) {
-                async();
-            }
+//            if(async) {
+//                async();
+//            }
         }
         robot.drivetrain.setPowers(0, 0);
         step++;
@@ -197,9 +204,9 @@ public abstract class VulcanPipeline extends LinearOpMode {
             robot.SkystoneDetect.resetScore();
             sleep(100);
             telemetry.addData("score", robot.SkystoneDetect.getScorer());
-            if(async) {
-                async();
-            }
+//            if(async) {
+//                async();
+//            }
 
         }
         robot.drivetrain.setPowers(0, 0);
