@@ -8,35 +8,42 @@
 
 package org.firstinspires.ftc.team8375.Autonomous;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
-/**
-*   Sample Autonomous program:
-*   Copy this opMode, rename it and remove the @Disabled tag
-*   and everything should work.
- *   @see org.firstinspires.ftc.team8375.Autonomous.VulcanPipeline
-*/
+import org.firstinspires.ftc.team8375.Subsystems.Robot;
 
-@Disabled
-@Autonomous(name = "name", group = "group")
-public class autoShell extends VulcanPipeline {
+public class AutoArmThread extends Thread {
+    private Robot robot;
 
-    @Override
-    public void runOpMode() {
-        initialize();
-        waitForStart();
-        while(opModeIsActive()) {
-            if(!isDone) {
-
-                //instructions go here
-
-                isDone = true;
-            }
-        }
-
-        robot.stop();
-
+    public AutoArmThread(HardwareMap hwMap) {
+        robot = new Robot(hwMap);
     }
-    public void async() {}
+
+    public void run() {
+        deploy();
+    }
+
+    public synchronized void deploy() {
+        synchronized (this) {
+            robot.autoArm.flip.setPosition(130 / 180.0);
+            robot.autoArm.claw.setPosition(170 / 180.0);
+            robot.autoArm.setLiftPower(1);
+            try {
+                sleep(3100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            robot.autoArm.flip.setPosition(135 / 180.0);
+            robot.autoArm.setClawPos(90);
+            robot.autoArm.setLiftPower(-1);
+            try {
+                sleep(3100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            robot.autoArm.setFlipPos(52);
+            robot.autoArm.setLiftPower(0);
+        }
+    }
+
 }

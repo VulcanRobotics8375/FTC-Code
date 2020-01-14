@@ -25,7 +25,7 @@ public class visionOpMode extends VulcanPipeline {
     public void runOpMode() {
         initialize();
         initVision();
-        sleepOpMode(1500);
+        sleepOpMode(2000);
         seek();
         telemetry.addData("stonePos", returnInt());
         telemetry.addData("stone x", detector.getScreenPosition().x);
@@ -34,12 +34,18 @@ public class visionOpMode extends VulcanPipeline {
         phoneCam.stopStreaming();
         while(opModeIsActive()) {
             if(!isDone) {
-                moveIn(21, 20);
+                robot.autoArm.setFlipPos(50);
+                move(21, 50);
                 turn(90, 50);
                 switch(returnInt()) {
                     case 1: {
+                        autoArmThread.start();
+                        move(2, 50);
+//                        deployAutoArm();
+                        move(70, 50);
+                        releaseAutoArm();
+                        move(-94, 50);
                         deployAutoArm();
-                        moveIn(50, 60);
                     }
                     case 2: {
 
