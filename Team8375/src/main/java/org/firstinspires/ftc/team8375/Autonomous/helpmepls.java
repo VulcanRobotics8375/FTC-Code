@@ -24,14 +24,14 @@ public class helpmepls extends VulcanPipeline {
         while(opModeIsActive()) {
             if(!isDone) {
 
-//                armTime.reset();
+                armTime.reset();
                 //instructions go here
 
-//                move(18, 30);
-//                turn(-90, 80);
+                move(18, 30);
+                turn(-90, 80);
 
 //                turn(90, 70);
-                move(50, 50);
+                move(5, 5);
 //                turn(45, 50);
 
                 isDone = true;
@@ -45,11 +45,11 @@ public class helpmepls extends VulcanPipeline {
     }
 
     public void async() {
-//        if(armTime.now(TimeUnit.MILLISECONDS) > 4000 && armTime.now(TimeUnit.MILLISECONDS) < 8200) {
-//            deployAutoArm();
-//        }
-//        if(armTime.now(TimeUnit.MILLISECONDS) > 9000 && armTime.now(TimeUnit.MILLISECONDS) < 13200) {
-//            releaseAutoArm();
-//        }
+        if(armTime.now(TimeUnit.MILLISECONDS) > 4000 && armTime.now(TimeUnit.MILLISECONDS) < 8200) {
+            deployAutoArm();
+        }
+        if(armTime.now(TimeUnit.MILLISECONDS) > 9000 && armTime.now(TimeUnit.MILLISECONDS) < 13200) {
+            releaseAutoArm();
+        }
     }
 }

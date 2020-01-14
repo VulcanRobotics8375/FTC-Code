@@ -11,11 +11,10 @@ package org.firstinspires.ftc.team8375.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-/**
+/*
 *   Sample Autonomous program:
 *   Copy this opMode, rename it and remove the @Disabled tag
 *   and everything should work.
- *   @see org.firstinspires.ftc.team8375.Autonomous.VulcanPipeline
 */
 
 @Disabled

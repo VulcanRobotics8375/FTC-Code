@@ -20,10 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-/**
- * Arm subsystem
- */
-
 @SuppressWarnings("FieldCanBeLocal")
 public class Arm {
     // variable initialization
