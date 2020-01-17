@@ -53,7 +53,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
     protected Properties prop;
     protected OpenCvCamera phoneCam;
     protected SkystoneDetect detector;
-    protected AutoArmThread autoArmThread;
+//    protected AutoArmThread autoArmThread;
 
     protected boolean isDone = false;
     protected boolean async;
@@ -67,7 +67,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
     public void initialize() {
 
         robot = new Robot(hardwareMap);
-        autoArmThread = new AutoArmThread(hardwareMap);
+//        autoArmThread = new AutoArmThread(hardwareMap);
         robot.drivetrain.init();
         robot.drivetrain.resetEncoders(DcMotor.RunMode.RUN_USING_ENCODER);
         imu = robot.drivetrain.imu;
