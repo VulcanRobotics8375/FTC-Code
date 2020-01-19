@@ -46,7 +46,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
     private ElapsedTime stoneTime = new ElapsedTime();
     protected ElapsedTime armTime = new ElapsedTime();
     private VulcanPIDCoefficients turnCoefficients = new VulcanPIDCoefficients(0.5, 0.6, 1);
-    private VulcanPIDCoefficients moveCoefficients = new VulcanPIDCoefficients(-3, -3, -3, 5);
+    private VulcanPIDCoefficients moveCoefficients = new VulcanPIDCoefficients(-1, -1, -1, 5);
     private BNO055IMU imu;
     private VulcanPID movePid;
     private VulcanPID turnPid;
