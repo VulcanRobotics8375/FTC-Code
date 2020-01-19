@@ -32,6 +32,8 @@ public class helpmepls extends VulcanPipeline {
 
 //                turn(90, 70);
                 move(50, 50);
+                move(-55, 50);
+                move(5, 30);
 //                turn(45, 50);
 
                 isDone = true;
