@@ -40,12 +40,12 @@ public class visionOpMode extends VulcanPipeline {
                 switch(returnInt()) {
                     case 1: {
 //                        autoArmThread.start();
-                        move(2, 50);
-//                        deployAutoArm();
-                        move(70, 50);
-                        releaseAutoArm();
-                        move(-94, 50);
+//                        move(2, 100);
                         deployAutoArm();
+                        move(70, 40);
+                        releaseAutoArm();
+                        turn(-90, 50);
+
                     }
                     case 2: {
 
