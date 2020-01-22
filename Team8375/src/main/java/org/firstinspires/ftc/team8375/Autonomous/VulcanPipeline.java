@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.team8375.Odometry.Tracker;
 import org.firstinspires.ftc.team8375.SkystoneDetect;
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
 import org.firstinspires.ftc.team8375.Subsystems.VulcanPID;
@@ -48,6 +49,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
     private VulcanPIDCoefficients turnCoefficients = new VulcanPIDCoefficients(0.5, 0.6, 1);
     private VulcanPIDCoefficients moveCoefficients = new VulcanPIDCoefficients(-1, -1, -1, 5);
     private BNO055IMU imu;
+    private Tracker tracker;
     private VulcanPID movePid;
     private VulcanPID turnPid;
     protected Properties prop;
@@ -65,8 +67,9 @@ public abstract class VulcanPipeline extends LinearOpMode {
      *
      */
     public void initialize() {
-
         robot = new Robot(hardwareMap);
+        tracker = new Tracker(robot.drivetrain.imu);
+        tracker.start();
 //        autoArmThread = new AutoArmThread(hardwareMap);
         robot.drivetrain.init();
         robot.drivetrain.resetEncoders(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -330,6 +333,11 @@ public abstract class VulcanPipeline extends LinearOpMode {
 
         telemetry.update();
 
+    }
+
+    public void hold() {
+        robot.stop();
+        tracker.setRunMode(false);
     }
 
     private static double round (double value, int precision) {

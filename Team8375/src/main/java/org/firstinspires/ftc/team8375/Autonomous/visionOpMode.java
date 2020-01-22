@@ -61,10 +61,9 @@ public class visionOpMode extends VulcanPipeline {
 
                 isDone = true;
             }
+            hold();
             telemetry.update();
         }
-
-        robot.stop();
 
     }
     public void async() {
