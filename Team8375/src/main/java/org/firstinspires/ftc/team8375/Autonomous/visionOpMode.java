@@ -35,19 +35,61 @@ public class visionOpMode extends VulcanPipeline {
         while(opModeIsActive()) {
             if(!isDone) {
                 robot.autoArm.setFlipPos(50);
-                move(21, 50);
+                move(20, 50);
                 turn(90, 50);
                 switch(returnInt()) {
                     case 1: {
 //                        autoArmThread.start();
-//                        move(2, 100);
-                        deployAutoArm();
-                        move(70, 40);
-                        releaseAutoArm();
-                        turn(-90, 50);
+                        deployArm.start();
+                        move(2, 100);
+                        while (!autoArmDone) {
 
+                        }
+                        autoArmDone = false;
+                        move(52, 50);
+                        releaseArm.start();
+                        Thread t = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                sleep(2600);
+                                deployAutoArm();
+                            }
+                        });
+                        while(!autoArmDone) {}
+                        autoArmDone = false;
+                        t.start();
+                        move(-76, 50);
+                        while (!autoArmDone) {}
+                        autoArmDone = false;
+                        move(73, 50);
+                        releaseArm.interrupt();
+                        releaseArm.run();
+                        while(!autoArmDone) {}
+                        move(-25, 50);
+                        return;
                     }
                     case 2: {
+                        deployArm.start();
+                        move(-4, 70);
+                        while (!autoArmDone) {
+
+                        }
+
+                        move(61, 40);
+                        releaseArm.start();
+                        Thread t = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                sleep(4100);
+                                deployAutoArm();
+                            }
+                        });
+                        t.start();
+                        move(-84, 40);
+                        while(!autoArmDone) {}
+                        move(90, 40);
+                        releaseArm.start();
+                        return;
 
                     }
                     case 3: {
@@ -58,6 +100,8 @@ public class visionOpMode extends VulcanPipeline {
                     }
 
                 }
+
+                //foundation code
 
                 isDone = true;
             }
