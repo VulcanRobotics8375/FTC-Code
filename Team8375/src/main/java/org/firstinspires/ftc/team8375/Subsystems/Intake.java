@@ -13,6 +13,7 @@ import android.content.Context;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -45,9 +46,9 @@ public class Intake {
 
     private Properties prop;
 
-    private Rev2mDistanceSensor irSensor;
+    private DistanceSensor irSensor;
 
-    public Intake(DcMotor intakeLeft, DcMotor intakeRight, CRServo deployLeft, CRServo deployRight, Rev2mDistanceSensor irSensor) {
+    public Intake(DcMotor intakeLeft, DcMotor intakeRight, CRServo deployLeft, CRServo deployRight, DistanceSensor irSensor) {
         intake_left = intakeLeft;
         intake_right = intakeRight;
 
@@ -133,7 +134,7 @@ public class Intake {
 
     public void setPowers(double power) {
         intake_left.setPower(power);
-        intake_right.setPower(power);
+        intake_right.setPower(-power);
     }
 
     public void init() {

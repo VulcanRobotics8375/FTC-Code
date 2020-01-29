@@ -12,6 +12,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -44,7 +45,7 @@ public class Robot {
                 hwMap.dcMotor.get("intake_right"),
                 hwMap.get(CRServo.class, "deploy_left"),
                 hwMap.get(CRServo.class, "deploy_right"),
-                hwMap.get(Rev2mDistanceSensor.class, "intake_sensor")
+                hwMap.get(DistanceSensor.class, "intake_sensor")
         );
 
         autoArm = new AutoArm(

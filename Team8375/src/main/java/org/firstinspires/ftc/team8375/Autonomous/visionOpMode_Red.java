@@ -9,18 +9,9 @@
 package org.firstinspires.ftc.team8375.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
-/*
-*   Sample Autonomous program:
-*   Copy this opMode, rename it and remove the @Disabled tag
-*   and everything should work.
-*/
-
-@Autonomous(name = "vision", group = "test")
-public class visionOpMode extends VulcanPipeline {
+@Autonomous(name = "vision-red", group = "test")
+public class visionOpMode_Red extends VulcanPipeline {
     private boolean started = false;
 
     @Override
@@ -43,7 +34,7 @@ public class visionOpMode extends VulcanPipeline {
                     case 1: {
 //                        autoArmThread.start();
                         deployArm.start();
-                        move(2, 100);
+                        move(-2, 100);
                         while (!autoArmDone) {
 
                         }
@@ -118,40 +109,31 @@ public class visionOpMode extends VulcanPipeline {
 
                     }
                     case 3: {
-                        Thread r = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                sleep(200);
-                                deployAutoArm();
-                            }
-                        });
-                        r.start();
-                        move(-14, 70);
+                        deployArm.start();
+                        move(-8, 70);
                         while (!autoArmDone) {
 
                         }
                         autoArmDone = false;
-                        r.interrupt();
+                        deployArm.interrupt();
                         move(68, 50);
                         releaseArm.start();
                         turn(90, 100);
                         while(!autoArmDone) {}
                         autoArmDone = false;
-                        move(-71, 40);
-                        Thread intake = new Thread(new Runnable() {
+                        Thread t = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
-                                    robot.intake.setPowers(1);
-                                }
-                                robot.intake.setPowers(0);
+                                sleep(2900);
+                                deployAutoArm();
                             }
                         });
-                        intake.run();
-                        turn(140, 30);
-                        move(-10, 50);
-                        move(10, 50);
-                        turn(90, 50);
+                        t.start();
+                        move(-88, 50);
+                        while (!autoArmDone) {}
+                        autoArmDone = false;
+                        t.interrupt();
+                        sleep(500);
                         move(79, 50);
                         releaseArm.interrupt();
                         releaseArm.run();

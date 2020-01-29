@@ -183,6 +183,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
             pid(5, 0.6, 1.4, 7, inchesTravelled, inches);
             robot.drivetrain.movePercent(speed, -pidOut);
             telemetry.addData("pos", robot.drivetrain.getPosition());
+            telemetry.addData("inches", inchesTravelled);
             telemetry.addData("output", pidOut);
             telemetry.update();
 //            if(async) {
@@ -243,7 +244,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
     public void turn(double heading, double speed) {
         double bias = robot.drivetrain.getImuAngle();
 
-        while (Math.ceil(robot.drivetrain.getImuAngle() - bias) != heading) {
+        while (Math.ceil(robot.drivetrain.getImuAngle()) != heading) {
             pid(1.1, 0.7, 1, 7, heading);
             robot.drivetrain.turnPercent(speed, pidOut);
 //            if(async) {
@@ -307,7 +308,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
             robot.autoArm.setClawPos(90);
             sleep(400);
             robot.autoArm.setLiftPower(1);
-            robot.autoArm.setFlipPos(52);
+            robot.autoArm.setFlipPos(58);
             autoArmDone = true;
         }
     }
