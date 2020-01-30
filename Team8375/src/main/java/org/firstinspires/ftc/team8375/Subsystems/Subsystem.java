@@ -10,17 +10,29 @@ package org.firstinspires.ftc.team8375.Subsystems;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import java.util.List;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
-public class Robot {
+public abstract class Subsystem {
 
-    public Robot(HardwareMap hwMap, List<Subsystem> subsystems) {
+    public HardwareMap hwMap;
+    public Properties prop;
 
-        for (Subsystem sub : subsystems) {
-            sub.hwMap = hwMap;
-            sub.create();
+    public Subsystem() {
+        try {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            InputStream input = loader.getResourceAsStream("config.properties");
+            if(input != null) {
+                prop = new Properties();
+                prop.load(input);
+            } else {
+
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
-
     }
 
+    public abstract void create();
 }

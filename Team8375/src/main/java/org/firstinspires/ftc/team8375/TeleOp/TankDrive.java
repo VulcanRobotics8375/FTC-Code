@@ -12,10 +12,15 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.team8375.Subsystems.Arm;
+import org.firstinspires.ftc.team8375.Subsystems.Drivetrain;
 import org.firstinspires.ftc.team8375.Subsystems.Robot;
+import org.firstinspires.ftc.team8375.Subsystems.Subsystem;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 @TeleOp(name="TankDrive", group="Drive")
@@ -24,6 +29,8 @@ public class TankDrive extends OpMode {
     private boolean buttonPressed;
     private int inverse = 1;
     private Properties prop;
+    private List<Subsystem> subsystems = new ArrayList<>();
+    private Arm arm = new Arm();
 
     @Override
     public void init() {
@@ -41,9 +48,10 @@ public class TankDrive extends OpMode {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        subsystems.add(arm);
         robot = new Robot(hardwareMap);
         telemetry.addLine("robot loaded");
-        robot.arm.ArmMotorInit(0);
+        arm.ArmMotorInit(0);
         robot.drivetrain.init();
         telemetry.update();
 

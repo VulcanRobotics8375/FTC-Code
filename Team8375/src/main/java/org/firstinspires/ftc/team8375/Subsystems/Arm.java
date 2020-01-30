@@ -25,7 +25,7 @@ import java.util.Properties;
  */
 
 @SuppressWarnings("FieldCanBeLocal")
-public class Arm {
+public class Arm extends Subsystem {
     // variable initialization
     private DcMotor lift;
     private DcMotor pitch;
@@ -62,35 +62,22 @@ public class Arm {
     private int clawOn = -1;
     private int yawOn = -1;
     private int levelCenter = 0;
-    private Properties prop;
-    private Context context;
-
-    public Arm(DcMotor lift, DcMotor pitch, Servo claw, Servo yaw, Servo level) {
-        this.lift = lift;
-        this.pitch = pitch;
-        this.claw = claw;
-        this.yaw = yaw;
-        this.level = level;
-        this.level.setDirection(Servo.Direction.REVERSE);
-
-        try {
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            InputStream input = loader.getResourceAsStream("config.properties");
-            if(input != null) {
-                prop = new Properties();
-                prop.load(input);
-            } else {
-
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        //motor initialization
+    public Arm() {
+        //sets constants with properties file, has to be in a method or constructor so it's here now
         theta = dataParser.parseDouble(prop, "arm.theta");
         ticks = dataParser.parseDouble(prop, "arm.pitchHigh");
         coefficient = theta / ticks;
         resetPos = dataParser.parseDouble(prop, "arm.resetPos");
+    }
 
+    @Override
+    public void create() {
+        lift = hwMap.dcMotor.get("lift");
+        pitch = hwMap.dcMotor.get("pitch");
+        claw = hwMap.get(Servo.class, "claw");
+        yaw = hwMap.get(Servo.class, "yaw");
+        level = hwMap.get(Servo.class, "level");
+        level.setDirection(Servo.Direction.REVERSE);
     }
 
     /**
