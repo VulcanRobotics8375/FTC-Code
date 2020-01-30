@@ -26,8 +26,7 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class Drivetrain {
-    private Context context;
+public class Drivetrain extends Subsystem {
     private DcMotor fl, fr, bl, br;
     public BNO055IMU imu;
     private BNO055IMU.Parameters parameters;
@@ -60,29 +59,17 @@ public class Drivetrain {
     private double output = 0;
     private boolean motorIsBusy;
     public VulcanPID pid;
-    private Properties prop;
 
-    public Drivetrain(DcMotor frontLeft, DcMotor frontRight, DcMotor backLeft, DcMotor backRight, BNO055IMU IMU) {
-        fl = frontLeft;
-        fr = frontRight;
-        bl = backLeft;
-        br = backRight;
-        imu = IMU;
-        try {
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            InputStream input = loader.getResourceAsStream("config.properties");
-            if(input != null) {
-                prop = new Properties();
-                prop.load(input);
-            } else {
+    public Drivetrain() {}
 
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-
+    public void create() {
+        fl = hwMap.dcMotor.get("front_left");
+        fr = hwMap.dcMotor.get("front_right");
+        bl = hwMap.dcMotor.get("back_left");
+        br = hwMap.dcMotor.get("back_right");
+        imu = hwMap.get(BNO055IMU.class, "imu");
     }
+
 
 //    public void runOpMode() {
 //        telemetry.addData("fl Position", fl.getCurrentPosition());

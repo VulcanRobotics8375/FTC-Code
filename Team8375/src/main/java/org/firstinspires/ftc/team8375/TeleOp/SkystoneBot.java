@@ -6,21 +6,26 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.team8375.Subsystems;
+package org.firstinspires.ftc.team8375.TeleOp;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import java.util.List;
+import org.firstinspires.ftc.team8375.Robot.FullBot;
 
-public class Robot {
+public class SkystoneBot extends OpMode {
+    private FullBot robot;
 
-    public Robot(HardwareMap hwMap, List<Subsystem> subsystems) {
 
-        for (Subsystem sub : subsystems) {
-            sub.hwMap = hwMap;
-            sub.create();
-        }
-
+    @Override
+    public void init() {
+        robot = new FullBot(hardwareMap);
+        robot.arm.ArmMotorInit(0);
     }
 
+    @Override
+    public void start() {}
+
+    @Override
+    public void loop() {
+    }
 }

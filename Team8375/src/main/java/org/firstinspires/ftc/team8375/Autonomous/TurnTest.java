@@ -10,7 +10,7 @@ package org.firstinspires.ftc.team8375.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.team8375.Subsystems.Robot;
+import org.firstinspires.ftc.team8375.Robot.Robot;
 
 @Autonomous(name = "turn test", group = "test")
 public class TurnTest extends VulcanPipeline {

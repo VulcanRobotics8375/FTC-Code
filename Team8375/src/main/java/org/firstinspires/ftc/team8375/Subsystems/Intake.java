@@ -27,9 +27,7 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class Intake {
-
-    private Context context;
+public class Intake extends Subsystem {
     private ElapsedTime time = new ElapsedTime();
     private ElapsedTime intakeTime = new ElapsedTime();
     private boolean onPressed;
@@ -44,35 +42,18 @@ public class Intake {
     private CRServo deploy_left;
     private CRServo deploy_right;
 
-    private Properties prop;
-
     private DistanceSensor irSensor;
 
-    public Intake(DcMotor intakeLeft, DcMotor intakeRight, CRServo deployLeft, CRServo deployRight, DistanceSensor irSensor) {
-        intake_left = intakeLeft;
-        intake_right = intakeRight;
+    public Intake() {}
 
-        deploy_left = deployLeft;
-        deploy_right = deployRight;
-
-        this.irSensor = irSensor;
-
-        try {
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            InputStream input = loader.getResourceAsStream("config.properties");
-            if(input != null) {
-                prop = new Properties();
-                prop.load(input);
-            } else {
-
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
+    @Override
+    public void create() {
+        intake_left = hwMap.dcMotor.get("intake_left");
+        intake_right = hwMap.dcMotor.get("intake_right");
+        deploy_left = hwMap.get(CRServo.class, "deploy_left");
+        deploy_right = hwMap.get(CRServo.class, "deploy_right");
+        irSensor = hwMap.get(DistanceSensor.class, "intake_sensor");
     }
-
-
 
     public void resetDeployTime() {
         time.reset();

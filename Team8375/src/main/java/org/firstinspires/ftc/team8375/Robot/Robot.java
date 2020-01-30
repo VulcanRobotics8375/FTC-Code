@@ -6,43 +6,25 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.team8375.Autonomous;
+package org.firstinspires.ftc.team8375.Robot;
+
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.team8375.Subsystems.Robot;
+import org.firstinspires.ftc.team8375.Subsystems.Subsystem;
 
-public class AutoArmThread extends Thread {
-    private Robot robot;
+import java.util.ArrayList;
+import java.util.List;
 
-    public AutoArmThread(HardwareMap hwMap) {
-        robot = new Robot(hwMap);
-    }
+public abstract class Robot {
+    public List<Subsystem> subsystems = new ArrayList<>();
 
-    public void run() {
-        deploy();
-    }
+    public Robot() {}
 
-    public synchronized void deploy() {
-        synchronized (this) {
-            robot.autoArm.flip.setPosition(130 / 180.0);
-            robot.autoArm.claw.setPosition(170 / 180.0);
-            robot.autoArm.setLiftPower(1);
-            try {
-                sleep(3100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            robot.autoArm.flip.setPosition(135 / 180.0);
-            robot.autoArm.setClawPos(90);
-            robot.autoArm.setLiftPower(-1);
-            try {
-                sleep(3100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            robot.autoArm.setFlipPos(52);
-            robot.autoArm.setLiftPower(0);
+    public void createAll(HardwareMap hwMap, List<Subsystem> subsystems) {
+        for (Subsystem sub : subsystems) {
+            sub.hwMap = hwMap;
+            sub.create();
         }
     }
 

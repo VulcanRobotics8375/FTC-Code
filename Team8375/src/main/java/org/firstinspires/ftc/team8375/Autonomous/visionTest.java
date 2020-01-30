@@ -8,14 +8,9 @@
 
 package org.firstinspires.ftc.team8375.Autonomous;
 
-import android.graphics.Point;
-
-import com.disnodeteam.dogecv.detectors.skystone.SkystoneDetector;
-import com.disnodeteam.dogecv.detectors.skystone.StoneDetector;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.team8375.SkystoneDetect;
+import org.firstinspires.ftc.team8375.SkystoneDetector;
 import org.firstinspires.ftc.team8375.dataParser;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -33,7 +28,7 @@ public class visionTest extends LinearOpMode {
 
     OpenCvCamera webcam;
     OpenCvCamera phoneCam;
-    private SkystoneDetect detector;
+    private SkystoneDetector detector;
     private int stonePos;
     private Properties prop;
 
@@ -60,7 +55,7 @@ public class visionTest extends LinearOpMode {
 
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDevice();
-        detector = new SkystoneDetect();
+        detector = new SkystoneDetector();
         phoneCam.setPipeline(detector);
 
         phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPSIDE_DOWN);

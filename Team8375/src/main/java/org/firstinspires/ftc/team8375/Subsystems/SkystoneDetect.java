@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.util.Range;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class SkystoneDetect {
+public class SkystoneDetect extends Subsystem {
     private ColorSensor colorSensor;
 
     private double error;
@@ -30,8 +30,11 @@ public class SkystoneDetect {
     private float[] stoneHSV = {300, 0.36f, 39};
     private int[] sensorInput = {0, 0, 0};
 
-    public SkystoneDetect(ColorSensor colorSensor) {
-        this.colorSensor = colorSensor;
+    public SkystoneDetect() {}
+
+    @Override
+    public void create() {
+        colorSensor = hwMap.get(ColorSensor.class, "stone_detector");
     }
 
     public boolean detect() {
