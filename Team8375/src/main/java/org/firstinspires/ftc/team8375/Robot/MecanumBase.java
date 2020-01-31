@@ -6,29 +6,20 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.team8375.Subsystems;
+package org.firstinspires.ftc.team8375.Robot;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.team8375.Subsystems.Drivetrain;
 
-public class testRobot {
-    public Drivetrain drivetrain;
+public class MecanumBase extends Robot {
+    Drivetrain drivetrain = new Drivetrain();
 
-    public testRobot(HardwareMap hwMap) {
-        drivetrain = new Drivetrain(
-                hwMap.dcMotor.get("front_left"),
-                hwMap.dcMotor.get("front_right"),
-                hwMap.dcMotor.get("back_left"),
-                hwMap.dcMotor.get("back_right"),
-                hwMap.get(BNO055IMU.class, "imu")
-        );
+    public MecanumBase(HardwareMap hwMap) {
+        subsystems.add(drivetrain);
+
+        createAll(hwMap, subsystems);
+
     }
 
-    public void stop() {
-        drivetrain.stop();
-    }
 }
