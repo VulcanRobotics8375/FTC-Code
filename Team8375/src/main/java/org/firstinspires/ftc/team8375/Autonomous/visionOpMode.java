@@ -147,16 +147,15 @@ public class visionOpMode extends VulcanPipeline {
                                 robot.intake.setPowers(0);
                             }
                         });
-                        intake.run();
-                        turn(140, 30);
-                        move(-10, 50);
+                        intake.start();
+                        robot.drivetrain.percentSteer(-40, -50);
+                        sleep(1000);
+                        robot.drivetrain.setPowers(0, 0);
+                        sleep(500);
                         move(10, 50);
-                        turn(90, 50);
-                        move(79, 50);
-                        releaseArm.interrupt();
-                        releaseArm.run();
-                        while(!autoArmDone) {}
-                        move(-18, 50);
+                        turn(-90, 40);
+                        move(-84, 50);
+                        move(6, 50);
                         return;
 
                     }
