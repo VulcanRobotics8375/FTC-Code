@@ -134,7 +134,7 @@ public class visionOpMode extends VulcanPipeline {
                         r.interrupt();
                         move(66, 50);
                         releaseArm.start();
-                        turn(90, 100);
+                        turn(90, 50);
                         while(!autoArmDone) {}
                         autoArmDone = false;
                         releaseArm.interrupt();
@@ -152,7 +152,7 @@ public class visionOpMode extends VulcanPipeline {
                         t.interrupt();
                         move(50, 50);
                         releaseArm.run();
-                        turn(90, 100);
+                        turn(90, 50);
                         while(!autoArmDone) {}
                         autoArmDone = false;
                         releaseArm.interrupt();
