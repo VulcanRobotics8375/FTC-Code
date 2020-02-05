@@ -132,30 +132,47 @@ public class visionOpMode extends VulcanPipeline {
                         }
                         autoArmDone = false;
                         r.interrupt();
-                        move(68, 50);
+                        move(66, 50);
                         releaseArm.start();
                         turn(90, 100);
                         while(!autoArmDone) {}
                         autoArmDone = false;
-                        move(-71, 40);
-                        Thread intake = new Thread(new Runnable() {
+                        releaseArm.interrupt();
+                        Thread t = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
-                                    robot.intake.setPowers(1);
-                                }
-                                robot.intake.setPowers(0);
+                                sleep(1500);
+                                deployAutoArm();
                             }
                         });
-                        intake.start();
-                        robot.drivetrain.percentSteer(-40, -50);
-                        sleep(1000);
-                        robot.drivetrain.setPowers(0, 0);
-                        sleep(500);
-                        move(10, 50);
-                        turn(-90, 40);
-                        move(-84, 50);
-                        move(6, 50);
+                        t.start();
+                        move(-58, 50);
+                        while(!autoArmDone){}
+                        autoArmDone = false;
+                        t.interrupt();
+                        move(50, 50);
+                        releaseArm.run();
+                        turn(90, 100);
+                        while(!autoArmDone) {}
+                        autoArmDone = false;
+                        releaseArm.interrupt();
+                        Thread e = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                sleep(1500);
+                                deployAutoArm();
+                            }
+                        });
+                        e.start();
+                        move(-34, 50);
+                        while(!autoArmDone) {}
+                        autoArmDone = false;
+                        e.interrupt();
+                        move(34, 50);
+                        releaseArm.run();
+                        while(!autoArmDone) {}
+                        move(-10, 50);
+
                         return;
 
                     }
