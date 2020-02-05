@@ -174,7 +174,6 @@ public class visionOpMode extends VulcanPipeline {
                         move(-10, 50);
 
                         return;
-
                     }
                     default: {
 
