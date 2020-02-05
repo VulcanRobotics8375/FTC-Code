@@ -302,12 +302,12 @@ public abstract class VulcanPipeline extends LinearOpMode {
             autoArmDone = false;
             robot.autoArm.flip.setPosition(130 / 180.0);
             robot.autoArm.claw.setPosition(1);
-            robot.autoArm.setLiftPower(-1);
-            sleep(1600);
+            robot.autoArm.setLiftPower(1);
+            sleep(1700);
             robot.autoArm.flip.setPosition(135 / 180.0);
             robot.autoArm.setClawPos(90);
             sleep(400);
-            robot.autoArm.setLiftPower(1);
+            robot.autoArm.setLiftPower(-1);
             robot.autoArm.setFlipPos(58);
             autoArmDone = true;
         }
@@ -323,7 +323,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
             sleep(400);
             robot.autoArm.setClawPos(90);
             robot.autoArm.setFlipPos(52);
-            robot.autoArm.setLiftPower(1);
+            robot.autoArm.setLiftPower(-1);
             sleep(100);
             autoArmDone = true;
         }
@@ -333,6 +333,11 @@ public abstract class VulcanPipeline extends LinearOpMode {
         robot.autoArm.setLiftTime(-1, 1600);
         robot.autoArm.setFlipPos(45);
         robot.autoArm.setClawPos(90);
+    }
+
+    public void newThread(Runnable r) {
+        Thread t = new Thread(r);
+        t.start();
     }
 
 
