@@ -127,6 +127,7 @@ public class Intake extends Subsystem {
         return irSensor.getDistance(unit);
     }
 
+    @Override
     public void stop() {
         setPowers(0);
         deploy_left.setPower(0);

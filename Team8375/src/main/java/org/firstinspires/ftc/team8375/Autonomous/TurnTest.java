@@ -19,8 +19,6 @@ public class TurnTest extends VulcanPipeline {
     @Override
     public void runOpMode() {
 
-        robot = new Robot(hardwareMap);
-
         initialize();
 
         waitForStart();

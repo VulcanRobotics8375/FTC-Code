@@ -447,9 +447,8 @@ public class Drivetrain extends Subsystem {
         return motorIsBusy;
     }
 
-        public void stop() {
-
-        setPowers(0, 0);
-
+    @Override
+    public void stop() {
+    setPowers(0, 0);
     }
 }

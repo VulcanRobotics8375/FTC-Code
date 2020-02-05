@@ -48,4 +48,8 @@ public class Foundation extends Subsystem {
         foundationMove.setPosition(angle/180.0);
     }
 
+    @Override
+    public void stop() {}
+
+
 }

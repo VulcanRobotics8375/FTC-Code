@@ -371,6 +371,7 @@ public class Arm extends Subsystem {
 
     }
 
+    @Override
     public void stop() {
         lift.setPower(0);
         pitch.setPower(0);

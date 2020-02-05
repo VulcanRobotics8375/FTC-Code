@@ -45,6 +45,9 @@ public class AutoArm extends Subsystem {
         lift = hwMap.get(CRServo.class, "auto_lift");
     }
 
+    @Override
+    public void stop() {}
+
     public void setServoAngle(Servo servo, double angle) {
         servo.setPosition(angle / 180.0);
     }

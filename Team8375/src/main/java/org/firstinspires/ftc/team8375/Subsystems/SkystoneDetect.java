@@ -37,6 +37,9 @@ public class SkystoneDetect extends Subsystem {
         colorSensor = hwMap.get(ColorSensor.class, "stone_detector");
     }
 
+    @Override
+    public void stop() {}
+
     public boolean detect() {
 
         Color.RGBToHSV(
