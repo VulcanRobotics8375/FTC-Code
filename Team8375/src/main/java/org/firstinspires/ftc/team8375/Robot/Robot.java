@@ -28,8 +28,14 @@ public abstract class Robot {
         }
     }
 
-    public void stop() {
+    public void stopAll(List<Subsystem> subsystems) {
+        for (Subsystem sub : subsystems) {
+            sub.stop();
+        }
+    }
 
+    public void stop(Subsystem subsystem) {
+        subsystem.stop();
     }
 
 }

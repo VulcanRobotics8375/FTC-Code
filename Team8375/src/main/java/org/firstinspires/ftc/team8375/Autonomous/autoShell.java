@@ -35,7 +35,7 @@ public class autoShell extends VulcanPipeline {
             }
         }
 
-        robot.stop();
+        robot.stopAll(robot.subsystems);
 
     }
     public void async() {}

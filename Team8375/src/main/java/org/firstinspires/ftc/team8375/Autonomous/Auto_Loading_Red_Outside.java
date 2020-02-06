@@ -75,7 +75,7 @@ public class Auto_Loading_Red_Outside extends VulcanPipeline {
             }
         }
 
-        robot.stop();
+        robot.stopAll(robot.subsystems);
 
     }
     public void async() {}

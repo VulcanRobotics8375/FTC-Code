@@ -42,7 +42,7 @@ public class helpmepls extends VulcanPipeline {
             }
         }
 
-        robot.stop();
+        robot.stopAll(robot.subsystems);
 
     }
 

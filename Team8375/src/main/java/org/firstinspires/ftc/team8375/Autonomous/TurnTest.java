@@ -29,7 +29,7 @@ public class TurnTest extends VulcanPipeline {
             telemetry.update();
         }
 
-        robot.stop();
+        robot.stopAll(robot.subsystems);
 
     }
     public void async() {}
