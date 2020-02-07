@@ -51,7 +51,7 @@ public class visionOpMode extends VulcanPipeline {
                         deployArm.interrupt();
                         move(52, 50);
                         releaseArm.start();
-                        turn(90, 100);
+                        turnSmall(90, 100);
                         while(!autoArmDone) {}
                         autoArmDone = false;
                         Thread t = new Thread(new Runnable() {
@@ -91,7 +91,7 @@ public class visionOpMode extends VulcanPipeline {
                         r.interrupt();
                         move(58, 50);
                         releaseArm.start();
-                        turn(90, 100);
+                        turnSmall(90, 100);
                         while(!autoArmDone) {}
                         autoArmDone = false;
                         Thread t = new Thread(new Runnable() {
@@ -134,7 +134,7 @@ public class visionOpMode extends VulcanPipeline {
                         r.interrupt();
                         move(66, 50);
                         releaseArm.start();
-                        turn(90, 100);
+                        turnSmall(90, 100);
                         while(!autoArmDone) {}
                         autoArmDone = false;
                         releaseArm.interrupt();

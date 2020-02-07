@@ -30,20 +30,28 @@ public class visionOpMode_Red extends VulcanPipeline {
                 robot.autoArm.setFlipPos(50);
                 turn(-10, 100);
                 move(19, 50);
-                turn(90 - 11, 50);
+                turn(90 - 12, 50);
                 switch(returnInt()) {
                     case 3: {
 //                        autoArmThread.start();
-                        deployArm.start();
-                        move(-8, 100);
+                        Thread f = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                sleep(250);
+                                deployAutoArm();
+                            }
+                        });
+                        f.start();
+                        move(-9, 100);
                         while (!autoArmDone) {
 
                         }
                         autoArmDone = false;
-                        deployArm.interrupt();
+                        f.interrupt();
+                        sleep(600);
                         move(-52, 45);
                         releaseArm.start();
-//                        turn(90 - 10, 100);
+                        turnSmall(78, 100);
                         while(!autoArmDone) {}
                         autoArmDone = false;
                         Thread t = new Thread(new Runnable() {
@@ -58,8 +66,8 @@ public class visionOpMode_Red extends VulcanPipeline {
                         while (!autoArmDone) {}
                         autoArmDone = false;
                         t.interrupt();
-                        sleep(500);
-                        move(-67, 50);
+                        sleep(600);
+                        move(-67, 45);
                         releaseArm.interrupt();
                         releaseArm.run();
                         while(!autoArmDone) {}
@@ -70,12 +78,12 @@ public class visionOpMode_Red extends VulcanPipeline {
                         Thread r = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                sleep(200);
+//                                sleep(200);
                                 deployAutoArm();
                             }
                         });
                         r.start();
-                        move(6, 70);
+                        move(-1.5, 100);
                         while (!autoArmDone) {
 
                         }
@@ -83,13 +91,13 @@ public class visionOpMode_Red extends VulcanPipeline {
                         r.interrupt();
                         move(-58, 50);
                         releaseArm.start();
-//                        turn(90 - 10, 100);
+                        turnSmall(78, 100);
                         while(!autoArmDone) {}
                         autoArmDone = false;
                         Thread t = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                sleep(3300);
+                                sleep(3500);
                                 deployAutoArm();
                             }
                         });
@@ -105,7 +113,7 @@ public class visionOpMode_Red extends VulcanPipeline {
                         releaseArm.interrupt();
                         releaseArm.run();
                         while(!autoArmDone) {}
-                        move(18, 50);
+                        move(15, 50);
                         return;
 
                     }
@@ -119,7 +127,7 @@ public class visionOpMode_Red extends VulcanPipeline {
                         deployArm.interrupt();
                         move(-68, 50);
                         releaseArm.start();
-//                        turn(75, 100);
+                        turnSmall(78, 100);
                         while(!autoArmDone) {}
                         autoArmDone = false;
                         Thread t = new Thread(new Runnable() {
