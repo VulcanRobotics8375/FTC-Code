@@ -28,6 +28,11 @@ public abstract class Robot {
         }
     }
 
+    public void create(HardwareMap hwMap, Subsystem subsystem) {
+        subsystem.hwMap = hwMap;
+        subsystem.create();
+    }
+
     public void stopAll(List<Subsystem> subsystems) {
         for (Subsystem sub : subsystems) {
             sub.stop();
