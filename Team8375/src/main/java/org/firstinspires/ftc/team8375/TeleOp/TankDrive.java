@@ -49,10 +49,10 @@ public class TankDrive extends OpMode {
 
     }
 
-//    @Override
-//    public void init_loop() {
-//
-//    }
+    @Override
+    public void init_loop() {
+        robot.autoArm.setFlipPos(53);
+    }
 
     @Override
     public void start() {
@@ -64,6 +64,7 @@ public class TankDrive extends OpMode {
     public void loop() {
 
         robot.intake.deploy(gamepad1.dpad_left, gamepad1.dpad_right);
+        robot.autoArm.setFlipPos(53);
 
         robot.drivetrain.tankDrive(
                 //forward
@@ -120,9 +121,9 @@ public class TankDrive extends OpMode {
             buttonPressed = false;
         }
         if(inverse > 0) {
-//            robot.intake.autoArm(0.85);
+            robot.autoArm.setClawPos(90);
         } else if(inverse < 0) {
-//            robot.intake.autoArm(0.7);
+            robot.autoArm.setClawPos(0);
         }
 
         //Telemetry

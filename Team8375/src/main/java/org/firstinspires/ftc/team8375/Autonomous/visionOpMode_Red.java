@@ -28,21 +28,30 @@ public class visionOpMode_Red extends VulcanPipeline {
         while(opModeIsActive()) {
             if(!isDone) {
                 robot.autoArm.setFlipPos(50);
-                move(20, 50);
-                turn(90, 50);
+                turn(-10, 100);
+                move(19, 50);
+                turn(90 - 12, 50);
                 switch(returnInt()) {
-                    case 1: {
+                    case 3: {
 //                        autoArmThread.start();
-                        deployArm.start();
-                        move(-2, 100);
+                        Thread f = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                sleep(250);
+                                deployAutoArm();
+                            }
+                        });
+                        f.start();
+                        move(-9, 100);
                         while (!autoArmDone) {
 
                         }
                         autoArmDone = false;
-                        deployArm.interrupt();
-                        move(52, 50);
+                        f.interrupt();
+                        sleep(600);
+                        move(-52, 45);
                         releaseArm.start();
-                        turn(90, 100);
+                        turnSmall(78, 100);
                         while(!autoArmDone) {}
                         autoArmDone = false;
                         Thread t = new Thread(new Runnable() {
@@ -53,72 +62,72 @@ public class visionOpMode_Red extends VulcanPipeline {
                             }
                         });
                         t.start();
-                        move(-76, 50);
+                        move(76, 45);
                         while (!autoArmDone) {}
                         autoArmDone = false;
                         t.interrupt();
-                        sleep(500);
-                        move(67, 50);
+                        sleep(600);
+                        move(-67, 45);
                         releaseArm.interrupt();
                         releaseArm.run();
                         while(!autoArmDone) {}
-                        move(-18, 50);
+                        move(18, 50);
                         return;
                     }
                     case 2: {
                         Thread r = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                sleep(200);
+//                                sleep(200);
                                 deployAutoArm();
                             }
                         });
                         r.start();
-                        move(-6, 70);
+                        move(-1.5, 100);
                         while (!autoArmDone) {
 
                         }
                         autoArmDone = false;
                         r.interrupt();
-                        move(58, 50);
+                        move(-58, 50);
                         releaseArm.start();
-                        turn(90, 100);
+                        turnSmall(78, 100);
                         while(!autoArmDone) {}
                         autoArmDone = false;
                         Thread t = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                sleep(3300);
+                                sleep(3500);
                                 deployAutoArm();
                             }
                         });
                         t.start();
-                        move(-81, 40);
+                        move(81, 40);
                         while (!autoArmDone) {
                             telemetry.addData("done", autoArmDone);
                             telemetry.update();
                         }
                         autoArmDone = false;
 //                        t.interrupt();
-                        move(71, 50);
+                        move(-71, 50);
                         releaseArm.interrupt();
                         releaseArm.run();
                         while(!autoArmDone) {}
-                        move(-18, 50);
+                        move(15, 50);
                         return;
 
                     }
-                    case 3: {
+                    case 1: {
                         deployArm.start();
-                        move(-8, 70);
+                        move(8, 70);
                         while (!autoArmDone) {
 
                         }
                         autoArmDone = false;
                         deployArm.interrupt();
-                        move(68, 50);
+                        move(-68, 50);
                         releaseArm.start();
-                        turn(90, 100);
+                        turnSmall(78, 100);
                         while(!autoArmDone) {}
                         autoArmDone = false;
                         Thread t = new Thread(new Runnable() {
@@ -129,16 +138,16 @@ public class visionOpMode_Red extends VulcanPipeline {
                             }
                         });
                         t.start();
-                        move(-88, 50);
+                        move(88, 50);
                         while (!autoArmDone) {}
                         autoArmDone = false;
                         t.interrupt();
                         sleep(500);
-                        move(79, 50);
+                        move(-79, 50);
                         releaseArm.interrupt();
                         releaseArm.run();
                         while(!autoArmDone) {}
-                        move(-18, 50);
+                        move(18, 50);
                         return;
 
                     }
