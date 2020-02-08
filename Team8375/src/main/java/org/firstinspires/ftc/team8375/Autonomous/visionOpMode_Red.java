@@ -44,7 +44,8 @@ public class visionOpMode_Red extends VulcanPipeline {
                         f.start();
                         move(-9, 100);
                         while (!autoArmDone) {
-
+                            if(isStopRequested())
+                                return;
                         }
                         autoArmDone = false;
                         f.interrupt();
@@ -52,7 +53,10 @@ public class visionOpMode_Red extends VulcanPipeline {
                         move(-52, 45);
                         releaseArm.start();
                         turnSmall(79, 100);
-                        while(!autoArmDone) {}
+                        while(!autoArmDone) {
+                            if(isStopRequested())
+                                return;
+                        }
                         autoArmDone = false;
                         Thread t = new Thread(new Runnable() {
                             @Override
@@ -63,14 +67,20 @@ public class visionOpMode_Red extends VulcanPipeline {
                         });
                         t.start();
                         move(76, 45);
-                        while (!autoArmDone) {}
+                        while (!autoArmDone) {
+                            if(isStopRequested())
+                                return;
+                        }
                         autoArmDone = false;
                         t.interrupt();
                         sleep(600);
                         move(-67, 45);
                         releaseArm.interrupt();
                         releaseArm.run();
-                        while(!autoArmDone) {}
+                        while(!autoArmDone) {
+                            if(isStopRequested())
+                                return;
+                        }
                         move(13, 70);
                         return;
                     }
@@ -85,7 +95,8 @@ public class visionOpMode_Red extends VulcanPipeline {
                         r.start();
                         move(-1.5, 100);
                         while (!autoArmDone) {
-
+                            if(isStopRequested())
+                                return;
                         }
                         autoArmDone = false;
                         r.interrupt();
@@ -106,13 +117,18 @@ public class visionOpMode_Red extends VulcanPipeline {
                         while (!autoArmDone) {
                             telemetry.addData("done", autoArmDone);
                             telemetry.update();
+                            if(isStopRequested())
+                                return;
                         }
                         autoArmDone = false;
 //                        t.interrupt();
                         move(-71, 50);
                         releaseArm.interrupt();
                         releaseArm.run();
-                        while(!autoArmDone) {}
+                        while(!autoArmDone) {
+                            if(isStopRequested())
+                                return;
+                        }
                         move(13, 70);
                         return;
 
@@ -139,14 +155,20 @@ public class visionOpMode_Red extends VulcanPipeline {
                         });
                         t.start();
                         move(60, 50);
-                        while (!autoArmDone) {}
+                        while (!autoArmDone) {
+                            if(isStopRequested())
+                                return;
+                        }
                         autoArmDone = false;
                         t.interrupt();
                         sleep(500);
                         move(-52, 50);
                         releaseArm.interrupt();
                         releaseArm.run();
-                        while(!autoArmDone) {}
+                        while(!autoArmDone) {
+                            if(isStopRequested())
+                                return;
+                        }
                         move(13, 70);
                         return;
 

@@ -45,7 +45,8 @@ public class visionOpMode extends VulcanPipeline {
                         deployArm.start();
                         move(2, 100);
                         while (!autoArmDone) {
-
+                            if(isStopRequested())
+                                return;
                         }
                         autoArmDone = false;
                         deployArm.interrupt();
@@ -63,14 +64,20 @@ public class visionOpMode extends VulcanPipeline {
                         });
                         t.start();
                         move(-76, 50);
-                        while (!autoArmDone) {}
+                        while (!autoArmDone) {
+                            if(isStopRequested())
+                                return;
+                        }
                         autoArmDone = false;
                         t.interrupt();
                         sleep(500);
                         move(67, 50);
                         releaseArm.interrupt();
                         releaseArm.run();
-                        while(!autoArmDone) {}
+                        while(!autoArmDone) {
+                            if(isStopRequested())
+                                return;
+                        }
                         move(-18, 50);
                         return;
                     }
@@ -92,7 +99,10 @@ public class visionOpMode extends VulcanPipeline {
                         move(58, 50);
                         releaseArm.start();
                         turnSmall(90, 100);
-                        while(!autoArmDone) {}
+                        while(!autoArmDone) {
+                            if(isStopRequested())
+                                return;
+                        }
                         autoArmDone = false;
                         Thread t = new Thread(new Runnable() {
                             @Override
@@ -106,6 +116,8 @@ public class visionOpMode extends VulcanPipeline {
                         while (!autoArmDone) {
                             telemetry.addData("done", autoArmDone);
                             telemetry.update();
+                            if(isStopRequested())
+                                return;
                         }
                         autoArmDone = false;
 //                        t.interrupt();
@@ -147,7 +159,10 @@ public class visionOpMode extends VulcanPipeline {
                         });
                         t.start();
                         move(-50, 50);
-                        while(!autoArmDone){}
+                        while(!autoArmDone){
+                            if(isStopRequested())
+                                return;
+                        }
                         autoArmDone = false;
                         t.interrupt();
                         move(42, 50);
@@ -167,9 +182,10 @@ public class visionOpMode extends VulcanPipeline {
                 }
 
                 //foundation code
-
                 isDone = true;
             }
+            if(isStopRequested())
+                return;
             telemetry.update();
         }
 
