@@ -189,6 +189,8 @@ public abstract class VulcanPipeline extends LinearOpMode {
 //            if(async) {
 //                async();
 //            }
+            if(isStopRequested())
+                return;
         }
         step++;
         robot.drivetrain.setPowers(0, 0);
@@ -265,7 +267,6 @@ public abstract class VulcanPipeline extends LinearOpMode {
     }
 
     public void turn(double heading, double speed) {
-        double bias = robot.drivetrain.getImuAngle();
         integral = 0;
         pidOut = 0;
         derivative = 0;
@@ -278,6 +279,8 @@ public abstract class VulcanPipeline extends LinearOpMode {
 //            if(async) {
 //                async();
 //            }
+            if(isStopRequested())
+                return;
         }
         robot.drivetrain.setPowers(0, 0);
         step++;
@@ -291,13 +294,15 @@ public abstract class VulcanPipeline extends LinearOpMode {
         derivative = 0;
 
         while (Math.ceil(robot.drivetrain.getImuAngle()) != heading) {
-            pid(1, 1.2, 1, 7, heading, true);
+            pid(1.5, 1.4, 1, 7, heading, true);
             robot.drivetrain.turnPercent(speed, pidOut);
             telemetry.addData("angle", robot.drivetrain.getImuAngle());
             telemetry.update();
 //            if(async) {
 //                async();
 //            }
+            if(isStopRequested())
+                return;
         }
         robot.drivetrain.setPowers(0, 0);
         step++;
@@ -335,6 +340,8 @@ public abstract class VulcanPipeline extends LinearOpMode {
         while (detector.foundRectangle() == null) {
             telemetry.addLine("finding skystone...");
             telemetry.update();
+            if(isStopRequested())
+                return;
         }
         if (detector.getScreenPosition().x < dataParser.parseInt(prop, "detector.pos1")) {
             i = 1;

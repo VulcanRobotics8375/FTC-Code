@@ -28,7 +28,7 @@ public class visionOpMode_Red extends VulcanPipeline {
         while(opModeIsActive()) {
             if(!isDone) {
                 robot.autoArm.setFlipPos(50);
-                turn(-10, 100);
+                turnSmall(-10, 100);
                 move(19, 50);
                 turn(90 - 12, 50);
                 switch(returnInt()) {
@@ -51,7 +51,7 @@ public class visionOpMode_Red extends VulcanPipeline {
                         sleep(600);
                         move(-52, 45);
                         releaseArm.start();
-                        turnSmall(78, 100);
+                        turnSmall(79, 100);
                         while(!autoArmDone) {}
                         autoArmDone = false;
                         Thread t = new Thread(new Runnable() {
@@ -71,7 +71,7 @@ public class visionOpMode_Red extends VulcanPipeline {
                         releaseArm.interrupt();
                         releaseArm.run();
                         while(!autoArmDone) {}
-                        move(18, 50);
+                        move(13, 70);
                         return;
                     }
                     case 2: {
@@ -91,7 +91,7 @@ public class visionOpMode_Red extends VulcanPipeline {
                         r.interrupt();
                         move(-58, 50);
                         releaseArm.start();
-                        turnSmall(78, 100);
+                        turnSmall(79, 100);
                         while(!autoArmDone) {}
                         autoArmDone = false;
                         Thread t = new Thread(new Runnable() {
@@ -113,7 +113,7 @@ public class visionOpMode_Red extends VulcanPipeline {
                         releaseArm.interrupt();
                         releaseArm.run();
                         while(!autoArmDone) {}
-                        move(15, 50);
+                        move(13, 70);
                         return;
 
                     }
@@ -127,27 +127,27 @@ public class visionOpMode_Red extends VulcanPipeline {
                         deployArm.interrupt();
                         move(-68, 50);
                         releaseArm.start();
-                        turnSmall(78, 100);
+                        turnSmall(79, 100);
                         while(!autoArmDone) {}
                         autoArmDone = false;
                         Thread t = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                sleep(2900);
+                                sleep(2000);
                                 deployAutoArm();
                             }
                         });
                         t.start();
-                        move(88, 50);
+                        move(60, 50);
                         while (!autoArmDone) {}
                         autoArmDone = false;
                         t.interrupt();
                         sleep(500);
-                        move(-79, 50);
+                        move(-52, 50);
                         releaseArm.interrupt();
                         releaseArm.run();
                         while(!autoArmDone) {}
-                        move(18, 50);
+                        move(13, 70);
                         return;
 
                     }
