@@ -122,7 +122,7 @@ public class Arm extends Subsystem {
                     }
                 }
                 if(yaw.getPosition() > 0 && resetStep < 1) {
-                    setServoAngle(yaw, 180);
+                    setServoAngle(yaw, 130);
                 }
 
                 if(!lift.isBusy() && resetStep == 0) {

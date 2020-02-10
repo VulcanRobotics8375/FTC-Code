@@ -189,6 +189,8 @@ public abstract class VulcanPipeline extends LinearOpMode {
 //            if(async) {
 //                async();
 //            }
+            if(isStopRequested())
+                return;
         }
         step++;
         robot.drivetrain.setPowers(0, 0);
@@ -241,15 +243,66 @@ public abstract class VulcanPipeline extends LinearOpMode {
         sleep(iterationTime);
     }
 
+    private void pid(double Kp, double Ki, double Kd, long iterationTime, double heading, boolean small) {
+        double sensorVal = robot.drivetrain.pid.getIntegratedHeading() + robot.drivetrain.pid.getStartHeading();
+
+        double error = sensorVal - heading;
+        integral += ((error + previousError) / 2.0) * (iterationTime / 1000.0);
+        integral = Range.clip(integral, -100, 100);
+        derivative = (error - previousError);
+        pidOut = Kp * error + Ki * integral + Kd * derivative;
+        previousError = error;
+
+        if(!small) {
+            if (Math.abs(error) < 10) {
+                pidOut = Range.clip(pidOut, -50, 50);
+            } else {
+                pidOut = Range.clip(pidOut, -100, 100);
+            }
+        } else {
+            pidOut = Range.clip(pidOut, -100, 100);
+        }
+        sleep(iterationTime);
+        updateTelemetry();
+    }
+
     public void turn(double heading, double speed) {
-        double bias = robot.drivetrain.getImuAngle();
+        integral = 0;
+        pidOut = 0;
+        derivative = 0;
 
         while (Math.ceil(robot.drivetrain.getImuAngle()) != heading) {
-            pid(1.1, 0.7, 1, 7, heading);
+            pid(1, 0.8, 1, 7, heading);
             robot.drivetrain.turnPercent(speed, pidOut);
+            telemetry.addData("angle", robot.drivetrain.getImuAngle());
+            telemetry.update();
 //            if(async) {
 //                async();
 //            }
+            if(isStopRequested())
+                return;
+        }
+        robot.drivetrain.setPowers(0, 0);
+        step++;
+
+    }
+
+    public void turnSmall(double heading, double speed) {
+        double bias = robot.drivetrain.getImuAngle();
+        integral = 0;
+        pidOut = 0;
+        derivative = 0;
+
+        while (Math.ceil(robot.drivetrain.getImuAngle()) != heading) {
+            pid(1.5, 1.4, 1, 7, heading, true);
+            robot.drivetrain.turnPercent(speed, pidOut);
+            telemetry.addData("angle", robot.drivetrain.getImuAngle());
+            telemetry.update();
+//            if(async) {
+//                async();
+//            }
+            if(isStopRequested())
+                return;
         }
         robot.drivetrain.setPowers(0, 0);
         step++;
@@ -287,6 +340,8 @@ public abstract class VulcanPipeline extends LinearOpMode {
         while (detector.foundRectangle() == null) {
             telemetry.addLine("finding skystone...");
             telemetry.update();
+            if(isStopRequested())
+                return;
         }
         if (detector.getScreenPosition().x < dataParser.parseInt(prop, "detector.pos1")) {
             i = 1;

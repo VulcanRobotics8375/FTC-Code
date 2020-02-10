@@ -47,8 +47,12 @@ public class MainDrive extends OpMode {
         robot.arm.ArmMotorInit(0);
         robot.drivetrain.init();
         telemetry.update();
+    }
 
 
+    @Override
+    public void init_loop() {
+        robot.autoArm.setFlipPos(53);
     }
 
     @Override
@@ -58,6 +62,7 @@ public class MainDrive extends OpMode {
     public void loop() {
 
         robot.intake.deploy(gamepad1.dpad_left, gamepad1.dpad_right);
+        robot.autoArm.setFlipPos(53);
 
         robot.drivetrain.tankDrive(
                 //forward
@@ -114,9 +119,9 @@ public class MainDrive extends OpMode {
             buttonPressed = false;
         }
         if(inverse > 0) {
-//            robot.intake.autoArm(0.85);
+            robot.autoArm.setClawPos(0);
         } else if(inverse < 0) {
-//            robot.intake.autoArm(0.7);
+            robot.autoArm.setClawPos(90);
         }
 
         //Telemetry
