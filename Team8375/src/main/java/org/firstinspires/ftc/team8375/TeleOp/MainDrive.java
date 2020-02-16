@@ -44,7 +44,6 @@ public class MainDrive extends OpMode {
         }
         robot = new FullBot(hardwareMap);
         telemetry.addLine("robot loaded");
-        robot.arm.ArmMotorInit(0);
         robot.drivetrain.init();
         telemetry.update();
     }
@@ -75,26 +74,7 @@ public class MainDrive extends OpMode {
         );
 
 
-        robot.arm.run(
-                //lift
-                -gamepad2.left_stick_y,
-                //pitch
-                -0.5 * gamepad2.right_stick_y,
-                //claw button
-                gamepad2.right_bumper,
-                //flip button
-                gamepad2.b,
-                //pitch reset
-                gamepad2.y,
-                //reset button
-                gamepad2.x,
-                //claw tilt up
-                gamepad2.dpad_up,
-                //claw tilt down
-                gamepad2.dpad_down,
-                //flip give
-                gamepad2.right_stick_x
-        );
+        robot.arm.run(gamepad2.left_stick_y, gamepad2.right_stick_y, 2, gamepad2.right_bumper, gamepad2.x);
 
         robot.intake.run(
                 //reverse
@@ -131,15 +111,14 @@ public class MainDrive extends OpMode {
         telemetry.addData("front Right", robot.drivetrain.getPositionFr());
         telemetry.addData("back Left", robot.drivetrain.getPositionBl());
         telemetry.addData("back Right", robot.drivetrain.getPositionBr());
-        telemetry.addData("liftPower", robot.arm.getLiftPower());
 
         //Arm
-        telemetry.addData("lift", robot.arm.getLiftPos());
-        telemetry.addData("claw", robot.arm.getClawPos());
-        telemetry.addData("pitch", robot.arm.getPitchPos());
-        telemetry.addData("level", robot.arm.getLevelPos());
-        telemetry.addData("resetStep", robot.arm.getResetStep());
-        telemetry.addData("resetIsDone", robot.arm.isResetDone());
+//        telemetry.addData("lift", robot.arm.getLiftPos());
+//        telemetry.addData("claw", robot.arm.getClawPos());
+//        telemetry.addData("pitch", robot.arm.getPitchPos());
+//        telemetry.addData("level", robot.arm.getLevelPos());
+//        telemetry.addData("resetStep", robot.arm.getResetStep());
+//        telemetry.addData("resetIsDone", robot.arm.isResetDone());
 
         //Intake
         telemetry.addData("deployLeft", robot.intake.getDeployLeftPos());
