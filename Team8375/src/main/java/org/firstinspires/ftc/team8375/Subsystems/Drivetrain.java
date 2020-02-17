@@ -179,20 +179,6 @@ public class Drivetrain extends Subsystem {
         if(Math.abs(this.movePower) == 0 && Math.abs(this.turnPower) == 0) {
             Time.reset();
         }
-//        else {
-//            if(timeout.now(TimeUnit.MILLISECONDS) < dataParser.parseLong(prop, "drivetrain.deadzoneTimeout")) {
-//                if (this.movePower < dataParser.parseDouble(prop, "drivetrain.deadzone")) {
-//                    this.movePower = 0;
-//                }
-//                if (this.turnPower < dataParser.parseDouble(prop, "drivetrain.deadzone")) {
-//                    this.turnPower = 0;
-//                }
-//            }
-//        }
-
-        if(this.movePower != 0 || this.turnPower != 0) {
-            timeout.reset();
-        }
         mPower = this.movePower;
         tPower = this.turnPower;
 
@@ -261,6 +247,14 @@ public class Drivetrain extends Subsystem {
         bl.setPower(Range.clip(this.movePower + this.turnPower, -1.0, 1.0));
         fr.setPower(Range.clip(this.movePower - this.turnPower, -1.0, 1.0));
         br.setPower(Range.clip(this.movePower - this.turnPower, -1.0, 1.0));
+    }
+
+    public void drive(float movePower, float turnPower) {
+
+        this.movePower = movePower;
+        this.turnPower = turnPower;
+
+        setPowers(this.movePower, this.turnPower);
     }
 
 

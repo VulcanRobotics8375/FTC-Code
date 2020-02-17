@@ -16,8 +16,8 @@ public class Arm extends Subsystem {
     private TouchSensor extend_reset;
     private ElapsedTime flipTime = new ElapsedTime();
     private double currentFlipPos, lastFlipPos, liftLeftPos, liftRightPos, extendPower, liftPower, liftPos, liftHighLimit;
-    private boolean flipPosSet, reset, resetIsDone, clawButton;
-    private int flipOn, clawOn;
+    private boolean reset, resetIsDone, clawButton;
+    private int clawOn;
     public Arm() {}
 
     @Override
@@ -27,16 +27,16 @@ public class Arm extends Subsystem {
         extend = hwMap.get(CRServo.class, "extend");
         lift_left = hwMap.dcMotor.get("lift_left");
         lift_right = hwMap.dcMotor.get("lift_right");
+        extend_reset = hwMap.get(TouchSensor.class, "extend_reset");
 
         lift_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lift_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lift_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lift_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        lift_left.setDirection(DcMotorSimple.Direction.FORWARD);
-        lift_right.setDirection(DcMotorSimple.Direction.REVERSE);
+        lift_left.setDirection(DcMotorSimple.Direction.REVERSE);
+        lift_right.setDirection(DcMotorSimple.Direction.FORWARD);
         liftHighLimit = dataParser.parseDouble(prop, "arm.liftHigh") - dataParser.parseDouble(prop, "arm.limitRange");
         clawOn = 1;
-        flipOn = 1;
     }
     @Override
     public void stop() {
@@ -58,6 +58,7 @@ public class Arm extends Subsystem {
         if(this.reset && !reset) {
             if(!resetIsDone) {
                 clawOn = 1;
+                flip.setPosition(0);
 
                 if(!extend_reset.isPressed()) {
                     this.extendPower = -1;
@@ -117,20 +118,15 @@ public class Arm extends Subsystem {
 
             //flip accel/movement code
             if (flipPower == 0) {
-                if (!flipPosSet) {
-                    lastFlipPos = flip.getPosition();
-                    flipPosSet = true;
-                }
+                lastFlipPos = flip.getPosition();
                 flipTime.reset();
             } else if (flipPower > 0) {
-                flipPosSet = false;
                 if (flipTime.now(TimeUnit.MILLISECONDS) < dataParser.parseDouble(prop, "arm.flipTime")) {
-                    flip.setPosition(lastFlipPos + (1 / (flipTime.now(TimeUnit.MILLISECONDS) / 1000.0)));
+                    flip.setPosition(lastFlipPos + (flipPower / (flipTime.now(TimeUnit.MILLISECONDS) / 1000.0)));
                 }
             } else if (flipPower < 0) {
-                flipPosSet = false;
                 if (flipTime.now(TimeUnit.MILLISECONDS) < dataParser.parseDouble(prop, "arm.flipTime")) {
-                    flip.setPosition(lastFlipPos - (1 / (flipTime.now(TimeUnit.MILLISECONDS) / 1000.0)));
+                    flip.setPosition(lastFlipPos - (flipPower / (flipTime.now(TimeUnit.MILLISECONDS) / 1000.0)));
                 }
             }
 
@@ -156,14 +152,27 @@ public class Arm extends Subsystem {
         }
 
         if(clawOn > 0) {
-            claw.setPosition(dataParser.parseDouble(prop, "arm.clawOut"));
+            setServoAngle(claw, dataParser.parseDouble(prop, "arm.clawOut"));
         } else if(clawOn < 0) {
-            claw.setPosition(dataParser.parseDouble(prop, "arm.clawIn"));
+            setServoAngle(claw, dataParser.parseDouble(prop, "arm.clawIn"));
         }
 
         lift_left.setPower(this.liftPower);
         lift_right.setPower(this.liftPower);
         extend.setPower(this.extendPower);
+    }
+
+    public void setServoAngle(Servo servo, double angle) {
+        if(angle != 0) {
+            servo.setPosition(angle / 180);
+        }
+    }
+
+    public double getLiftLeftPos() {
+        return lift_left.getCurrentPosition();
+    }
+    public double getLiftRightPos() {
+        return lift_right.getCurrentPosition();
     }
 
 }

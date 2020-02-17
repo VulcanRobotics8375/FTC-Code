@@ -38,10 +38,6 @@ public class Intake extends Subsystem {
     private DcMotor intake_right;
     private double intakePower;
 
-    //servos
-    private CRServo deploy_left;
-    private CRServo deploy_right;
-
     private DistanceSensor irSensor;
 
     public Intake() {}
@@ -50,27 +46,11 @@ public class Intake extends Subsystem {
     public void create() {
         intake_left = hwMap.dcMotor.get("intake_left");
         intake_right = hwMap.dcMotor.get("intake_right");
-        deploy_left = hwMap.get(CRServo.class, "deploy_left");
-        deploy_right = hwMap.get(CRServo.class, "deploy_right");
         irSensor = hwMap.get(DistanceSensor.class, "intake_sensor");
     }
 
     public void resetDeployTime() {
         time.reset();
-    }
-
-    public void deploy(boolean left, boolean right) {
-        if(left) {
-            deploy_right.setPower(-1.0);
-            deploy_left.setPower(1.0);
-        } else if(right) {
-            deploy_right.setPower(1.0);
-            deploy_left.setPower(-1.0);
-        } else {
-            deploy_right.setPower(0.05);
-            deploy_left.setPower(0);
-        }
-
     }
 
     public void run(boolean reverse, double isOn) {
@@ -130,15 +110,6 @@ public class Intake extends Subsystem {
     @Override
     public void stop() {
         setPowers(0);
-        deploy_left.setPower(0);
-        deploy_right.setPower(0);
-    }
-
-    public double getDeployLeftPos() {
-        return deploy_left.getPower();
-    }
-    public double getDeployRightPos() {
-        return deploy_right.getPower();
     }
 
 }

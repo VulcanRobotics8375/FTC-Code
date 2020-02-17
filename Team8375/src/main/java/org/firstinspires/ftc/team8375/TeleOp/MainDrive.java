@@ -23,6 +23,7 @@ public class MainDrive extends OpMode {
     private FullBot robot;
     private boolean buttonPressed;
     private int inverse = 1;
+    private double trigger;
     private Properties prop;
 
 
@@ -59,8 +60,13 @@ public class MainDrive extends OpMode {
 
     @Override
     public void loop() {
-
-        robot.intake.deploy(gamepad1.dpad_left, gamepad1.dpad_right);
+        if(gamepad2.right_trigger > 0) {
+            trigger = gamepad2.right_trigger;
+        } else if(gamepad2.left_trigger > 0) {
+            trigger = -gamepad2.left_trigger;
+        } else {
+            trigger = 0;
+        }
         robot.autoArm.setFlipPos(53);
 
         robot.drivetrain.tankDrive(
@@ -74,7 +80,7 @@ public class MainDrive extends OpMode {
         );
 
 
-        robot.arm.run(gamepad2.left_stick_y, gamepad2.right_stick_y, 2, gamepad2.right_bumper, gamepad2.x);
+        robot.arm.run(-gamepad2.left_stick_y, -gamepad2.right_stick_y, trigger, gamepad2.right_bumper, gamepad2.x);
 
         robot.intake.run(
                 //reverse
@@ -113,16 +119,10 @@ public class MainDrive extends OpMode {
         telemetry.addData("back Right", robot.drivetrain.getPositionBr());
 
         //Arm
-//        telemetry.addData("lift", robot.arm.getLiftPos());
-//        telemetry.addData("claw", robot.arm.getClawPos());
-//        telemetry.addData("pitch", robot.arm.getPitchPos());
-//        telemetry.addData("level", robot.arm.getLevelPos());
-//        telemetry.addData("resetStep", robot.arm.getResetStep());
-//        telemetry.addData("resetIsDone", robot.arm.isResetDone());
+        telemetry.addData("liftLeft", robot.arm.getLiftLeftPos());
+        telemetry.addData("liftRight", robot.arm.getLiftRightPos());
 
         //Intake
-        telemetry.addData("deployLeft", robot.intake.getDeployLeftPos());
-        telemetry.addData("deployRight", robot.intake.getDeployRightPos());
         telemetry.addData("intake_sensor", robot.intake.getIRDistance(DistanceUnit.CM));
 
         telemetry.addData("dataStream test", prop.getProperty("arm.theta"));
