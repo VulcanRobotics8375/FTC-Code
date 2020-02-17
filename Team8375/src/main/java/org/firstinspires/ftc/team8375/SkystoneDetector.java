@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * modified version of the built in SkystoneDetector from DogeCV 2020.4-alpha
  */
-public class SkystoneDetect extends DogeCVDetector {
+public class SkystoneDetector extends DogeCVDetector {
     public DogeCV.AreaScoringMethod areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Setting to decide to use MaxAreaScorer or PerfectAreaScorer
 
     private int pos1, pos2;
@@ -67,7 +67,7 @@ public class SkystoneDetect extends DogeCVDetector {
     }
 
 
-    public SkystoneDetect() {
+    public SkystoneDetector() {
         detectorName = "Vulcan Detector";
     }
 

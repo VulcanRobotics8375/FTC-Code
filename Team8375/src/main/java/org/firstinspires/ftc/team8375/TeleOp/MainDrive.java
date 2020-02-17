@@ -12,18 +12,20 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.team8375.Subsystems.Robot;
+import org.firstinspires.ftc.team8375.Robot.FullBot;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-@TeleOp(name="TankDrive", group="Drive")
-public class TankDrive extends OpMode {
-    protected Robot robot;
+@TeleOp(name = "TankDrive(c)", group = "competition")
+public class MainDrive extends OpMode {
+    private FullBot robot;
     private boolean buttonPressed;
     private int inverse = 1;
+    private double trigger;
     private Properties prop;
+
 
     @Override
     public void init() {
@@ -41,13 +43,12 @@ public class TankDrive extends OpMode {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        robot = new Robot(hardwareMap);
+        robot = new FullBot(hardwareMap);
         telemetry.addLine("robot loaded");
-        robot.arm.ArmMotorInit(0);
         robot.drivetrain.init();
         telemetry.update();
-
     }
+
 
     @Override
     public void init_loop() {
@@ -55,15 +56,17 @@ public class TankDrive extends OpMode {
     }
 
     @Override
-    public void start() {
-//        robot.arm.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        robot.arm.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
+    public void start() {}
 
     @Override
     public void loop() {
-
-        robot.intake.deploy(gamepad1.dpad_left, gamepad1.dpad_right);
+        if(gamepad2.right_trigger > 0) {
+            trigger = gamepad2.right_trigger;
+        } else if(gamepad2.left_trigger > 0) {
+            trigger = -gamepad2.left_trigger;
+        } else {
+            trigger = 0;
+        }
         robot.autoArm.setFlipPos(53);
 
         robot.drivetrain.tankDrive(
@@ -77,26 +80,7 @@ public class TankDrive extends OpMode {
         );
 
 
-        robot.arm.run(
-                //lift
-                -gamepad2.left_stick_y,
-                //pitch
-                -0.5 * gamepad2.right_stick_y,
-                //claw button
-                gamepad2.right_bumper,
-                //flip button
-                gamepad2.b,
-                //pitch reset
-                gamepad2.y,
-                //reset button
-                gamepad2.x,
-                //claw tilt up
-                gamepad2.dpad_up,
-                //claw tilt down
-                gamepad2.dpad_down,
-                //flip give
-                gamepad2.right_stick_x
-        );
+        robot.arm.run(-gamepad2.left_stick_y, -gamepad2.right_stick_y, trigger, gamepad2.right_bumper, gamepad2.x);
 
         robot.intake.run(
                 //reverse
@@ -133,19 +117,12 @@ public class TankDrive extends OpMode {
         telemetry.addData("front Right", robot.drivetrain.getPositionFr());
         telemetry.addData("back Left", robot.drivetrain.getPositionBl());
         telemetry.addData("back Right", robot.drivetrain.getPositionBr());
-        telemetry.addData("liftPower", robot.arm.getLiftPower());
 
         //Arm
-        telemetry.addData("lift", robot.arm.getLiftPos());
-        telemetry.addData("claw", robot.arm.getClawPos());
-        telemetry.addData("pitch", robot.arm.getPitchPos());
-        telemetry.addData("level", robot.arm.getLevelPos());
-        telemetry.addData("resetStep", robot.arm.getResetStep());
-        telemetry.addData("resetIsDone", robot.arm.isResetDone());
+        telemetry.addData("liftLeft", robot.arm.getLiftLeftPos());
+        telemetry.addData("liftRight", robot.arm.getLiftRightPos());
 
         //Intake
-        telemetry.addData("deployLeft", robot.intake.getDeployLeftPos());
-        telemetry.addData("deployRight", robot.intake.getDeployRightPos());
         telemetry.addData("intake_sensor", robot.intake.getIRDistance(DistanceUnit.CM));
 
         telemetry.addData("dataStream test", prop.getProperty("arm.theta"));
@@ -156,7 +133,6 @@ public class TankDrive extends OpMode {
 
     @Override
     public void stop() {
-//        robot.stop();
-    }
 
+    }
 }

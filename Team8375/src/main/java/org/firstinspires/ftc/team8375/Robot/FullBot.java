@@ -6,37 +6,32 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.team8375.TeleOp;
+package org.firstinspires.ftc.team8375.Robot;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import org.firstinspires.ftc.team8375.Subsystems.*;
 
-import org.firstinspires.ftc.team8375.Subsystems.Robot;
+public class FullBot extends Robot {
+    //list of subsystems
+    public Arm arm = new Arm();
+    public AutoArm autoArm = new AutoArm();
+    public Drivetrain drivetrain = new Drivetrain();
+    public Foundation foundation = new Foundation();
+    public Intake intake = new Intake();
+    public SkystoneDetect SkystoneDetect = new SkystoneDetect();
 
-@TeleOp(name="auto arm", group="test")
-public class ArmTest extends LinearOpMode {
-    private Robot robot;
+    public FullBot(HardwareMap hwMap) {
+        //add all the subsystems to the subsystems List<>
+        subsystems.add(arm);
+        subsystems.add(autoArm);
+        subsystems.add(drivetrain);
+        subsystems.add(foundation);
+        subsystems.add(intake);
+        subsystems.add(SkystoneDetect);
+        
+        //run the subsystem foreach loop to initialize all subsystems
+        createAll(hwMap, subsystems);
 
-    private double power = 1;
-    private long ms = 2000;
-
-    private boolean up = false;
-    private boolean down = false;
-    private boolean left = false;
-    private boolean right = false;
-    private boolean start = false;
-
-    public void runOpMode() {
-        robot = new Robot(hardwareMap);
-
-        waitForStart();
-
-        while (opModeIsActive()) {
-
-            robot.autoArm.setLiftPos(0.5, power);
-
-        }
     }
 
 }

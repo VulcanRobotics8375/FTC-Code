@@ -26,8 +26,7 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class Drivetrain {
-    private Context context;
+public class Drivetrain extends Subsystem {
     private DcMotor fl, fr, bl, br;
     public BNO055IMU imu;
     private BNO055IMU.Parameters parameters;
@@ -60,29 +59,17 @@ public class Drivetrain {
     private double output = 0;
     private boolean motorIsBusy;
     public VulcanPID pid;
-    private Properties prop;
 
-    public Drivetrain(DcMotor frontLeft, DcMotor frontRight, DcMotor backLeft, DcMotor backRight, BNO055IMU IMU) {
-        fl = frontLeft;
-        fr = frontRight;
-        bl = backLeft;
-        br = backRight;
-        imu = IMU;
-        try {
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            InputStream input = loader.getResourceAsStream("config.properties");
-            if(input != null) {
-                prop = new Properties();
-                prop.load(input);
-            } else {
+    public Drivetrain() {}
 
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-
+    public void create() {
+        fl = hwMap.dcMotor.get("front_left");
+        fr = hwMap.dcMotor.get("front_right");
+        bl = hwMap.dcMotor.get("back_left");
+        br = hwMap.dcMotor.get("back_right");
+        imu = hwMap.get(BNO055IMU.class, "imu");
     }
+
 
 //    public void runOpMode() {
 //        telemetry.addData("fl Position", fl.getCurrentPosition());
@@ -192,20 +179,6 @@ public class Drivetrain {
         if(Math.abs(this.movePower) == 0 && Math.abs(this.turnPower) == 0) {
             Time.reset();
         }
-//        else {
-//            if(timeout.now(TimeUnit.MILLISECONDS) < dataParser.parseLong(prop, "drivetrain.deadzoneTimeout")) {
-//                if (this.movePower < dataParser.parseDouble(prop, "drivetrain.deadzone")) {
-//                    this.movePower = 0;
-//                }
-//                if (this.turnPower < dataParser.parseDouble(prop, "drivetrain.deadzone")) {
-//                    this.turnPower = 0;
-//                }
-//            }
-//        }
-
-        if(this.movePower != 0 || this.turnPower != 0) {
-            timeout.reset();
-        }
         mPower = this.movePower;
         tPower = this.turnPower;
 
@@ -274,6 +247,14 @@ public class Drivetrain {
         bl.setPower(Range.clip(this.movePower + this.turnPower, -1.0, 1.0));
         fr.setPower(Range.clip(this.movePower - this.turnPower, -1.0, 1.0));
         br.setPower(Range.clip(this.movePower - this.turnPower, -1.0, 1.0));
+    }
+
+    public void drive(float movePower, float turnPower) {
+
+        this.movePower = movePower;
+        this.turnPower = turnPower;
+
+        setPowers(this.movePower, this.turnPower);
     }
 
 
@@ -460,9 +441,8 @@ public class Drivetrain {
         return motorIsBusy;
     }
 
-        public void stop() {
-
-        setPowers(0, 0);
-
+    @Override
+    public void stop() {
+    setPowers(0, 0);
     }
 }

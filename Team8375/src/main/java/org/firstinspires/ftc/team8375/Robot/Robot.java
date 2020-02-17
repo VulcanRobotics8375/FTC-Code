@@ -6,47 +6,41 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.team8375.Autonomous;
+package org.firstinspires.ftc.team8375.Robot;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="foundation -- red -- inside", group = "foundation move")
-public class Auto_Foundation_Move_Red_Inside extends VulcanPipeline {
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
-    @Override
-    public void runOpMode() {
+import org.firstinspires.ftc.team8375.Subsystems.Subsystem;
 
-        initialize();
+import java.util.ArrayList;
+import java.util.List;
 
-        waitForStart();
+public abstract class Robot {
+    public List<Subsystem> subsystems = new ArrayList<>();
 
-        do {
+    public Robot() {}
 
-            if(!isDone) {
-
-                moveIn(45, 45);
-                turn(-83, 15);
-                moveIn(7, 15);
-                robot.foundation.setFoundationMoveAngle(30);
-                sleep(800);
-                moveIn(-2, -15);
-                turn(-65, 30);
-                moveIn(24, 30);
-                robot.foundation.setFoundationMoveAngle(180);
-                moveIn(-4, -20);
-                turn(85, 15);
-                moveIn(-23, -30);
-                turn(-35, 10);
-                moveIn(-12, -15);
-            }
-
-            isDone = true;
-
-        } while(opModeIsActive());
-
-        robot.stopAll(robot.subsystems);
-
+    public void createAll(HardwareMap hwMap, List<Subsystem> subsystems) {
+        for (Subsystem sub : subsystems) {
+            sub.hwMap = hwMap;
+            sub.create();
+        }
     }
-    public void async() {}
-}
 
+    public void create(HardwareMap hwMap, Subsystem subsystem) {
+        subsystem.hwMap = hwMap;
+        subsystem.create();
+    }
+
+    public void stopAll(List<Subsystem> subsystems) {
+        for (Subsystem sub : subsystems) {
+            sub.stop();
+        }
+    }
+
+    public void stop(Subsystem subsystem) {
+        subsystem.stop();
+    }
+
+}

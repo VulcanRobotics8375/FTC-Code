@@ -8,27 +8,33 @@
 
 package org.firstinspires.ftc.team8375.Subsystems;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
-public class testRobot {
-    public Drivetrain drivetrain;
+public abstract class Subsystem {
 
-    public testRobot(HardwareMap hwMap) {
-        drivetrain = new Drivetrain(
-                hwMap.dcMotor.get("front_left"),
-                hwMap.dcMotor.get("front_right"),
-                hwMap.dcMotor.get("back_left"),
-                hwMap.dcMotor.get("back_right"),
-                hwMap.get(BNO055IMU.class, "imu")
-        );
+    public HardwareMap hwMap;
+    public Properties prop;
+
+    public Subsystem() {
+        try {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            InputStream input = loader.getResourceAsStream("config.properties");
+            if(input != null) {
+                prop = new Properties();
+                prop.load(input);
+            } else {
+
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
-    public void stop() {
-        drivetrain.stop();
-    }
+    public abstract void create();
+
+    public abstract void stop();
 }

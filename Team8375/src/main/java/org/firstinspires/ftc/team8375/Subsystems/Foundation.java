@@ -8,40 +8,25 @@
 
 package org.firstinspires.ftc.team8375.Subsystems;
 
-import android.content.Context;
 
 import com.qualcomm.robotcore.hardware.Servo;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 import java.io.IOException;
 
-public class Foundation {
-    private Context context;
+public class Foundation extends Subsystem {
     private Servo foundationMove;
     private Servo capStone;
     int capStonePos = 1;
     private boolean button;
-    private Properties prop;
 
-    public Foundation(Servo foundationMove, Servo capStone) {
-        this.foundationMove = foundationMove;
-        this.capStone = capStone;
+    public Foundation() {}
 
-        try {
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            InputStream input = loader.getResourceAsStream("config.properties");
-            if(input != null) {
-                prop = new Properties();
-                prop.load(input);
-            } else {
-
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
+    @Override
+    public void create() {
+        foundationMove = hwMap.get(Servo.class, "foundation_move");
+        capStone = hwMap.get(Servo.class, "capStone");
     }
 
     public void deployCapstone(boolean button) {
@@ -62,5 +47,9 @@ public class Foundation {
     public void setFoundationMoveAngle(double angle) {
         foundationMove.setPosition(angle/180.0);
     }
+
+    @Override
+    public void stop() {}
+
 
 }

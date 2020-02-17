@@ -71,7 +71,7 @@ public class Auto_Loading_Blue_Outside extends VulcanPipeline {
             }
         }
 
-        robot.stop();
+        robot.stopAll(robot.subsystems);
 
     }
     public void async() {}

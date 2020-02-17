@@ -14,8 +14,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.team8375.SkystoneDetect;
-import org.firstinspires.ftc.team8375.Subsystems.Robot;
+import org.firstinspires.ftc.team8375.Robot.FullBot;
+import org.firstinspires.ftc.team8375.SkystoneDetector;
 import org.firstinspires.ftc.team8375.Subsystems.VulcanPID;
 import org.firstinspires.ftc.team8375.Subsystems.VulcanPIDCoefficients;
 import org.firstinspires.ftc.team8375.dataParser;
@@ -46,7 +46,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
 
     protected boolean autoArmDone;
 
-    protected Robot robot;
+    protected FullBot robot;
     private ElapsedTime stoneTime = new ElapsedTime();
     protected ElapsedTime armTime = new ElapsedTime();
     private VulcanPIDCoefficients turnCoefficients = new VulcanPIDCoefficients(0.5, 0.6, 1);
@@ -56,7 +56,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
     private VulcanPID turnPid;
     protected Properties prop;
     protected OpenCvCamera phoneCam;
-    protected SkystoneDetect detector;
+    protected SkystoneDetector detector;
 
     protected Thread deployArm = new Thread(new Runnable() {
         @Override
@@ -83,7 +83,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
      */
     public void initialize() {
 
-        robot = new Robot(hardwareMap);
+        robot = new FullBot(hardwareMap);
 //        autoArmThread = new AutoArmThread(hardwareMap);
         robot.drivetrain.init();
         robot.drivetrain.resetEncoders(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -118,7 +118,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDevice();
-        detector = new SkystoneDetect();
+        detector = new SkystoneDetector();
         phoneCam.setPipeline(detector);
         phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPSIDE_DOWN);
     }
@@ -314,7 +314,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
         robot.SkystoneDetect.resetScore();
 
         while (!robot.SkystoneDetect.detect()) {
-//            robot.SkystoneDetect.setScorerThreshold(threshold);
+//            robot.SkystoneDetector.setScorerThreshold(threshold);
             robot.drivetrain.setPowers(power, 0);
             robot.SkystoneDetect.resetScore();
             sleep(100);

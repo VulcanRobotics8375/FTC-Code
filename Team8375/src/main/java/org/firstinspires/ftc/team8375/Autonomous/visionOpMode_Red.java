@@ -185,7 +185,7 @@ public class visionOpMode_Red extends VulcanPipeline {
             telemetry.update();
         }
 
-        robot.stop();
+        robot.stopAll(robot.subsystems);
 
     }
     public void async() {
