@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-@TeleOp(name = "TankDrive(c)", group = "competition")
+@TeleOp(name = "MainDrive", group = "competition")
 public class MainDrive extends OpMode {
     private FullBot robot;
     private boolean buttonPressed;
@@ -71,7 +71,7 @@ public class MainDrive extends OpMode {
 
         robot.drivetrain.tankDrive(
                 //forward
-                gamepad1.left_stick_y * inverse,
+                -gamepad1.left_stick_y,
                 //turn
                 -gamepad1.right_stick_x,
                 //slow mode
@@ -86,24 +86,25 @@ public class MainDrive extends OpMode {
                 //reverse
                 gamepad2.a,
                 //toggle
-                gamepad2.right_trigger
+                intakeToggle()
         );
 
-        if(gamepad2.left_bumper) {
+        if(gamepad2.b) {
             robot.foundation.setFoundationMoveAngle(Double.parseDouble(prop.getProperty("foundation.deployed")));
         } else {
             robot.foundation.setFoundationMoveAngle(Double.parseDouble(prop.getProperty("foundation.retracted")));
         }
 
-        robot.foundation.deployCapstone(gamepad1.b);
+        robot.foundation.deployCapstone(gamepad2.b);
 
-        if(gamepad1.left_bumper && !buttonPressed) {
-            inverse *= -1;
-            buttonPressed = true;
-        }
-        else if(buttonPressed && !gamepad1.left_bumper) {
-            buttonPressed = false;
-        }
+//        if(gamepad1.left_bumper && !buttonPressed) {
+//            inverse *= -1;
+//            buttonPressed = true;
+//        }
+//        else if(buttonPressed && !gamepad1.left_bumper) {
+//            buttonPressed = false;
+//        }
+
         if(inverse > 0) {
             robot.autoArm.setClawPos(0);
         } else if(inverse < 0) {
@@ -129,6 +130,13 @@ public class MainDrive extends OpMode {
         telemetry.addData("Runtime", getRuntime());
 
         telemetry.update();
+    }
+
+    public double intakeToggle() {
+        if(gamepad2.left_bumper)
+            return 1;
+        else
+            return 0;
     }
 
     @Override
