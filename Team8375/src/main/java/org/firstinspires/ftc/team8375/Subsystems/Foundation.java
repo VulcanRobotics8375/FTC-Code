@@ -11,12 +11,9 @@ package org.firstinspires.ftc.team8375.Subsystems;
 
 import com.qualcomm.robotcore.hardware.Servo;
 
-import java.io.InputStream;
-import java.util.Properties;
-import java.io.IOException;
-
 public class Foundation extends Subsystem {
-    private Servo foundationMove;
+    private Servo foundationLeft;
+    private Servo foundationRight;
     private Servo capStone;
     int capStonePos = 1;
     private boolean button;
@@ -25,7 +22,8 @@ public class Foundation extends Subsystem {
 
     @Override
     public void create() {
-        foundationMove = hwMap.get(Servo.class, "foundation_move");
+        foundationLeft = hwMap.get(Servo.class, "foundation_left");
+        foundationRight = hwMap.get(Servo.class, "foundation_right");
         capStone = hwMap.get(Servo.class, "capStone");
     }
 
@@ -45,7 +43,8 @@ public class Foundation extends Subsystem {
     }
 
     public void setFoundationMoveAngle(double angle) {
-        foundationMove.setPosition(angle/180.0);
+        foundationLeft.setPosition(angle/180.0);
+        foundationRight.setPosition(1 - (angle/180));
     }
 
     @Override

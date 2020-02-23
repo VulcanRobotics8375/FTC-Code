@@ -11,7 +11,6 @@ package org.firstinspires.ftc.team8375.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.team8375.Robot.FullBot;
 
 import java.io.IOException;
@@ -75,12 +74,24 @@ public class MainDrive extends OpMode {
                 //turn
                 -gamepad1.right_stick_x,
                 //slow mode
-                gamepad1.right_bumper
+                gamepad1.left_bumper
                 //head switch
         );
 
-
-        robot.arm.run(-gamepad2.left_stick_y, -gamepad2.right_stick_y, trigger, gamepad2.right_bumper, gamepad2.x);
+        robot.arm.run(
+                //lift
+                -gamepad2.left_stick_y,
+                //extend
+                gamepad2.right_stick_y,
+                //adjust
+                trigger,
+                //half flip
+                gamepad2.y,
+                //claw
+                gamepad2.right_bumper,
+                //reset
+                gamepad2.x
+        );
 
         robot.intake.run(
                 //reverse
@@ -89,13 +100,13 @@ public class MainDrive extends OpMode {
                 intakeToggle()
         );
 
-        if(gamepad2.b) {
+        if(gamepad2.dpad_down) {
             robot.foundation.setFoundationMoveAngle(Double.parseDouble(prop.getProperty("foundation.deployed")));
         } else {
             robot.foundation.setFoundationMoveAngle(Double.parseDouble(prop.getProperty("foundation.retracted")));
         }
 
-        robot.foundation.deployCapstone(gamepad2.b);
+        robot.foundation.deployCapstone(gamepad2.dpad_left);
 
 //        if(gamepad1.left_bumper && !buttonPressed) {
 //            inverse *= -1;
@@ -122,9 +133,6 @@ public class MainDrive extends OpMode {
         //Arm
         telemetry.addData("liftLeft", robot.arm.getLiftLeftPos());
         telemetry.addData("liftRight", robot.arm.getLiftRightPos());
-
-        //Intake
-        telemetry.addData("intake_sensor", robot.intake.getIRDistance(DistanceUnit.CM));
 
         telemetry.addData("dataStream test", prop.getProperty("arm.theta"));
         telemetry.addData("Runtime", getRuntime());

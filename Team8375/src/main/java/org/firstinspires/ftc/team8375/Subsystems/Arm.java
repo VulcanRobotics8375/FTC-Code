@@ -11,25 +11,23 @@ import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class Arm extends Subsystem {
-    private Servo flip, claw;
+    private Servo adjust, claw;
     private DcMotor lift_left, lift_right;
     private CRServo extend;
-    private TouchSensor extend_reset;
     private ElapsedTime flipTime = new ElapsedTime();
     private ElapsedTime resetTime = new ElapsedTime();
-    private double flipPos, lastFlipPos, liftLeftPos, liftRightPos, extendPower, liftLeftPower, liftRightPower, liftPos, liftHighLimit;
-    private boolean reset, resetIsDone, clawButton;
-    private int clawOn, resetStep;
+    private double liftLeftPos, adjustPos, flipPos, liftRightPos, extendPower, liftLeftPower, liftRightPower, liftHighLimit;
+    private boolean reset, resetIsDone, clawButton, flipButton;
+    private int clawOn, resetStep, flipOn;
     public Arm() {}
 
     @Override
     public void create() {
-        flip = hwMap.get(Servo.class, "flip");
+        adjust = hwMap.get(Servo.class, "adjust");
         claw = hwMap.get(Servo.class, "claw");
         extend = hwMap.get(CRServo.class, "extend");
         lift_left = hwMap.dcMotor.get("lift_left");
         lift_right = hwMap.dcMotor.get("lift_right");
-        extend_reset = hwMap.get(TouchSensor.class, "extend_reset");
 
         lift_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lift_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -39,6 +37,7 @@ public class Arm extends Subsystem {
         lift_right.setDirection(DcMotorSimple.Direction.FORWARD);
         liftHighLimit = dataParser.parseDouble(prop, "arm.liftHigh") - dataParser.parseDouble(prop, "arm.limitRange");
         clawOn = 1;
+        flipOn = 1;
     }
     @Override
     public void stop() {
@@ -47,7 +46,7 @@ public class Arm extends Subsystem {
         extend.setPower(0);
     }
 
-    public void run(double liftPower, double extendPower, double flipPower, boolean clawButton, boolean reset) {
+    public void run(double liftPower, double extendPower, double flipPower, boolean flipButton, boolean clawButton, boolean reset) {
         liftLeftPos = lift_left.getCurrentPosition();
         liftRightPos = lift_right.getCurrentPosition();
 
@@ -60,7 +59,7 @@ public class Arm extends Subsystem {
         if(this.reset && !reset) {
             if(!resetIsDone) {
                 clawOn = 1;
-                flip.setPosition(0);
+                flipOn = 1;
 
                 this.extendPower = -1;
 
@@ -90,7 +89,7 @@ public class Arm extends Subsystem {
                     }
                 }
 
-                if(liftRightPos == 0 && liftLeftPos == 0 && extend_reset.isPressed()) {
+                if(liftRightPos == 0 && liftLeftPos == 0 && resetStep == 1) {
                     resetIsDone = true;
                 }
             }
@@ -119,30 +118,47 @@ public class Arm extends Subsystem {
         if(resetIsDone) {
             resetTime.reset();
 
-            //flip accel/movement code
-            if(flipPower > 0) {
+            //adjust accel/movement code
+            if(flipButton && !this.flipButton) {
+                flipOn *= -1;
+                flipPos = 0;
+                this.flipButton = true;
+            }
+            if(!flipButton && this.flipButton) {
+                this.flipButton = false;
+            }
 
+            if (flipPower > 0) {
+                if(flipTime.time(TimeUnit.MILLISECONDS) > (50 / flipPower)) {
+                    flipPos += 0.01;
+                    flipTime.reset();
+                }
+            } else if (flipPower < 0) {
+                if(flipTime.time(TimeUnit.MILLISECONDS) > (100 / Math.abs(flipPower))) {
+                    flipPos -= 0.01;
+                    flipTime.reset();
+                }
             }
 
 
             if (liftPower > 0 && liftLeftPos >= liftHighLimit) {
-                
-                this.liftLeftPower = Range.clip(((dataParser.parseDouble(prop, "arm.liftHigh") - liftLeftPos) / dataParser.parseDouble(prop, "arm.limitRange")) * liftPower, -0.1, 0.1);
+
+                this.liftLeftPower = (dataParser.parseDouble(prop, "arm.liftHigh") - liftLeftPos) / dataParser.parseDouble(prop, "arm.limitRange") * liftPower;
 
             } else if (liftPower < 0 && liftLeftPos < dataParser.parseDouble(prop, "arm.limitRange")) {
 
-                this.liftLeftPower = Range.clip((liftLeftPos / dataParser.parseDouble(prop, "arm.limitRange")) * liftPower, -0.1, 0.1);
+                this.liftLeftPower = (liftLeftPos / dataParser.parseDouble(prop, "arm.limitRange")) * liftPower;
 
             } else {
                 this.liftLeftPower = liftPower;
             }
             if(liftPower > 0 && liftRightPos >= liftHighLimit) {
 
-                this.liftRightPower = Range.clip(((dataParser.parseDouble(prop, "arm.liftHigh") - liftRightPos) / dataParser.parseDouble(prop, "arm.limitRange")) * liftPower, -0.1, 0.1);
+                this.liftRightPower = ((dataParser.parseDouble(prop, "arm.liftHigh") - liftRightPos) / dataParser.parseDouble(prop, "arm.limitRange")) * liftPower;
 
             } else if(liftPower < 0 && liftRightPos < dataParser.parseDouble(prop, "arm.limitRange")) {
 
-                this.liftRightPower = Range.clip((liftRightPos / dataParser.parseDouble(prop, "arm.limitRange")) * liftPower, -0.1, 0.1);
+                this.liftRightPower = (liftRightPos / dataParser.parseDouble(prop, "arm.limitRange")) * liftPower;
 
             } else {
                 this.liftRightPower = liftPower;
@@ -164,6 +180,13 @@ public class Arm extends Subsystem {
         } else if(clawOn < 0) {
             setServoAngle(claw, dataParser.parseDouble(prop, "arm.clawIn"));
         }
+        if(flipOn < 0) {
+            adjustPos = dataParser.parseDouble(prop, "arm.adjustOut") + flipPos;
+        } else if(flipOn > 0) {
+            adjustPos = dataParser.parseDouble(prop, "arm.adjustPos") + flipPos;
+        }
+
+        adjust.setPosition(adjustPos);
 
         lift_left.setPower(this.liftLeftPower);
         lift_right.setPower(this.liftRightPower);
