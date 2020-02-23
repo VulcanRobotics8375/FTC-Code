@@ -17,7 +17,7 @@ public class Arm extends Subsystem {
     private ElapsedTime flipTime = new ElapsedTime();
     private ElapsedTime resetTime = new ElapsedTime();
     private double liftLeftPos, adjustPos, flipPos, liftRightPos, extendPower, liftLeftPower, liftRightPower, liftHighLimit;
-    private boolean reset, resetIsDone, clawButton, flipButton;
+    private boolean reset, resetIsDone, clawButton, flipButton, upButton;
     private int clawOn, resetStep, flipOn;
     public Arm() {}
 
@@ -46,7 +46,7 @@ public class Arm extends Subsystem {
         extend.setPower(0);
     }
 
-    public void run(double liftPower, double extendPower, double flipPower, boolean flipButton, boolean clawButton, boolean reset) {
+    public void run(double liftPower, double extendPower, double flipPower, boolean flipButton, boolean clawButton, boolean upButton, boolean reset) {
         liftLeftPos = lift_left.getCurrentPosition();
         liftRightPos = lift_right.getCurrentPosition();
 
@@ -60,10 +60,11 @@ public class Arm extends Subsystem {
             if(!resetIsDone) {
                 clawOn = 1;
                 flipOn = 1;
+                flipPos = 0;
 
-                this.extendPower = -1;
+                this.extendPower = 1;
 
-                if(resetTime.time(TimeUnit.SECONDS) >= 1.5) {
+                if(resetTime.time(TimeUnit.MILLISECONDS) >= 1000) {
                     resetStep = 1;
                 }
 
@@ -78,7 +79,7 @@ public class Arm extends Subsystem {
                     }
                 }
 
-                if(!lift_right.isBusy()) {
+                if(!lift_right.isBusy() && resetStep == 1) {
                     if (liftRightPos == 0) {
                         lift_right.setPower(0);
                         lift_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -100,6 +101,32 @@ public class Arm extends Subsystem {
                 lift_right.setPower(0);
                 lift_left.setPower(0);
                 this.reset = false;
+            }
+        }
+
+        if(upButton && !this.upButton) {
+           this.upButton = true;
+        }
+        if(!upButton && this.upButton) {
+            if(!lift_left.isBusy() && !lift_right.isBusy()) {
+                if (liftLeftPos < 150 && liftRightPos < 150) {
+                    lift_left.setTargetPosition((int) liftLeftPos + 100);
+                    lift_right.setTargetPosition((int) liftRightPos + 100);
+
+                    lift_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    lift_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                    lift_left.setPower(0.1);
+                    lift_right.setPower(0.1);
+                }
+            } else {
+                lift_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                lift_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                lift_left.setPower(0);
+                lift_right.setPower(0);
+            }
+            if(liftPower != 0 || extendPower != 0) {
+                this.upButton = false;
             }
         }
 
@@ -129,12 +156,12 @@ public class Arm extends Subsystem {
             }
 
             if (flipPower > 0) {
-                if(flipTime.time(TimeUnit.MILLISECONDS) > (50 / flipPower)) {
+                if(flipTime.time(TimeUnit.MILLISECONDS) > (30 / flipPower)) {
                     flipPos += 0.01;
                     flipTime.reset();
                 }
             } else if (flipPower < 0) {
-                if(flipTime.time(TimeUnit.MILLISECONDS) > (100 / Math.abs(flipPower))) {
+                if(flipTime.time(TimeUnit.MILLISECONDS) > (30 / Math.abs(flipPower))) {
                     flipPos -= 0.01;
                     flipTime.reset();
                 }

@@ -88,6 +88,8 @@ public class MainDrive extends OpMode {
                 gamepad2.y,
                 //claw
                 gamepad2.left_bumper,
+                //up button
+                gamepad2.dpad_up,
                 //reset
                 gamepad2.x
         );
