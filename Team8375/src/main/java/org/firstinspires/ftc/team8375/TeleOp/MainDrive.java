@@ -11,6 +11,7 @@ package org.firstinspires.ftc.team8375.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.team8375.Robot.FullBot;
 
 import java.io.IOException;
@@ -134,6 +135,8 @@ public class MainDrive extends OpMode {
         //Arm
         telemetry.addData("liftLeft", robot.arm.getLiftLeftPos());
         telemetry.addData("liftRight", robot.arm.getLiftRightPos());
+
+        telemetry.addData("ir sensor", robot.intake.getIRDistance(DistanceUnit.CM));
 
         telemetry.addData("dataStream test", prop.getProperty("arm.theta"));
         telemetry.addData("Runtime", getRuntime());

@@ -43,6 +43,7 @@ public class Intake extends Subsystem {
     public void create() {
         intake_left = hwMap.dcMotor.get("intake_left");
         intake_right = hwMap.dcMotor.get("intake_right");
+        irSensor = hwMap.get(Rev2mDistanceSensor.class, "intake_sensor");
 
     }
 
@@ -74,7 +75,7 @@ public class Intake extends Subsystem {
                     } else {
                         intakePower = Range.clip(intakePower, dataParser.parseDouble(prop, "intake.minPower"), intakePower);
                     }
-                    
+
                 } else {
                     intakeTime.reset();
                 }

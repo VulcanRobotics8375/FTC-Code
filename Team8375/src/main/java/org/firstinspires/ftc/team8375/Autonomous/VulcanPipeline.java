@@ -207,6 +207,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
 
     }
 
+    //TODO tune PID coefficients and clean up PID loops
     private void pid(double Kp, double Ki, double Kd, long iterationTime, double heading) {
         double sensorVal = robot.drivetrain.pid.getIntegratedHeading() + robot.drivetrain.pid.getStartHeading();
 

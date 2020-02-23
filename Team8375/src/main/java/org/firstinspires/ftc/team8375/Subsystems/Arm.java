@@ -109,21 +109,21 @@ public class Arm extends Subsystem {
         }
         if(!upButton && this.upButton) {
             if(!lift_left.isBusy() && !lift_right.isBusy()) {
-                if (liftLeftPos < 150 && liftRightPos < 150) {
-                    lift_left.setTargetPosition((int) liftLeftPos + 100);
-                    lift_right.setTargetPosition((int) liftRightPos + 100);
+                if (liftLeftPos < 400 && liftRightPos < 400) {
+                    lift_left.setTargetPosition(400);
+                    lift_right.setTargetPosition(400);
 
                     lift_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     lift_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-                    lift_left.setPower(0.1);
-                    lift_right.setPower(0.1);
+                    lift_right.setPower(0.2);
+                    lift_left.setPower(0.2);
+                } else {
+                    lift_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    lift_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    lift_left.setPower(0);
+                    lift_right.setPower(0);
                 }
-            } else {
-                lift_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                lift_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                lift_left.setPower(0);
-                lift_right.setPower(0);
             }
             if(liftPower != 0 || extendPower != 0) {
                 this.upButton = false;
@@ -142,7 +142,7 @@ public class Arm extends Subsystem {
         }
 
         //most code goes here
-        if(resetIsDone) {
+        if(resetIsDone && !this.upButton) {
             resetTime.reset();
 
             //adjust accel/movement code
@@ -206,8 +206,10 @@ public class Arm extends Subsystem {
             setServoAngle(claw, dataParser.parseDouble(prop, "arm.clawOut"));
         } else if(clawOn < 0) {
             setServoAngle(claw, dataParser.parseDouble(prop, "arm.clawIn"));
-            liftLeftPower *= 0.4;
-            liftRightPower *= 0.4;
+            if(liftLeftPower < 0 && liftRightPower < 0) {
+                liftLeftPower *= 0.4;
+                liftRightPower *= 0.4;
+            }
         }
         if(flipOn < 0) {
             adjustPos = dataParser.parseDouble(prop, "arm.adjustOut") + flipPos;
@@ -234,5 +236,7 @@ public class Arm extends Subsystem {
     public double getLiftRightPos() {
         return lift_right.getCurrentPosition();
     }
+
+    //TODO add more debugging stuff
 
 }
