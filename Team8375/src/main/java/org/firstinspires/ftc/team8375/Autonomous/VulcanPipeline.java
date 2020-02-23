@@ -309,33 +309,6 @@ public abstract class VulcanPipeline extends LinearOpMode {
 
     }
 
-    public void findSkystone(double threshold, double power) {
-        stoneTime.reset();
-        robot.SkystoneDetect.resetScore();
-
-        while (!robot.SkystoneDetect.detect()) {
-//            robot.SkystoneDetector.setScorerThreshold(threshold);
-            robot.drivetrain.setPowers(power, 0);
-            robot.SkystoneDetect.resetScore();
-            sleep(100);
-            telemetry.addData("score", robot.SkystoneDetect.getScorer());
-//            if(async) {
-//                async();
-//            }
-
-        }
-        robot.drivetrain.setPowers(0, 0);
-        step++;
-
-        if (stoneTime.milliseconds() <= 1000) {
-            i = 1;
-        } else if (stoneTime.milliseconds() >= 1000 && stoneTime.milliseconds() < 2000) {
-            i = 2;
-        } else if (stoneTime.milliseconds() > 2000) {
-            i = 3;
-        }
-    }
-
     public void seek() {
         while (detector.foundRectangle() == null) {
             telemetry.addLine("finding skystone...");

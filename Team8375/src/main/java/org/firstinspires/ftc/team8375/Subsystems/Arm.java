@@ -215,7 +215,7 @@ public class Arm extends Subsystem {
             adjustPos = dataParser.parseDouble(prop, "arm.adjustPos") + flipPos;
         }
 
-        //set everything at the end of the loop. 
+        //set everything at the end of the loop.
         adjust.setPosition(adjustPos);
         lift_left.setPower(this.liftLeftPower);
         lift_right.setPower(this.liftRightPower);
