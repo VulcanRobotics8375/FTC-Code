@@ -18,7 +18,6 @@ public class FullBot extends Robot {
     public Drivetrain drivetrain = new Drivetrain();
     public Foundation foundation = new Foundation();
     public Intake intake = new Intake();
-    public SkystoneDetect SkystoneDetect = new SkystoneDetect();
 
     public FullBot(HardwareMap hwMap) {
         //add all the subsystems to the subsystems List<>
@@ -27,7 +26,6 @@ public class FullBot extends Robot {
         subsystems.add(drivetrain);
         subsystems.add(foundation);
         subsystems.add(intake);
-        subsystems.add(SkystoneDetect);
         
         //run the subsystem foreach loop to initialize all subsystems
         createAll(hwMap, subsystems);
