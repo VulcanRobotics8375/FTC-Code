@@ -194,32 +194,36 @@ public class Drivetrain extends Subsystem {
 
 //        same acceleration curve, but based on time instead of controller input.
 //         limits the speed at which the robot accelerates
-        if(Math.abs(this.movePower) > 0 || Math.abs(this.turnPower) > 0) {
-            accLim = (Time.time() / 1.07) * ((0.62 * Math.pow(Time.time(), 2)) + 0.45) / divisor;
-
-            //logic gates to determine when to use time-based or controller-based power
-            if (accLim < Math.abs(this.movePower) && accLim < Math.abs(this.turnPower)) {
-                this.movePower = accLim;
-                this.turnPower = accLim;
-            } else if (accLim < Math.abs(this.movePower)) {
-                this.movePower = accLim;
-            } else if (accLim < Math.abs(this.turnPower)) {
-                this.turnPower = accLim;
-            }
-        } else {
-            accLim = 0;
-        }
 
 
-        //makes sure the motors are going the correct way
-        if (mPower < 0 || tPower < 0) {
-            if (this.movePower == accLim) {
-                this.movePower = -this.movePower;
-            }
-            if (this.turnPower == accLim) {
-                this.turnPower = -this.turnPower;
-            }
-        }
+//        if(Math.abs(this.movePower) > 0 || Math.abs(this.turnPower) > 0) {
+//            accLim = (Time.time() / 1.07) * ((0.62 * Math.pow(Time.time(), 2)) + 0.45) / divisor;
+//
+//            //logic gates to determine when to use time-based or controller-based power
+//            if (accLim < Math.abs(this.movePower) && accLim < Math.abs(this.turnPower)) {
+//                this.movePower = accLim;
+//                this.turnPower = accLim;
+//            } else if (accLim < Math.abs(this.movePower)) {
+//                this.movePower = accLim;
+//            } else if (accLim < Math.abs(this.turnPower)) {
+//                this.turnPower = accLim;
+//            }
+//        } else {
+//            accLim = 0;
+//        }
+//
+//
+//        //makes sure the motors are going the correct way
+//        if (mPower < 0 || tPower < 0) {
+//            if (this.movePower == accLim) {
+//                this.movePower = -this.movePower;
+//            }
+//            if (this.turnPower == accLim) {
+//                this.turnPower = -this.turnPower;
+//            }
+//        }
+
+
 //        if(inverse < 0) {
 //            if(tPower < 0 || mPower < 0) {
 ////                if(movePower == accLim) {

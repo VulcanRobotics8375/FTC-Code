@@ -74,9 +74,8 @@ public class MainDrive extends OpMode {
                 //turn
                 -gamepad1.right_stick_x,
                 //slow mode
-                gamepad1.left_bumper
-                //head switch
-        );
+                slowMode()
+            );
 
         robot.arm.run(
                 //lift
@@ -88,7 +87,7 @@ public class MainDrive extends OpMode {
                 //half flip
                 gamepad2.y,
                 //claw
-                gamepad2.right_bumper,
+                gamepad2.left_bumper,
                 //reset
                 gamepad2.x
         );
@@ -141,10 +140,14 @@ public class MainDrive extends OpMode {
     }
 
     public double intakeToggle() {
-        if(gamepad2.left_bumper)
+        if(gamepad2.right_bumper)
             return 1;
         else
             return 0;
+    }
+
+    private boolean slowMode() {
+        return gamepad1.left_trigger > 0;
     }
 
     @Override
