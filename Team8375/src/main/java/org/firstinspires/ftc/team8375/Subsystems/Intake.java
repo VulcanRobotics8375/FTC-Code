@@ -29,10 +29,12 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("FieldCanBeLocal")
 public class Intake extends Subsystem {
     private ElapsedTime time = new ElapsedTime();
+    private ElapsedTime intakeTime = new ElapsedTime();
     private int intakeOn = 1;
     //motors
     private DcMotor intake_left;
     private DcMotor intake_right;
+    Rev2mDistanceSensor irSensor;
     private double intakePower;
 
     public Intake() {}
@@ -41,6 +43,7 @@ public class Intake extends Subsystem {
     public void create() {
         intake_left = hwMap.dcMotor.get("intake_left");
         intake_right = hwMap.dcMotor.get("intake_right");
+
     }
 
     public void resetDeployTime() {
@@ -62,6 +65,19 @@ public class Intake extends Subsystem {
                 intake_right.setPower(intakePower);
 
             } else {
+                if(getIRDistance(DistanceUnit.CM) < dataParser.parseDouble(prop, "intake.irDistance")) {
+                    intakePower = Math.pow(dataParser.parseDouble(prop, "intake.minPower"), ((1/dataParser.parseDouble(prop, "intake.accSpeed")) * (intakeTime.time(TimeUnit.MILLISECONDS) / 1000.0)));
+
+                    if(intakePower < 0) {
+                        intakePower *= -1;
+                        intakePower = Range.clip(intakePower, intakePower, -dataParser.parseDouble(prop, "intake.minPower"));
+                    } else {
+                        intakePower = Range.clip(intakePower, dataParser.parseDouble(prop, "intake.minPower"), intakePower);
+                    }
+                    
+                } else {
+                    intakeTime.reset();
+                }
                 intake_left.setPower(intakePower);
                 intake_right.setPower(-intakePower);
             }
@@ -82,6 +98,11 @@ public class Intake extends Subsystem {
         intake_right.setDirection(DcMotor.Direction.REVERSE);
         resetDeployTime();
     }
+
+    public double getIRDistance(DistanceUnit unit) {
+        return irSensor.getDistance(unit);
+    }
+
 
     @Override
     public void stop() {
