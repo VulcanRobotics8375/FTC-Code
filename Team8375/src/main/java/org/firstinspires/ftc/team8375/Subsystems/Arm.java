@@ -206,6 +206,8 @@ public class Arm extends Subsystem {
             setServoAngle(claw, dataParser.parseDouble(prop, "arm.clawOut"));
         } else if(clawOn < 0) {
             setServoAngle(claw, dataParser.parseDouble(prop, "arm.clawIn"));
+            liftLeftPower *= 0.4;
+            liftRightPower *= 0.4;
         }
         if(flipOn < 0) {
             adjustPos = dataParser.parseDouble(prop, "arm.adjustOut") + flipPos;
@@ -213,8 +215,8 @@ public class Arm extends Subsystem {
             adjustPos = dataParser.parseDouble(prop, "arm.adjustPos") + flipPos;
         }
 
+        //set everything at the end of the loop. 
         adjust.setPosition(adjustPos);
-
         lift_left.setPower(this.liftLeftPower);
         lift_right.setPower(this.liftRightPower);
         extend.setPower(this.extendPower);
