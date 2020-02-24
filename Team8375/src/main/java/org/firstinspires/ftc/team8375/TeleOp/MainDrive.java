@@ -86,13 +86,13 @@ public class MainDrive extends OpMode {
                 //adjust
                 trigger,
                 //half flip
-                gamepad2.y,
+                gamepad2.x,
                 //claw
                 gamepad2.left_bumper,
                 //up button
                 gamepad2.dpad_up,
                 //reset
-                gamepad2.x
+                gamepad2.y
         );
 
         robot.intake.run(

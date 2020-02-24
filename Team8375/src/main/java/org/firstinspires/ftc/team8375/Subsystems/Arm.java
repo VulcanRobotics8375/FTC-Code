@@ -15,10 +15,9 @@ public class Arm extends Subsystem {
     private DcMotor lift_left, lift_right;
     private CRServo extend;
     private ElapsedTime flipTime = new ElapsedTime();
-    private ElapsedTime resetTime = new ElapsedTime();
     private double liftLeftPos, adjustPos, flipPos, liftRightPos, extendPower, liftLeftPower, liftRightPower, liftHighLimit;
-    private boolean reset, resetIsDone, clawButton, flipButton, upButton;
-    private int clawOn, resetStep, flipOn;
+    private boolean clawButton, reset, flipButton, upButton;
+    private int clawOn, flipOn;
     public Arm() {}
 
     @Override
@@ -50,68 +49,15 @@ public class Arm extends Subsystem {
         liftLeftPos = lift_left.getCurrentPosition();
         liftRightPos = lift_right.getCurrentPosition();
 
-        //reset code here
-        if(reset) {
-            this.reset = true;
-            resetIsDone = false;
-            resetStep = 0;
-        }
-        if(this.reset && !reset) {
-            if(!resetIsDone) {
-                clawOn = 1;
-                flipOn = 1;
-                flipPos = 0;
-
-                this.extendPower = 1;
-
-                if(resetTime.time(TimeUnit.MILLISECONDS) >= 1000) {
-                    resetStep = 1;
-                }
-
-                if(!lift_left.isBusy() && resetStep == 1) {
-                    if(liftLeftPos == 0) {
-                        lift_left.setPower(0);
-                        lift_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    } else {
-                        lift_left.setTargetPosition(0);
-                        lift_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        lift_left.setPower(dataParser.parseDouble(prop, "arm.liftResetPower"));
-                    }
-                }
-
-                if(!lift_right.isBusy() && resetStep == 1) {
-                    if (liftRightPos == 0) {
-                        lift_right.setPower(0);
-                        lift_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    } else {
-                        lift_right.setTargetPosition(0);
-                        lift_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        lift_right.setPower(dataParser.parseDouble(prop, "arm.liftResetPower"));
-                    }
-                }
-
-                if(liftRightPos == 0 && liftLeftPos == 0 && resetStep == 1) {
-                    resetIsDone = true;
-                }
-            }
-
-            if(resetIsDone && this.reset) {
-                lift_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                lift_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                lift_right.setPower(0);
-                lift_left.setPower(0);
-                this.reset = false;
-            }
-        }
 
         if(upButton && !this.upButton) {
            this.upButton = true;
         }
         if(!upButton && this.upButton) {
             if(!lift_left.isBusy() && !lift_right.isBusy()) {
-                if (liftLeftPos < 400 && liftRightPos < 400) {
-                    lift_left.setTargetPosition(400);
-                    lift_right.setTargetPosition(400);
+                if (liftLeftPos < dataParser.parseDouble(prop, "arm.intakePos") && liftRightPos < dataParser.parseDouble(prop, "arm.intakePos")) {
+                    lift_left.setTargetPosition(dataParser.parseInt(prop, "arm.intakePos"));
+                    lift_right.setTargetPosition(dataParser.parseInt(prop, "arm.intakePos"));
 
                     lift_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     lift_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -130,20 +76,8 @@ public class Arm extends Subsystem {
             }
         }
 
-        if(liftPower != 0 || extendPower != 0 || clawButton || flipPower != 0) {
-            if(!resetIsDone) {
-                lift_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                lift_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                lift_left.setPower(0);
-                lift_right.setPower(0);
-                resetIsDone = true;
-                this.reset = false;
-            }
-        }
-
         //most code goes here
-        if(resetIsDone && !this.upButton) {
-            resetTime.reset();
+        if(!this.upButton) {
 
             //adjust accel/movement code
             if(flipButton && !this.flipButton) {
@@ -215,6 +149,13 @@ public class Arm extends Subsystem {
             adjustPos = dataParser.parseDouble(prop, "arm.adjustOut") + flipPos;
         } else if(flipOn > 0) {
             adjustPos = dataParser.parseDouble(prop, "arm.adjustPos") + flipPos;
+        }
+
+        if(reset && !this.reset) {
+            flipPos = 0;
+            this.reset = true;
+        } if(!reset && this.reset) {
+            this.reset = false;
         }
 
         //set everything at the end of the loop.

@@ -174,13 +174,16 @@ public class Drivetrain extends Subsystem {
         divisor = (dataParser.parseDouble(prop, "drivetrain.accSpeed")/1.07)*((0.62*Math.pow(dataParser.parseDouble(prop, "drivetrain.accSpeed"), 2))+0.45);
         // modifies the controller input for a more natural feel
         // graph for acceleration curve - https://www.desmos.com/calculator/gdwizzld3f
-        this.movePower = (movePower/1.07)*((0.62*Math.pow(movePower, 2))+0.45);
-        this.turnPower = (turnPower/1.07)*((0.62*Math.pow(turnPower, 2))+0.45);
+//        this.movePower = (movePower/1.07)*((0.62*Math.pow(movePower, 2))+0.45);
+//        this.turnPower = (turnPower/1.07)*((0.62*Math.pow(turnPower, 2))+0.45);
         if(Math.abs(this.movePower) == 0 && Math.abs(this.turnPower) == 0) {
             Time.reset();
         }
         mPower = this.movePower;
         tPower = this.turnPower;
+
+        this.movePower = movePower;
+        this.turnPower = turnPower;
 
 //        if(headSwitchButton) {
 //            buttonPressed = true;
