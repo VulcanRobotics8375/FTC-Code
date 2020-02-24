@@ -60,10 +60,10 @@ public class MainDrive extends OpMode {
 
     @Override
     public void loop() {
-        if(gamepad2.right_trigger > 0) {
-            trigger = gamepad2.right_trigger;
-        } else if(gamepad2.left_trigger > 0) {
-            trigger = -gamepad2.left_trigger;
+        if(gamepad2.left_trigger > 0) {
+            trigger = gamepad2.left_trigger;
+        } else if(gamepad2.right_trigger > 0) {
+            trigger = -gamepad2.right_trigger;
         } else {
             trigger = 0;
         }

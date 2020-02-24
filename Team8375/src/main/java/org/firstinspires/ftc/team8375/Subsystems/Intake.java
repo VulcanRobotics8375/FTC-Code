@@ -36,6 +36,7 @@ public class Intake extends Subsystem {
     private DcMotor intake_right;
     Rev2mDistanceSensor irSensor;
     private double intakePower;
+    private boolean stoneIn = false;
 
     public Intake() {}
 
@@ -67,6 +68,10 @@ public class Intake extends Subsystem {
 
             } else {
                 if(getIRDistance(DistanceUnit.CM) < dataParser.parseDouble(prop, "intake.irDistance")) {
+                    stoneIn = true;
+                }
+
+                if(stoneIn) {
                     intakePower = Math.pow(dataParser.parseDouble(prop, "intake.minPower"), ((1/dataParser.parseDouble(prop, "intake.accSpeed")) * (intakeTime.time(TimeUnit.MILLISECONDS) / 1000.0)));
 
                     if(intakePower < 0) {
@@ -75,15 +80,19 @@ public class Intake extends Subsystem {
                     } else {
                         intakePower = Range.clip(intakePower, dataParser.parseDouble(prop, "intake.minPower"), intakePower);
                     }
-
                 } else {
                     intakeTime.reset();
                 }
+
                 intake_left.setPower(intakePower);
                 intake_right.setPower(-intakePower);
             }
 
+
         } else {
+            if(isOn == 0) {
+                stoneIn = false;
+            }
             intake_left.setPower(0);
             intake_right.setPower(0);
         }
