@@ -50,5 +50,8 @@ public class Foundation extends Subsystem {
     @Override
     public void stop() {}
 
+    public int getCapStonePos() {
+        return capStonePos;
+    }
 
 }

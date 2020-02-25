@@ -88,7 +88,7 @@ public class MainDrive extends OpMode {
                 //half flip
                 gamepad2.x,
                 //claw
-                gamepad2.left_bumper,
+                claw(),
                 //up button
                 gamepad2.dpad_up,
                 //reset
@@ -144,11 +144,20 @@ public class MainDrive extends OpMode {
         telemetry.update();
     }
 
-    public double intakeToggle() {
+    private double intakeToggle() {
         if(gamepad2.right_bumper)
             return 1;
         else
             return 0;
+    }
+
+    private boolean claw() {
+        if(gamepad2.left_bumper)
+            return true;
+        else if(robot.foundation.getCapStonePos() < 0)
+            return true;
+        else
+            return false;
     }
 
     private boolean slowMode() {
