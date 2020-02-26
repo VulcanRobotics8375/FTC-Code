@@ -72,8 +72,12 @@ public class Arm extends Subsystem {
                 }
             }
         }
-        if(liftPower != 0 || extendPower != 0) {
+        if((liftPower != 0 || extendPower != 0) && this.upButton) {
             this.upButton = false;
+            lift_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            lift_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            lift_left.setPower(0);
+            lift_right.setPower(0);
         }
 
         //most code goes here

@@ -72,7 +72,10 @@ public class Intake extends Subsystem {
                 }
 
                 if(stoneIn) {
-                    intakePower = Math.pow(dataParser.parseDouble(prop, "intake.minPower"), ((1/dataParser.parseDouble(prop, "intake.accSpeed")) * (intakeTime.time(TimeUnit.MILLISECONDS) / 1000.0)));
+                    intakePower = Math.pow(
+                            dataParser.parseDouble(prop, "intake.minPower"),
+                            ((1/dataParser.parseDouble(prop, "intake.accSpeed")) * (intakeTime.time(TimeUnit.MILLISECONDS) / 1000.0))
+                    );
 
                     if(intakePower < 0) {
                         intakePower *= -1;
