@@ -71,9 +71,9 @@ public class Arm extends Subsystem {
                     lift_right.setPower(0);
                 }
             }
-            if(liftPower != 0 || extendPower != 0) {
-                this.upButton = false;
-            }
+        }
+        if(liftPower != 0 || extendPower != 0) {
+            this.upButton = false;
         }
 
         //most code goes here
