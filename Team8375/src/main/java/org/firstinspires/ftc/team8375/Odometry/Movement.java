@@ -8,31 +8,14 @@
 
 package org.firstinspires.ftc.team8375.Odometry;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-import org.firstinspires.ftc.team8375.Subsystems.Robot;
-
-import java.util.List;
-
-public class purePursuit extends LinearOpMode {
-
-    private double lookAhead;
-    private List<Point> points;
-    private Point currentPos;
-    private Robot robot;
-    private Tracker tracker;
-
-    public void runOpMode() {
-        robot = new Robot(hardwareMap);
-        tracker.start();
-        waitForStart();
-        while(opModeIsActive()) {
-
-        currentPos.update(tracker.x, tracker.y);
 
 
-        }
+public class Movement {
+
+    public void runToPosition(Point point, double movementSpeed, Tracker robot) {
+        double distanceToTarget = Math.hypot(point.x - robot.x, point.y - robot.y);
+
+
+
     }
-
-
 }

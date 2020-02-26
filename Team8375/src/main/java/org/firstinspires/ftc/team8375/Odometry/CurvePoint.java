@@ -8,24 +8,41 @@
 
 package org.firstinspires.ftc.team8375.Odometry;
 
-public class Point {
+public class CurvePoint {
     public double x;
     public double y;
+    public double turnSpeed;
+    public double moveSpeed;
+    public double followDistance;
+    public double pointLength;
+    public double slowDownTurnRadius;
+    public double slowDownTurnAmount;
 
-    public Point(double x, double y) {
+    public CurvePoint(double x, double y, double turnSpeed, double moveSpeed, double followDistance, double pointLength, double slowDownTurnAmount, double slowDownTurnRadius) {
         this.x = x;
         this.y = y;
+        this.turnSpeed = turnSpeed;
+        this.moveSpeed = moveSpeed;
+        this.followDistance = followDistance;
+        this.pointLength = pointLength;
+        this.slowDownTurnRadius = slowDownTurnRadius;
+        this.slowDownTurnAmount = slowDownTurnAmount;
     }
 
-    public void update(double x, double y) {
-        this.x = x;
-        this.y =  y;
+
+    public CurvePoint(CurvePoint point) {
+        point.x = x;
+        point.y = y;
+        point.turnSpeed = turnSpeed;
+        point.moveSpeed = moveSpeed;
+        point.followDistance = followDistance;
+        point.pointLength = pointLength;
+        point.slowDownTurnRadius = slowDownTurnRadius;
+        point.slowDownTurnAmount = slowDownTurnAmount;
+
     }
 
-    @Override
-    public String toString() {
-
-        return x + ", " + y;
+    public static Point toPoint(CurvePoint point) {
+        return new Point(point.x, point.y);
     }
-
 }

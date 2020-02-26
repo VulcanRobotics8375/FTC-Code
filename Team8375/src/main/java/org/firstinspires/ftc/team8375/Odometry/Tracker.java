@@ -10,10 +10,18 @@ package org.firstinspires.ftc.team8375.Odometry;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
 public class Tracker extends Thread {
 
     public double x = 0;
     public double y = 0;
+    public Orientation angles;
+    private double previousHeading;
+    private double integratedHeading;
     private double imuRadius;
     private BNO055IMU imu;
     private long iterationTime = 7;
@@ -33,8 +41,8 @@ public class Tracker extends Thread {
 
             velocity -= imu.getAngularVelocity().zRotationRate * imuRadius;
 
-            x += (velocity * (iterationTime / 1000.0)) * Math.cos(imu.getAngularOrientation().firstAngle);
-            y += (velocity * (iterationTime / 1000.0)) * Math.sin(imu.getAngularOrientation().firstAngle);
+            x += (velocity * (iterationTime / 1000.0)) * Math.cos(getIntegratedHeading());
+            y += (velocity * (iterationTime / 1000.0)) * Math.sin(getIntegratedHeading());
 
             previousVelocity = velocity;
 
@@ -53,6 +61,24 @@ public class Tracker extends Thread {
     public void resetPosition() {
         this.x = 0;
         this.y = 0;
+    }
+
+    public double getIntegratedHeading() {
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        imu.getPosition();
+        double currentHeading = AngleUnit.DEGREES.normalize(angles.firstAngle);
+        double deltaHeading = currentHeading - previousHeading;
+
+        if (deltaHeading < -180) {
+            deltaHeading += 360;
+        } else if (deltaHeading >= 180) {
+            deltaHeading -= 360;
+        }
+
+        integratedHeading += deltaHeading;
+        previousHeading = currentHeading;
+
+        return integratedHeading;
     }
 
     public void setRunMode(boolean running) {

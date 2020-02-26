@@ -8,24 +8,18 @@
 
 package org.firstinspires.ftc.team8375.Odometry;
 
-public class Point {
-    public double x;
-    public double y;
+public class MathFunctions {
 
-    public Point(double x, double y) {
-        this.x = x;
-        this.y = y;
+    public static double wrapAngle(double angle) {
+        while(angle < 180) {
+            angle += 360;
+        }
+        while(angle > 180) {
+            angle -= 360;
+        }
+
+        return angle;
     }
 
-    public void update(double x, double y) {
-        this.x = x;
-        this.y =  y;
-    }
-
-    @Override
-    public String toString() {
-
-        return x + ", " + y;
-    }
 
 }
