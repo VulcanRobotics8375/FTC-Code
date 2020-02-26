@@ -152,6 +152,7 @@ public class Arm extends Subsystem {
         }
 
         if(reset && !this.reset) {
+            flipOn = 1;
             flipPos = 0;
             this.reset = true;
         } if(!reset && this.reset) {
