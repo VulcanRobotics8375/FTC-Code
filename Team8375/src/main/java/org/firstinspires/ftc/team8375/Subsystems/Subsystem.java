@@ -6,47 +6,35 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.team8375.Autonomous;
+package org.firstinspires.ftc.team8375.Subsystems;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
-@Autonomous(name="foundation -- blue -- outside", group = "foundation move")
-public class Auto_Foundation_Move_Blue_Outside extends VulcanPipeline {
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
-    @Override
-    public void runOpMode() {
+public abstract class Subsystem {
 
-        initialize();
+    public HardwareMap hwMap;
+    public Properties prop;
 
-        waitForStart();
+    public Subsystem() {
+        try {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            InputStream input = loader.getResourceAsStream("config.properties");
+            if(input != null) {
+                prop = new Properties();
+                prop.load(input);
+            } else {
 
-        do {
-
-            if(!isDone) {
-
-                moveIn(45, 45);
-                turn(83, 15);
-                moveIn(7, 15);
-                robot.foundation.setFoundationMoveAngle(30);
-                sleep(800);
-                moveIn(-2, -15);
-                turn(65, 15);
-                moveIn(24, 30);
-                robot.foundation.setFoundationMoveAngle(180);
-                moveIn(-9, -20);
-                turn(47, 15);
-                moveIn(31, 30);
-                turn(35, 10);
-                moveIn(15, 15);
             }
-
-            isDone = true;
-
-        } while(opModeIsActive());
-
-        robot.stop();
-
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
-    public void async() {}
-}
 
+    public abstract void create();
+
+    public abstract void stop();
+}

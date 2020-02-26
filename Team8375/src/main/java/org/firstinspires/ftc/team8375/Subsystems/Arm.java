@@ -1,417 +1,188 @@
-/*
- * Copyright (c) 2020 Vulcan Robotics FTC Team 8375. Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 package org.firstinspires.ftc.team8375.Subsystems;
 
-import android.content.Context;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.*;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.team8375.dataParser;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
-/**
- * Arm subsystem
- */
+import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class Arm {
-    // variable initialization
-    private DcMotor lift;
-    private DcMotor pitch;
-    private Servo claw;
-    private Servo yaw;
-    private Servo level;
+public class Arm extends Subsystem {
+    private Servo adjust, claw;
+    private DcMotor lift_left, lift_right;
+    private CRServo extend;
+    private ElapsedTime flipTime = new ElapsedTime();
+    private double liftLeftPos, adjustPos, flipPos, liftRightPos, extendPower, liftLeftPower, liftRightPower, liftHighLimit;
+    private boolean clawButton, reset, flipButton, upButton;
+    private int clawOn, flipOn;
+    public Arm() {}
 
-    private float LiftPos;
-    private float pitchPos;
-    private double levelPos;
-    private double liftPower;
-    private double pitchPower;
+    @Override
+    public void create() {
+        adjust = hwMap.get(Servo.class, "adjust");
+        claw = hwMap.get(Servo.class, "claw");
+        extend = hwMap.get(CRServo.class, "extend");
+        lift_left = hwMap.dcMotor.get("lift_left");
+        lift_right = hwMap.dcMotor.get("lift_right");
 
-    //degrees per tick calculation
-    private double theta;
-    private double ticks;
-    private double coefficient;
-                                // degrees / 180.0
-    private double levelBias = 95;
-
-    private double resetPos;
-
-    private float liftHighLimit;
-    private float pitchHighLimit;
-    private float lastLiftPos = 0;
-    private double yawClockwise;
-    private double yawCounterClockwise;
-
-    private boolean clawPressed, yawPressed, bypass, levelUp, levelDown;
-    private boolean reset = false;
-    private boolean resetIsDone = true;
-
-    private int resetStep = 0;
-    private int clawOn = -1;
-    private int yawOn = -1;
-    private int levelCenter = 0;
-    private Properties prop;
-    private Context context;
-
-    public Arm(DcMotor lift, DcMotor pitch, Servo claw, Servo yaw, Servo level) {
-        this.lift = lift;
-        this.pitch = pitch;
-        this.claw = claw;
-        this.yaw = yaw;
-        this.level = level;
-        this.level.setDirection(Servo.Direction.REVERSE);
-
-        try {
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            InputStream input = loader.getResourceAsStream("config.properties");
-            if(input != null) {
-                prop = new Properties();
-                prop.load(input);
-            } else {
-
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        //motor initialization
-        theta = dataParser.parseDouble(prop, "arm.theta");
-        ticks = dataParser.parseDouble(prop, "arm.pitchHigh");
-        coefficient = theta / ticks;
-        resetPos = dataParser.parseDouble(prop, "arm.resetPos");
-
+        lift_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lift_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lift_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lift_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lift_left.setDirection(DcMotorSimple.Direction.REVERSE);
+        lift_right.setDirection(DcMotorSimple.Direction.FORWARD);
+        liftHighLimit = dataParser.parseDouble(prop, "arm.liftHigh") - dataParser.parseDouble(prop, "arm.limitRange");
+        clawOn = 1;
+        flipOn = 1;
     }
-
-    /**
-     * Arm.run is not independent, relies on a loop such as an OpMode.
-     * @param liftPower Input for the power of the lift motor, ususally a joystick
-     * @param pitchPower Input for the pitch motor
-     * @param clawButton boolean for opening and closing the claw -- system doesn't rely on this value being true or false, it has a state switch for every true false cycle of the boolean.
-     * @param yawButton boolean for the flip servo toggle, same true false cycle state as the clawButton param
-     * @param bypass bypass the pitch zero position
-     * @param reset reset button-- resets all lift components to starting position
-     * @param levelUp button for toggling the level give upward
-     * @param levelDown button for toggling the level give downward
-     * @param flipGive joystick input for extra flip movement
-     */
-    public void run(double liftPower, double pitchPower, boolean clawButton, boolean yawButton, boolean bypass, boolean reset, boolean levelUp, boolean levelDown, double flipGive) {
-
-        //limits
-        LiftPos = lift.getCurrentPosition();
-        pitchPos = pitch.getCurrentPosition();
-        liftHighLimit = dataParser.parseFLoat(prop, "arm.liftHigh") - dataParser.parseFLoat(prop, "arm.limitRange");
-        pitchHighLimit = dataParser.parseFLoat(prop, "arm.pitchHigh") - dataParser.parseFLoat(prop, "arm.limitRange");
-
-        //lower bound
-        if(reset) {
-            this.reset = true;
-            resetIsDone = false;
-            resetStep = 0;
-            clawOn = -1;
-        }
-        if (this.reset && !reset) {
-            if(!resetIsDone) {
-                levelBias = dataParser.parseDouble(prop, "arm.levelBias");
-
-                if(!pitch.isBusy() && resetStep > 1) {
-                    if (pitchPos == 0) {
-                        pitch.setPower(0);
-                        pitch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    } else {
-                        pitch.setTargetPosition(0);
-                        pitch.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        pitch.setPower(dataParser.parseDouble(prop, "arm.pitchResetPower"));
-                    }
-                }
-                if(yaw.getPosition() > 0 && resetStep < 1) {
-                    setServoAngle(yaw, 180);
-                }
-
-                if(!lift.isBusy() && resetStep == 0) {
-                    if(LiftPos >= resetPos) {
-                        lift.setPower(0);
-                        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                        resetStep++;
-                    }
-                    else if (LiftPos <= resetPos + 5 && LiftPos >= resetPos - 5) {
-
-                        lift.setPower(0);
-                        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                        resetStep++;
-
-                    } else {
-                        lift.setTargetPosition((int) resetPos);
-                        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        lift.setPower(dataParser.parseDouble(prop, "arm.liftResetPower"));
-                    }
-                }
-
-                if (resetStep == 1) {
-                    if(yaw.getPosition() != Double.parseDouble(prop.getProperty("arm.yawRetracted"))) {
-                        setServoAngle(yaw, dataParser.parseDouble(prop, "arm.yawRetracted"));
-                    } else {
-                        resetStep++;
-                        yawOn = -1;
-                    }
-                }
-
-                if (!lift.isBusy() && resetStep == 2) {
-                    if (Math.abs(LiftPos) > 5) {
-                        lift.setTargetPosition(0);
-                        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        lift.setPower(-0.5);
-                    } else {
-                        lift.setPower(0);
-                        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                        resetStep++;
-                    }
-                }
-
-                if(resetStep == 3 && Math.abs(pitchPos) < 5 && Math.abs(LiftPos) < 6) {
-                    resetIsDone = true;
-                }
-            }
-
-            if(resetIsDone && this.reset) {
-                pitch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                lift.setPower(0);
-                pitch.setPower(0);
-                this.reset = false;
-            }
-        }
-
-        if(pitchPower != 0 || liftPower != 0 || clawButton || yawButton) {
-            if(!resetIsDone) {
-                pitch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                lift.setPower(0);
-                pitch.setPower(0);
-                resetIsDone = true;
-                this.reset = false;
-            }
-        }
-
-        if(resetIsDone) {
-
-            if(liftPower < 0 && yawOn > 0) {
-                if(LiftPos <= dataParser.parseDouble(prop, "arm.limitRange") + dataParser.parseDouble(prop, "arm.liftLow")) {
-
-                    this.liftPower = (dataParser.parseDouble(prop, "arm.liftLow") - pitchPos) / dataParser.parseDouble(prop, "arm.limitRange");
-
-                } else {
-                    this.liftPower = liftPower;
-                }
-            }
-            else if (liftPower < 0 && LiftPos <= dataParser.parseDouble(prop, "arm.limitRange")) {
-                //gradual slow down
-                this.liftPower = (-(LiftPos / dataParser.parseDouble(prop, "arm.limitRange"))) / 1.0;
-                lastLiftPos = LiftPos;
-            }
-
-            //upper bound
-            else if (liftPower > 0 && LiftPos >= liftHighLimit) {
-
-                //takes the distance from the upper limit and divides it by the limit range for a gradual slow down of the motor.
-                this.liftPower = ((dataParser.parseDouble(prop, "arm.liftHigh") - LiftPos) / (dataParser.parseDouble(prop, "arm.limitRange"))) / 1.0;
-                lastLiftPos = LiftPos;
-            } else {
-                this.liftPower = liftPower;
-            }
-
-            //pitch limits
-            if (!bypass && !this.bypass) {
-                if (pitchPower < 0 && pitchPos <= dataParser.parseDouble(prop, "arm.limitRange")) {
-                    this.pitchPower = (-(pitchPos / (dataParser.parseDouble(prop, "arm.limitRange") / Math.abs(pitchPower)))) / 1.0;
-
-                } else if (pitchPower > 0 && pitchPos >= pitchHighLimit) {
-                    this.pitchPower = (dataParser.parseDouble(prop, "arm.pitchHigh") - pitchPos) / (dataParser.parseDouble(prop, "arm.limitRange") / pitchPower) / 1.0;
-                } else {
-                    this.pitchPower = pitchPower;
-                }
-            } else if (bypass) {
-                this.pitchPower = pitchPower;
-                this.bypass = true;
-            }
-            if (this.bypass && !bypass) {
-                pitch.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                pitch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                this.bypass = false;
-            }
-
-            //claw button
-            if (clawButton && !clawPressed) {
-                clawOn *= -1;
-                clawPressed = true;
-            }
-            if (clawPressed && !clawButton) {
-                clawPressed = false;
-            }
-
-            if (clawOn < 0) {
-                setServoAngle(claw, Double.parseDouble(prop.getProperty("arm.clawOut")));
-            } else if (clawOn > 0) {
-                setServoAngle(claw, Double.parseDouble(prop.getProperty("arm.clawIn")));
-            }
-
-            //set powers
-
-            if (yawButton && !yawPressed) {
-                yawOn *= -1;
-                yawPressed = true;
-            }
-            if (yawPressed && !yawButton) {
-                yawPressed = false;
-            }
-
-            if (yawOn < 0) {
-                setServoAngle(yaw, dataParser.parseDouble(prop, "arm.yawRetracted"));
-            } else if (yawOn > 0) {
-                setServoAngle(yaw, dataParser.parseDouble(prop, "arm.yawDeployed") + (flipGive * 18));
-
-            }
-
-            lift.setPower(this.liftPower);
-            pitch.setPower(this.pitchPower);
-        }
-
-        if(levelUp && !this.levelUp) {
-            if(levelCenter == 0) {
-                if (yawOn > 0) {
-                    levelCenter = -1;
-                } else if (yawOn < 0) {
-                    levelCenter = 1;
-                }
-            } else if(Math.abs(levelCenter) == 1) {
-                levelCenter = 0;
-            }
-            this.levelUp = true;
-        } if(!levelUp && this.levelUp) {
-            this.levelUp = false;
-        }
-
-        if(levelDown && !this.levelDown) {
-            if(levelCenter == 0) {
-                if (yawOn > 0) {
-                    levelCenter = 1;
-                } else if (yawOn < 0) {
-                    levelCenter = -1;
-                }
-            } else if(Math.abs(levelCenter) == 1) {
-                levelCenter = 0;
-            }
-            this.levelDown = true;
-        } if(!levelDown && this.levelDown) {
-            this.levelDown = false;
-        }
-
-        if(levelCenter == 0) {
-            levelBias = dataParser.parseDouble(prop, "arm.levelBias");
-        } else if(levelCenter == 1) {
-            levelBias = dataParser.parseDouble(prop, "arm.levelBias") - dataParser.parseDouble(prop, "arm.levelGive");
-        } else if(levelCenter == -1) {
-            levelBias = dataParser.parseDouble(prop, "arm.levelBias") + dataParser.parseDouble(prop, "arm.levelGive");
-        }
-
-
-
-        //leveler
-        levelPos = (double) pitchPos * coefficient;
-
-        if (pitchPos != 0) {
-            setServoAngle(level, levelPos + levelBias);
-        } else {
-            setServoAngle(level, levelBias);
-        }
-    }
-
-    public void motorTest(double liftPower, double pitchPower) {
-
-        LiftPos = lift.getCurrentPosition();
-        pitchPos = pitch.getCurrentPosition();
-
-        lift.setPower(liftPower);
-        pitch.setPower(pitchPower);
-
-    }
-
-    public void ArmMotorInit(int position) {
-
-        //motor initialization
-//        lift.setDirection(DcMotor.Direction.REVERSE);
-        //there's a lot but its all important
-        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        pitch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        pitch.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        pitch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        if(position > 0) {
-//            lift.setTargetPosition(-position);
-//            lift.setPower(0.05);
-//            lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        } else if(position < 0) {
-//            lift.setTargetPosition(position);
-//            lift.setPower(-0.05);
-//        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        }
-//
-//        if(!lift.isBusy()){
-//            lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        }
-
-    }
-
-
-    private void setServoAngle(Servo servo, double angle) {
-
-        if(angle != 0) {
-            servo.setPosition(angle / 180.0);
-        } else {
-            servo.setPosition(angle);
-        }
-
-    }
-
+    @Override
     public void stop() {
-        lift.setPower(0);
-        pitch.setPower(0);
+        lift_left.setPower(0);
+        lift_right.setPower(0);
+        extend.setPower(0);
     }
 
-    //Testing stuff
+    public void run(double liftPower, double extendPower, double flipPower, boolean flipButton, boolean clawButton, boolean upButton, boolean reset) {
+        liftLeftPos = lift_left.getCurrentPosition();
+        liftRightPos = lift_right.getCurrentPosition();
 
-    public double getLiftPower() {
-        return liftPower;
-    }
-    public float getLiftPos() {
-        return LiftPos;
-    }
-    public float getPitchPos() {
-        return pitchPos;
-    }
-    public double getClawPos() {
-        return claw.getPosition();
-    }
-    public double getLevelPos() {
-        return level.getPosition();
+
+        if(upButton && !this.upButton) {
+           this.upButton = true;
+        }
+        if(!upButton && this.upButton) {
+            if(!lift_left.isBusy() && !lift_right.isBusy()) {
+                if (liftLeftPos < dataParser.parseDouble(prop, "arm.intakePos") && liftRightPos < dataParser.parseDouble(prop, "arm.intakePos")) {
+                    lift_left.setTargetPosition(dataParser.parseInt(prop, "arm.intakePos"));
+                    lift_right.setTargetPosition(dataParser.parseInt(prop, "arm.intakePos"));
+
+                    lift_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    lift_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                    lift_right.setPower(0.2);
+                    lift_left.setPower(0.2);
+                } else {
+                    lift_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    lift_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    lift_left.setPower(0);
+                    lift_right.setPower(0);
+                }
+            }
+        }
+        if((liftPower != 0 || extendPower != 0) && this.upButton) {
+            this.upButton = false;
+            lift_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            lift_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            lift_left.setPower(0);
+            lift_right.setPower(0);
+        }
+
+        //most code goes here
+        if(!this.upButton) {
+
+            //adjust accel/movement code
+            if(flipButton && !this.flipButton) {
+                flipOn *= -1;
+                flipPos = 0;
+                this.flipButton = true;
+            }
+            if(!flipButton && this.flipButton) {
+                this.flipButton = false;
+            }
+
+            if (flipPower > 0) {
+                if(flipTime.time(TimeUnit.MILLISECONDS) > (30 / flipPower)) {
+                    flipPos += 0.01;
+                    flipTime.reset();
+                }
+            } else if (flipPower < 0) {
+                if(flipTime.time(TimeUnit.MILLISECONDS) > (30 / Math.abs(flipPower))) {
+                    flipPos -= 0.01;
+                    flipTime.reset();
+                }
+            }
+
+
+            if (liftPower > 0 && liftLeftPos >= liftHighLimit) {
+
+                this.liftLeftPower = (dataParser.parseDouble(prop, "arm.liftHigh") - liftLeftPos) / dataParser.parseDouble(prop, "arm.limitRange") * liftPower;
+
+            } else if (liftPower < 0 && liftLeftPos < dataParser.parseDouble(prop, "arm.limitRange")) {
+
+                this.liftLeftPower = (liftLeftPos / dataParser.parseDouble(prop, "arm.limitRange")) * liftPower;
+
+            } else {
+                this.liftLeftPower = liftPower;
+            }
+            if(liftPower > 0 && liftRightPos >= liftHighLimit) {
+
+                this.liftRightPower = ((dataParser.parseDouble(prop, "arm.liftHigh") - liftRightPos) / dataParser.parseDouble(prop, "arm.limitRange")) * liftPower;
+
+            } else if(liftPower < 0 && liftRightPos < dataParser.parseDouble(prop, "arm.limitRange")) {
+
+                this.liftRightPower = (liftRightPos / dataParser.parseDouble(prop, "arm.limitRange")) * liftPower;
+
+            } else {
+                this.liftRightPower = liftPower;
+            }
+
+            this.extendPower = extendPower;
+
+            if(clawButton && !this.clawButton) {
+                clawOn *= -1;
+                this.clawButton = true;
+            }
+            if(!clawButton && this.clawButton) {
+                this.clawButton = false;
+            }
+        }
+
+        if(clawOn > 0) {
+            setServoAngle(claw, dataParser.parseDouble(prop, "arm.clawOut"));
+        } else if(clawOn < 0) {
+            setServoAngle(claw, dataParser.parseDouble(prop, "arm.clawIn"));
+            if(liftLeftPower < 0 && liftRightPower < 0) {
+                liftLeftPower *= 0.4;
+                liftRightPower *= 0.4;
+            }
+        }
+        if(flipOn < 0) {
+            adjustPos = dataParser.parseDouble(prop, "arm.adjustOut") + flipPos;
+        } else if(flipOn > 0) {
+            adjustPos = dataParser.parseDouble(prop, "arm.adjustPos") + flipPos;
+        }
+
+        if(reset && !this.reset) {
+            flipOn = 1;
+            flipPos = 0;
+            this.reset = true;
+        } if(!reset && this.reset) {
+            this.reset = false;
+        }
+
+        //set everything at the end of the loop.
+        adjust.setPosition(adjustPos);
+        lift_left.setPower(this.liftLeftPower);
+        lift_right.setPower(this.liftRightPower);
+        extend.setPower(this.extendPower);
     }
 
-    public int getResetStep() {
-        return resetStep;
+    public void setServoAngle(Servo servo, double angle) {
+        if(angle != 0) {
+            servo.setPosition(angle / 180);
+        }
     }
 
-    public boolean isResetDone() {
-        return resetIsDone;
+    public double getLiftLeftPos() {
+        return lift_left.getCurrentPosition();
     }
+    public double getLiftRightPos() {
+        return lift_right.getCurrentPosition();
+    }
+
+    //TODO add more debugging stuff
+
 }

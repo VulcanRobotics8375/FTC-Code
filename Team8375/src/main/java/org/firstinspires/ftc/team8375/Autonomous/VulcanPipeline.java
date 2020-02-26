@@ -15,8 +15,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.team8375.Odometry.Tracker;
-import org.firstinspires.ftc.team8375.SkystoneDetect;
-import org.firstinspires.ftc.team8375.Subsystems.Robot;
+import org.firstinspires.ftc.team8375.Robot.FullBot;
+import org.firstinspires.ftc.team8375.SkystoneDetector;
 import org.firstinspires.ftc.team8375.Subsystems.VulcanPID;
 import org.firstinspires.ftc.team8375.Subsystems.VulcanPIDCoefficients;
 import org.firstinspires.ftc.team8375.dataParser;
@@ -36,6 +36,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
     enum driveType {
         MECANUM, TANK
     }
+
     private double speed = 0;
     private double pidOut;
     private double integral = 0;
@@ -43,7 +44,10 @@ public abstract class VulcanPipeline extends LinearOpMode {
     private double previousError = 0;
     protected int step = 0;
     private int i;
-    protected Robot robot;
+
+    protected boolean autoArmDone;
+
+    protected FullBot robot;
     private ElapsedTime stoneTime = new ElapsedTime();
     protected ElapsedTime armTime = new ElapsedTime();
     private VulcanPIDCoefficients turnCoefficients = new VulcanPIDCoefficients(0.5, 0.6, 1);
@@ -54,7 +58,21 @@ public abstract class VulcanPipeline extends LinearOpMode {
     private VulcanPID turnPid;
     protected Properties prop;
     protected OpenCvCamera phoneCam;
-    protected SkystoneDetect detector;
+    protected SkystoneDetector detector;
+
+    protected Thread deployArm = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            deployAutoArm();
+        }
+    });
+
+    protected Thread releaseArm = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            releaseAutoArm();
+        }
+    });
 //    protected AutoArmThread autoArmThread;
 
     protected boolean isDone = false;
@@ -64,12 +82,12 @@ public abstract class VulcanPipeline extends LinearOpMode {
 
     /**
      * initialization stuff, for robot class and pid and config.properties file
-     *
      */
     public void initialize() {
-        robot = new Robot(hardwareMap);
         tracker = new Tracker(robot.drivetrain.imu);
         tracker.start();
+
+        robot = new FullBot(hardwareMap);
 //        autoArmThread = new AutoArmThread(hardwareMap);
         robot.drivetrain.init();
         robot.drivetrain.resetEncoders(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -86,7 +104,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
         try {
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
             InputStream input = loader.getResourceAsStream("config.properties");
-            if(input != null) {
+            if (input != null) {
                 prop = new Properties();
                 prop.load(input);
             } else {
@@ -104,7 +122,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDevice();
-        detector = new SkystoneDetect();
+        detector = new SkystoneDetector();
         phoneCam.setPipeline(detector);
         phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPSIDE_DOWN);
     }
@@ -140,16 +158,16 @@ public abstract class VulcanPipeline extends LinearOpMode {
     //moveIn
 
     /**
-     *
      * @param inches inches the robot moves
-     * @param speed speed (0 to 100) the robot moves
-     * @param turn used for heading correction for mecanum drive
+     * @param speed  speed (0 to 100) the robot moves
+     * @param turn   used for heading correction for mecanum drive
      */
     public void moveIn(double inches, double speed, double turn) {
         robot.drivetrain.moveIn(inches, speed, turn);
         step++;
         updateTelemetry();
     }
+
     public void moveIn(double inches, double speed) {
         moveIn(inches, speed, 0);
 
@@ -161,35 +179,39 @@ public abstract class VulcanPipeline extends LinearOpMode {
         previousError = 0;
         pidOut = 0;
         robot.drivetrain.resetEncoders(DcMotor.RunMode.RUN_USING_ENCODER);
-        double wheelSize = (100.0/25.4) * Math.PI;
-        int targetPos = (int) Math.round((inches/wheelSize) * 537.6);
+        double wheelSize = (100.0 / 25.4) * Math.PI;
+        int targetPos = (int) Math.round((inches / wheelSize) * 537.6);
         double inchesTravelled = 0;
-        while(!(round(inchesTravelled, 1) < inches + 0.2 && round(inchesTravelled, 1) > inches - 0.2)) {
+        while (!(round(inchesTravelled, 1) < inches + 0.2 && round(inchesTravelled, 1) > inches - 0.2)) {
             inchesTravelled = (robot.drivetrain.getPosition() / 537.6) * wheelSize;
-            pid(5, 0.6, 1.2, 7, inchesTravelled, inches);
+            pid(5, 0.6, 1.4, 7, inchesTravelled, inches);
             robot.drivetrain.movePercent(speed, -pidOut);
             telemetry.addData("pos", robot.drivetrain.getPosition());
+            telemetry.addData("inches", inchesTravelled);
             telemetry.addData("output", pidOut);
             telemetry.update();
 //            if(async) {
 //                async();
 //            }
+            if(isStopRequested())
+                return;
         }
         step++;
         robot.drivetrain.setPowers(0, 0);
     }
 
     public void moveRobot(double inches, double speed) {
-        double wheelSize = (dataParser.parseDouble(prop, "drivetrain.wheelDiameter")/25.4) * Math.PI;
-        int targetPos = (int) Math.round((inches/wheelSize) * dataParser.parseDouble(prop, "drivetrain.tpr"));
+        double wheelSize = (dataParser.parseDouble(prop, "drivetrain.wheelDiameter") / 25.4) * Math.PI;
+        int targetPos = (int) Math.round((inches / wheelSize) * dataParser.parseDouble(prop, "drivetrain.tpr"));
         robot.drivetrain.setTargetPos(targetPos);
         robot.drivetrain.resetEncoders(DcMotor.RunMode.RUN_TO_POSITION);
-        while(robot.drivetrain.motorIsBusy()) {
+        while (robot.drivetrain.motorIsBusy()) {
 
         }
 
     }
 
+    //TODO tune PID coefficients and clean up PID loops
     private void pid(double Kp, double Ki, double Kd, long iterationTime, double heading) {
         double sensorVal = robot.drivetrain.pid.getIntegratedHeading() + robot.drivetrain.pid.getStartHeading();
 
@@ -200,7 +222,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
         pidOut = Kp * error + Ki * integral + Kd * derivative;
         previousError = error;
 
-        if(Math.abs(error) < 10) {
+        if (Math.abs(error) < 10) {
             pidOut = Range.clip(pidOut, -50, 50);
         } else {
             pidOut = Range.clip(pidOut, -100, 100);
@@ -208,6 +230,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
         sleep(iterationTime);
         updateTelemetry();
     }
+
     private void pid(double Kp, double Ki, double Kd, long iterationTime, double value, double target) {
         double error = value - target;
 
@@ -217,7 +240,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
         pidOut = Kp * error + Ki * integral + Kd * derivative;
         previousError = error;
 
-        if(Math.abs(error) < 5) {
+        if (Math.abs(error) < 5) {
             pidOut = Range.clip(pidOut, -50, 50);
         } else {
             pidOut = Range.clip(pidOut, -100, 100);
@@ -225,53 +248,78 @@ public abstract class VulcanPipeline extends LinearOpMode {
         sleep(iterationTime);
     }
 
-    public void turn(double heading, double speed) {
-        double bias = robot.drivetrain.getImuAngle();
+    private void pid(double Kp, double Ki, double Kd, long iterationTime, double heading, boolean small) {
+        double sensorVal = robot.drivetrain.pid.getIntegratedHeading() + robot.drivetrain.pid.getStartHeading();
 
-        while(Math.ceil(robot.drivetrain.getImuAngle() - bias) != heading) {
-            pid(1, 0.7, 1, 7, heading);
+        double error = sensorVal - heading;
+        integral += ((error + previousError) / 2.0) * (iterationTime / 1000.0);
+        integral = Range.clip(integral, -100, 100);
+        derivative = (error - previousError);
+        pidOut = Kp * error + Ki * integral + Kd * derivative;
+        previousError = error;
+
+        if(!small) {
+            if (Math.abs(error) < 10) {
+                pidOut = Range.clip(pidOut, -50, 50);
+            } else {
+                pidOut = Range.clip(pidOut, -100, 100);
+            }
+        } else {
+            pidOut = Range.clip(pidOut, -100, 100);
+        }
+        sleep(iterationTime);
+        updateTelemetry();
+    }
+
+    public void turn(double heading, double speed) {
+        integral = 0;
+        pidOut = 0;
+        derivative = 0;
+
+        while (Math.ceil(robot.drivetrain.getImuAngle()) != heading) {
+            pid(1, 0.8, 1, 7, heading);
             robot.drivetrain.turnPercent(speed, pidOut);
-            step++;
+            telemetry.addData("angle", robot.drivetrain.getImuAngle());
+            telemetry.update();
 //            if(async) {
 //                async();
 //            }
+            if(isStopRequested())
+                return;
         }
         robot.drivetrain.setPowers(0, 0);
         step++;
 
     }
 
-    public void findSkystone(double threshold, double power) {
-        stoneTime.reset();
-        robot.SkystoneDetect.resetScore();
+    public void turnSmall(double heading, double speed) {
+        double bias = robot.drivetrain.getImuAngle();
+        integral = 0;
+        pidOut = 0;
+        derivative = 0;
 
-        while (!robot.SkystoneDetect.detect()) {
-//            robot.SkystoneDetect.setScorerThreshold(threshold);
-            robot.drivetrain.setPowers(power, 0);
-            robot.SkystoneDetect.resetScore();
-            sleep(100);
-            telemetry.addData("score", robot.SkystoneDetect.getScorer());
+        while (Math.ceil(robot.drivetrain.getImuAngle()) != heading) {
+            pid(1.5, 1.4, 1, 7, heading, true);
+            robot.drivetrain.turnPercent(speed, pidOut);
+            telemetry.addData("angle", robot.drivetrain.getImuAngle());
+            telemetry.update();
 //            if(async) {
 //                async();
 //            }
-
+            if(isStopRequested())
+                return;
         }
         robot.drivetrain.setPowers(0, 0);
         step++;
 
-        if(stoneTime.milliseconds() <= 1000) {
-            i = 1;
-        } else if(stoneTime.milliseconds() >= 1000 && stoneTime.milliseconds() < 2000) {
-            i = 2;
-        } else if(stoneTime.milliseconds() > 2000) {
-            i = 3;
-        }
     }
 
     public void seek() {
-        while(detector.foundRectangle() == null) {
+        while (detector.foundRectangle() == null) {
             telemetry.addLine("finding skystone...");
             telemetry.update();
+            if(isStopRequested())
+                return;
         }
         if (detector.getScreenPosition().x < dataParser.parseInt(prop, "detector.pos1")) {
             i = 1;
@@ -282,36 +330,47 @@ public abstract class VulcanPipeline extends LinearOpMode {
         }
     }
 
-    public void deployAutoArm() {
-        robot.autoArm.flip.setPosition(130 / 180.0);
-        robot.autoArm.claw.setPosition(170 / 180.0);
-        robot.autoArm.setLiftPower(-1);
-        sleep(1600);
-        robot.autoArm.flip.setPosition(135 / 180.0);
-        robot.autoArm.setClawPos(90);
-        robot.autoArm.setLiftPower(1);
-        sleep(2100);
-        robot.autoArm.setFlipPos(52);
-        robot.autoArm.setLiftPower(0);
+    public synchronized void deployAutoArm() {
+        synchronized (this) {
+            autoArmDone = false;
+            robot.autoArm.flip.setPosition(130 / 180.0);
+            robot.autoArm.claw.setPosition(1);
+            robot.autoArm.setLiftPower(1);
+            sleep(1700);
+            robot.autoArm.flip.setPosition(135 / 180.0);
+            robot.autoArm.setClawPos(90);
+            sleep(400);
+            robot.autoArm.setLiftPower(-1);
+            robot.autoArm.setFlipPos(58);
+            autoArmDone = true;
+        }
     }
 
-    public void releaseAutoArm() {
-        robot.autoArm.setClawPos(90);
-        robot.autoArm.setLiftPower(-1);
-        sleep(1600);
-        robot.autoArm.setFlipPos(115);
-        sleep(500);
-        robot.autoArm.setClawPos(135);
-        robot.autoArm.setFlipPos(52);
-        robot.autoArm.setLiftPower(1);
-        robot.autoArm.setClawPos(90);
-        sleep(1600);
+    public synchronized void releaseAutoArm() {
+        synchronized (this) {
+            autoArmDone = false;
+            robot.autoArm.setClawPos(90);
+            robot.autoArm.setFlipPos(115);
+            sleep(500);
+            robot.autoArm.setClawPos(135);
+            sleep(400);
+            robot.autoArm.setClawPos(90);
+            robot.autoArm.setFlipPos(52);
+            robot.autoArm.setLiftPower(-1);
+            sleep(100);
+            autoArmDone = true;
+        }
     }
 
     public void retractAutoArm() {
         robot.autoArm.setLiftTime(-1, 1600);
         robot.autoArm.setFlipPos(45);
         robot.autoArm.setClawPos(90);
+    }
+
+    public void newThread(Runnable r) {
+        Thread t = new Thread(r);
+        t.start();
     }
 
 
@@ -335,12 +394,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
 
     }
 
-    public void hold() {
-        robot.stop();
-        tracker.setRunMode(false);
-    }
-
-    private static double round (double value, int precision) {
+    private static double round(double value, int precision) {
         int scale = (int) Math.pow(10, precision);
         return (double) Math.round(value * scale) / scale;
     }

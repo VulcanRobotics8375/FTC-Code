@@ -26,8 +26,7 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class Drivetrain {
-    private Context context;
+public class Drivetrain extends Subsystem {
     private DcMotor fl, fr, bl, br;
     public BNO055IMU imu;
     private BNO055IMU.Parameters parameters;
@@ -60,29 +59,17 @@ public class Drivetrain {
     private double output = 0;
     private boolean motorIsBusy;
     public VulcanPID pid;
-    private Properties prop;
 
-    public Drivetrain(DcMotor frontLeft, DcMotor frontRight, DcMotor backLeft, DcMotor backRight, BNO055IMU IMU) {
-        fl = frontLeft;
-        fr = frontRight;
-        bl = backLeft;
-        br = backRight;
-        imu = IMU;
-        try {
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            InputStream input = loader.getResourceAsStream("config.properties");
-            if(input != null) {
-                prop = new Properties();
-                prop.load(input);
-            } else {
+    public Drivetrain() {}
 
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-
+    public void create() {
+        fl = hwMap.dcMotor.get("front_left");
+        fr = hwMap.dcMotor.get("front_right");
+        bl = hwMap.dcMotor.get("back_left");
+        br = hwMap.dcMotor.get("back_right");
+        imu = hwMap.get(BNO055IMU.class, "imu");
     }
+
 
 //    public void runOpMode() {
 //        telemetry.addData("fl Position", fl.getCurrentPosition());
@@ -187,27 +174,16 @@ public class Drivetrain {
         divisor = (dataParser.parseDouble(prop, "drivetrain.accSpeed")/1.07)*((0.62*Math.pow(dataParser.parseDouble(prop, "drivetrain.accSpeed"), 2))+0.45);
         // modifies the controller input for a more natural feel
         // graph for acceleration curve - https://www.desmos.com/calculator/gdwizzld3f
-        this.movePower = (movePower/1.07)*((0.62*Math.pow(movePower, 2))+0.45);
-        this.turnPower = (turnPower/1.07)*((0.62*Math.pow(turnPower, 2))+0.45);
+//        this.movePower = (movePower/1.07)*((0.62*Math.pow(movePower, 2))+0.45);
+//        this.turnPower = (turnPower/1.07)*((0.62*Math.pow(turnPower, 2))+0.45);
         if(Math.abs(this.movePower) == 0 && Math.abs(this.turnPower) == 0) {
             Time.reset();
         }
-//        else {
-//            if(timeout.now(TimeUnit.MILLISECONDS) < dataParser.parseLong(prop, "drivetrain.deadzoneTimeout")) {
-//                if (this.movePower < dataParser.parseDouble(prop, "drivetrain.deadzone")) {
-//                    this.movePower = 0;
-//                }
-//                if (this.turnPower < dataParser.parseDouble(prop, "drivetrain.deadzone")) {
-//                    this.turnPower = 0;
-//                }
-//            }
-//        }
-
-        if(this.movePower != 0 || this.turnPower != 0) {
-            timeout.reset();
-        }
         mPower = this.movePower;
         tPower = this.turnPower;
+
+        this.movePower = movePower;
+        this.turnPower = turnPower;
 
 //        if(headSwitchButton) {
 //            buttonPressed = true;
@@ -221,32 +197,36 @@ public class Drivetrain {
 
 //        same acceleration curve, but based on time instead of controller input.
 //         limits the speed at which the robot accelerates
-        if(Math.abs(this.movePower) > 0 || Math.abs(this.turnPower) > 0) {
-            accLim = (Time.time() / 1.07) * ((0.62 * Math.pow(Time.time(), 2)) + 0.45) / divisor;
-
-            //logic gates to determine when to use time-based or controller-based power
-            if (accLim < Math.abs(this.movePower) && accLim < Math.abs(this.turnPower)) {
-                this.movePower = accLim;
-                this.turnPower = accLim;
-            } else if (accLim < Math.abs(this.movePower)) {
-                this.movePower = accLim;
-            } else if (accLim < Math.abs(this.turnPower)) {
-                this.turnPower = accLim;
-            }
-        } else {
-            accLim = 0;
-        }
 
 
-        //makes sure the motors are going the correct way
-        if (mPower < 0 || tPower < 0) {
-            if (this.movePower == accLim) {
-                this.movePower = -this.movePower;
-            }
-            if (this.turnPower == accLim) {
-                this.turnPower = -this.turnPower;
-            }
-        }
+//        if(Math.abs(this.movePower) > 0 || Math.abs(this.turnPower) > 0) {
+//            accLim = (Time.time() / 1.07) * ((0.62 * Math.pow(Time.time(), 2)) + 0.45) / divisor;
+//
+//            //logic gates to determine when to use time-based or controller-based power
+//            if (accLim < Math.abs(this.movePower) && accLim < Math.abs(this.turnPower)) {
+//                this.movePower = accLim;
+//                this.turnPower = accLim;
+//            } else if (accLim < Math.abs(this.movePower)) {
+//                this.movePower = accLim;
+//            } else if (accLim < Math.abs(this.turnPower)) {
+//                this.turnPower = accLim;
+//            }
+//        } else {
+//            accLim = 0;
+//        }
+//
+//
+//        //makes sure the motors are going the correct way
+//        if (mPower < 0 || tPower < 0) {
+//            if (this.movePower == accLim) {
+//                this.movePower = -this.movePower;
+//            }
+//            if (this.turnPower == accLim) {
+//                this.turnPower = -this.turnPower;
+//            }
+//        }
+
+
 //        if(inverse < 0) {
 //            if(tPower < 0 || mPower < 0) {
 ////                if(movePower == accLim) {
@@ -274,6 +254,14 @@ public class Drivetrain {
         bl.setPower(Range.clip(this.movePower + this.turnPower, -1.0, 1.0));
         fr.setPower(Range.clip(this.movePower - this.turnPower, -1.0, 1.0));
         br.setPower(Range.clip(this.movePower - this.turnPower, -1.0, 1.0));
+    }
+
+    public void drive(float movePower, float turnPower) {
+
+        this.movePower = movePower;
+        this.turnPower = turnPower;
+
+        setPowers(this.movePower, this.turnPower);
     }
 
 
@@ -460,9 +448,8 @@ public class Drivetrain {
         return motorIsBusy;
     }
 
-        public void stop() {
-
-        setPowers(0, 0);
-
+    @Override
+    public void stop() {
+    setPowers(0, 0);
     }
 }

@@ -6,47 +6,17 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.team8375.Autonomous;
+package org.firstinspires.ftc.team8375.Robot;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
-@Autonomous(name="foundation -- red -- outside", group = "foundation move")
-public class Auto_Foundation_Move_Red_Outside extends VulcanPipeline {
+public class RobotBase extends Robot {
+    //initialize subsystems
+    //ex: Drivetrain drivetrain = new Drivetrain();
+    public RobotBase(HardwareMap hwMap) {
+        //add subsystem to subsystem list
+        //ex: subsystems.add(drivetrain);
 
-    @Override
-    public void runOpMode() {
-
-        initialize();
-
-        waitForStart();
-
-        do {
-
-            if(!isDone) {
-
-                moveIn(45, 45);
-                turn(-83, 15);
-                moveIn(7, 15);
-                robot.foundation.setFoundationMoveAngle(30);
-                sleep(800);
-                moveIn(-2, -15);
-                turn(-65, 15);
-                moveIn(24, 30);
-                robot.foundation.setFoundationMoveAngle(180);
-                moveIn(-9, -20);
-                turn(-47, 15);
-                moveIn(31, 30);
-                turn(-35, 10);
-                moveIn(15, 15);
-            }
-
-            isDone = true;
-
-        } while(opModeIsActive());
-
-        robot.stop();
-
+        createAll(hwMap, subsystems);
     }
-    public void async() {}
 }
-

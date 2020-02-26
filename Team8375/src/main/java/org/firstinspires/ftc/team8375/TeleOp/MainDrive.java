@@ -12,18 +12,20 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.team8375.Subsystems.Robot;
+import org.firstinspires.ftc.team8375.Robot.FullBot;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-@TeleOp(name="TankDrive", group="Drive")
-public class TankDrive extends OpMode {
-    protected Robot robot;
+@TeleOp(name = "MainDrive", group = "competition")
+public class MainDrive extends OpMode {
+    private FullBot robot;
     private boolean buttonPressed;
     private int inverse = 1;
+    private double trigger;
     private Properties prop;
+
 
     @Override
     public void init() {
@@ -41,88 +43,85 @@ public class TankDrive extends OpMode {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        robot = new Robot(hardwareMap);
+        robot = new FullBot(hardwareMap);
         telemetry.addLine("robot loaded");
-        robot.arm.ArmMotorInit(0);
         robot.drivetrain.init();
         telemetry.update();
-
     }
 
-//    @Override
-//    public void init_loop() {
-//
-//    }
 
     @Override
-    public void start() {
-//        robot.arm.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        robot.arm.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    public void init_loop() {
+        robot.autoArm.setFlipPos(53);
     }
+
+    @Override
+    public void start() {}
 
     @Override
     public void loop() {
-
-        robot.intake.deploy(gamepad1.dpad_left, gamepad1.dpad_right);
+        if(gamepad2.left_trigger > 0) {
+            trigger = gamepad2.left_trigger;
+        } else if(gamepad2.right_trigger > 0) {
+            trigger = -gamepad2.right_trigger;
+        } else {
+            trigger = 0;
+        }
+        robot.autoArm.setFlipPos(53);
 
         robot.drivetrain.tankDrive(
                 //forward
-                gamepad1.left_stick_y * inverse,
+                -gamepad1.left_stick_y,
                 //turn
                 -gamepad1.right_stick_x,
                 //slow mode
-                gamepad1.right_bumper
-                //head switch
-        );
-
+                slowMode()
+            );
 
         robot.arm.run(
                 //lift
                 -gamepad2.left_stick_y,
-                //pitch
-                -0.5 * gamepad2.right_stick_y,
-                //claw button
-                gamepad2.right_bumper,
-                //flip button
-                gamepad2.b,
-                //pitch reset
-                gamepad2.y,
-                //reset button
+                //extend
+                gamepad2.right_stick_y,
+                //adjust
+                trigger,
+                //half flip
                 gamepad2.x,
-                //claw tilt up
+                //claw
+                claw(),
+                //up button
                 gamepad2.dpad_up,
-                //claw tilt down
-                gamepad2.dpad_down,
-                //flip give
-                gamepad2.right_stick_x
+                //reset
+                gamepad2.y
         );
 
         robot.intake.run(
                 //reverse
                 gamepad2.a,
                 //toggle
-                gamepad2.right_trigger
+                intakeToggle()
         );
 
-        if(gamepad2.left_bumper) {
+        if(gamepad2.dpad_down) {
             robot.foundation.setFoundationMoveAngle(Double.parseDouble(prop.getProperty("foundation.deployed")));
         } else {
             robot.foundation.setFoundationMoveAngle(Double.parseDouble(prop.getProperty("foundation.retracted")));
         }
 
-        robot.foundation.deployCapstone(gamepad1.b);
+        robot.foundation.deployCapstone(gamepad2.dpad_left);
 
-        if(gamepad1.left_bumper && !buttonPressed) {
-            inverse *= -1;
-            buttonPressed = true;
-        }
-        else if(buttonPressed && !gamepad1.left_bumper) {
-            buttonPressed = false;
-        }
+//        if(gamepad1.left_bumper && !buttonPressed) {
+//            inverse *= -1;
+//            buttonPressed = true;
+//        }
+//        else if(buttonPressed && !gamepad1.left_bumper) {
+//            buttonPressed = false;
+//        }
+
         if(inverse > 0) {
-//            robot.intake.autoArm(0.85);
+            robot.autoArm.setClawPos(0);
         } else if(inverse < 0) {
-//            robot.intake.autoArm(0.7);
+            robot.autoArm.setClawPos(90);
         }
 
         //Telemetry
@@ -132,20 +131,12 @@ public class TankDrive extends OpMode {
         telemetry.addData("front Right", robot.drivetrain.getPositionFr());
         telemetry.addData("back Left", robot.drivetrain.getPositionBl());
         telemetry.addData("back Right", robot.drivetrain.getPositionBr());
-        telemetry.addData("liftPower", robot.arm.getLiftPower());
 
         //Arm
-        telemetry.addData("lift", robot.arm.getLiftPos());
-        telemetry.addData("claw", robot.arm.getClawPos());
-        telemetry.addData("pitch", robot.arm.getPitchPos());
-        telemetry.addData("level", robot.arm.getLevelPos());
-        telemetry.addData("resetStep", robot.arm.getResetStep());
-        telemetry.addData("resetIsDone", robot.arm.isResetDone());
+        telemetry.addData("liftLeft", robot.arm.getLiftLeftPos());
+        telemetry.addData("liftRight", robot.arm.getLiftRightPos());
 
-        //Intake
-        telemetry.addData("deployLeft", robot.intake.getDeployLeftPos());
-        telemetry.addData("deployRight", robot.intake.getDeployRightPos());
-        telemetry.addData("intake_sensor", robot.intake.getIRDistance(DistanceUnit.CM));
+        telemetry.addData("ir sensor", robot.intake.getIRDistance(DistanceUnit.CM));
 
         telemetry.addData("dataStream test", prop.getProperty("arm.theta"));
         telemetry.addData("Runtime", getRuntime());
@@ -153,9 +144,28 @@ public class TankDrive extends OpMode {
         telemetry.update();
     }
 
-    @Override
-    public void stop() {
-//        robot.stop();
+    private double intakeToggle() {
+        if(gamepad2.right_bumper)
+            return 1;
+        else
+            return 0;
     }
 
+    private boolean claw() {
+        if(gamepad2.left_bumper)
+            return true;
+        else if(robot.foundation.getCapStonePos() < 0)
+            return true;
+        else
+            return false;
+    }
+
+    private boolean slowMode() {
+        return gamepad1.left_trigger > 0;
+    }
+
+    @Override
+    public void stop() {
+
+    }
 }

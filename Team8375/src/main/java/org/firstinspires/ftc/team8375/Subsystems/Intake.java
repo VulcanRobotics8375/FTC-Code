@@ -13,6 +13,7 @@ import android.content.Context;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -26,69 +27,29 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class Intake {
-
-    private Context context;
+public class Intake extends Subsystem {
     private ElapsedTime time = new ElapsedTime();
     private ElapsedTime intakeTime = new ElapsedTime();
-    private boolean onPressed;
     private int intakeOn = 1;
-    private boolean reset = false;
     //motors
     private DcMotor intake_left;
     private DcMotor intake_right;
+    Rev2mDistanceSensor irSensor;
     private double intakePower;
+    private boolean stoneIn = false;
 
-    //servos
-    private CRServo deploy_left;
-    private CRServo deploy_right;
+    public Intake() {}
 
-    private Properties prop;
-
-    private Rev2mDistanceSensor irSensor;
-
-    public Intake(DcMotor intakeLeft, DcMotor intakeRight, CRServo deployLeft, CRServo deployRight, Rev2mDistanceSensor irSensor) {
-        intake_left = intakeLeft;
-        intake_right = intakeRight;
-
-        deploy_left = deployLeft;
-        deploy_right = deployRight;
-
-        this.irSensor = irSensor;
-
-        try {
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            InputStream input = loader.getResourceAsStream("config.properties");
-            if(input != null) {
-                prop = new Properties();
-                prop.load(input);
-            } else {
-
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+    @Override
+    public void create() {
+        intake_left = hwMap.dcMotor.get("intake_left");
+        intake_right = hwMap.dcMotor.get("intake_right");
+        irSensor = hwMap.get(Rev2mDistanceSensor.class, "intake_sensor");
 
     }
-
-
 
     public void resetDeployTime() {
         time.reset();
-    }
-
-    public void deploy(boolean left, boolean right) {
-        if(left) {
-            deploy_right.setPower(-1.0);
-            deploy_left.setPower(1.0);
-        } else if(right) {
-            deploy_right.setPower(1.0);
-            deploy_left.setPower(-1.0);
-        } else {
-            deploy_right.setPower(0.05);
-            deploy_left.setPower(0);
-        }
-
     }
 
     public void run(boolean reverse, double isOn) {
@@ -106,9 +67,15 @@ public class Intake {
                 intake_right.setPower(intakePower);
 
             } else {
-
                 if(getIRDistance(DistanceUnit.CM) < dataParser.parseDouble(prop, "intake.irDistance")) {
-                    intakePower = Math.pow(dataParser.parseDouble(prop, "intake.minPower"), ((1/dataParser.parseDouble(prop, "intake.accSpeed")) * (intakeTime.time(TimeUnit.MILLISECONDS) / 1000.0)));
+                    stoneIn = true;
+                }
+
+                if(stoneIn) {
+                    intakePower = Math.pow(
+                            dataParser.parseDouble(prop, "intake.minPower"),
+                            ((1/dataParser.parseDouble(prop, "intake.accSpeed")) * (intakeTime.time(TimeUnit.MILLISECONDS) / 1000.0))
+                    );
 
                     if(intakePower < 0) {
                         intakePower *= -1;
@@ -118,13 +85,17 @@ public class Intake {
                     }
                 } else {
                     intakeTime.reset();
-//                    intakePower = dataParser.parseDouble(prop, "intake.power");
                 }
+
                 intake_left.setPower(intakePower);
                 intake_right.setPower(-intakePower);
             }
 
+
         } else {
+            if(isOn == 0) {
+                stoneIn = false;
+            }
             intake_left.setPower(0);
             intake_right.setPower(0);
         }
@@ -133,7 +104,7 @@ public class Intake {
 
     public void setPowers(double power) {
         intake_left.setPower(power);
-        intake_right.setPower(power);
+        intake_right.setPower(-power);
     }
 
     public void init() {
@@ -145,17 +116,10 @@ public class Intake {
         return irSensor.getDistance(unit);
     }
 
+
+    @Override
     public void stop() {
         setPowers(0);
-        deploy_left.setPower(0);
-        deploy_right.setPower(0);
-    }
-
-    public double getDeployLeftPos() {
-        return deploy_left.getPower();
-    }
-    public double getDeployRightPos() {
-        return deploy_right.getPower();
     }
 
 }

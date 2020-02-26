@@ -10,7 +10,7 @@ package org.firstinspires.ftc.team8375.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.team8375.Subsystems.Robot;
+import org.firstinspires.ftc.team8375.Robot.Robot;
 
 @Autonomous(name = "turn test", group = "test")
 public class TurnTest extends VulcanPipeline {
@@ -18,8 +18,6 @@ public class TurnTest extends VulcanPipeline {
 
     @Override
     public void runOpMode() {
-
-        robot = new Robot(hardwareMap);
 
         initialize();
 
@@ -31,7 +29,7 @@ public class TurnTest extends VulcanPipeline {
             telemetry.update();
         }
 
-        robot.stop();
+        robot.stopAll(robot.subsystems);
 
     }
     public void async() {}

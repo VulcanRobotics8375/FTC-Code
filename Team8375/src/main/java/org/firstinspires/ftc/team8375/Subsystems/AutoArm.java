@@ -20,9 +20,8 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-public class AutoArm {
+public class AutoArm extends Subsystem {
 
-    private Context context;
     public Servo flip;
     public Servo claw;
     private CRServo lift;
@@ -32,31 +31,22 @@ public class AutoArm {
     private static final double k = 937.812;
     private double liftPos;
     private boolean moveDone;
-
-    private Properties prop;
     private ElapsedTime liftTime = new ElapsedTime();
     private boolean firstRun = true;
 
 //    private static final double resetPos = 2;
 
-    public AutoArm(Servo flip, Servo claw, CRServo lift) {
-        this.flip = flip;
-        this.claw = claw;
-        this.lift = lift;
-        try {
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            InputStream input = loader.getResourceAsStream("config.properties");
-            if(input != null) {
-                prop = new Properties();
-                prop.load(input);
-            } else {
+    public AutoArm() {}
 
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
+    @Override
+    public void create() {
+        flip = hwMap.get(Servo.class, "auto_flip");
+        claw = hwMap.get(Servo.class, "auto_claw");
+        lift = hwMap.get(CRServo.class, "auto_lift");
     }
+
+    @Override
+    public void stop() {}
 
     public void setServoAngle(Servo servo, double angle) {
         servo.setPosition(angle / 180.0);
