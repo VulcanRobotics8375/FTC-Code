@@ -14,6 +14,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.team8375.Odometry.Movement;
+import org.firstinspires.ftc.team8375.Odometry.Point;
 import org.firstinspires.ftc.team8375.Odometry.Tracker;
 import org.firstinspires.ftc.team8375.Robot.FullBot;
 import org.firstinspires.ftc.team8375.SkystoneDetector;
@@ -312,6 +314,11 @@ public abstract class VulcanPipeline extends LinearOpMode {
         robot.drivetrain.setPowers(0, 0);
         step++;
 
+    }
+
+    void purePursuit() {
+        Movement.runToPosition(new Point(15, 15), 0.5, tracker);
+        robot.drivetrain.setPowers(tracker.moveSpeed, tracker.turnSpeed);
     }
 
     public void seek() {

@@ -22,7 +22,7 @@ public class Tracker extends Thread {
     public Orientation angles;
     private double previousHeading;
     private double integratedHeading;
-    private double imuRadius;
+    private final double imuRadius = 8;
     private BNO055IMU imu;
     private long iterationTime = 7;
     private double previousVelocity;
@@ -42,8 +42,8 @@ public class Tracker extends Thread {
 
             velocity -= imu.getAngularVelocity().zRotationRate * imuRadius;
 
-            x += (velocity * (iterationTime / 1000.0)) * Math.cos(getIntegratedHeading());
-            y += (velocity * (iterationTime / 1000.0)) * Math.sin(getIntegratedHeading());
+            x += ((velocity/100) * (iterationTime / 1000.0)) * Math.cos(getIntegratedHeading());
+            y += ((velocity/100) * (iterationTime / 1000.0)) * Math.sin(getIntegratedHeading());
 
             previousVelocity = velocity;
 

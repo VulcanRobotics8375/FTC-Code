@@ -13,7 +13,7 @@ import static java.lang.Math.*;
 
 public class Movement {
 
-    public void runToPosition(Point point, double movementSpeed, Tracker robot) {
+    public static void runToPosition(Point point, double movementSpeed, Tracker robot) {
 
         double relativeYDistanceToPoint = point.y - robot.y;
         double relativeXDistanceToPoint = point.x - robot.x;
