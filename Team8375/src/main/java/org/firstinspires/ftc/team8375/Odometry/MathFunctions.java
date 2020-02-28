@@ -11,7 +11,7 @@ package org.firstinspires.ftc.team8375.Odometry;
 public class MathFunctions {
 
     public static double wrapAngle(double angle) {
-        while(angle < 180) {
+        while(angle < -180) {
             angle += 360;
         }
         while(angle > 180) {
