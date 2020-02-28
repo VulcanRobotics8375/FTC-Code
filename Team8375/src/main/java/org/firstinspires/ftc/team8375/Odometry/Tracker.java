@@ -28,6 +28,7 @@ public class Tracker extends Thread {
     private double previousVelocity;
     private double velocity;
     private boolean running = true;
+    public double moveSpeed, turnSpeed;
 
 
     public Tracker(BNO055IMU imu) {

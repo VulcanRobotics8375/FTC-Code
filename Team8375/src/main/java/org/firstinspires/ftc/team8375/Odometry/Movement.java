@@ -8,24 +8,26 @@
 
 package org.firstinspires.ftc.team8375.Odometry;
 
+import static org.firstinspires.ftc.team8375.Odometry.MathFunctions.*;
+import static java.lang.Math.*;
 
 public class Movement {
 
-    public void runToPosition(Point point, double movementSpeed, Tracker robot) {
-        double distanceToTarget = Math.hypot(point.x - robot.x, point.y - robot.y);
+    public void runToPosition(Point point, double movementSpeed, double lookAheadDistance, Tracker robot) {
 
-        double absoluteAngleToTarget = Math.atan2(point.y-robot.y, point.x-robot.x);
+        double relativeYDistanceToPoint = point.y - robot.y;
+        double relativeXDistanceToPoint = point.x - robot.x;
 
-        double relativeAngleToTarget = MathFunctions.wrapAngle(absoluteAngleToTarget - robot.getIntegratedHeading());
+        double relativeDistanceToPoint = hypot(relativeXDistanceToPoint, relativeYDistanceToPoint);
 
-        double relativeXToPoint = Math.cos(relativeAngleToTarget) * distanceToTarget;
-        double relativeYToPoint = Math.sin(relativeAngleToTarget) * distanceToTarget;
+        double absoluteAngleToTarget = atan2(relativeYDistanceToPoint, relativeXDistanceToPoint);
 
+        double robotAngleToTarget = wrapAngle(absoluteAngleToTarget - robot.getIntegratedHeading());
 
-        double xPowerToPoint = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint)) * movementSpeed;
-        double yPowerToPoint = relativeYToPoint / (Math.abs(relativeXToPoint + relativeYToPoint)) * movementSpeed;
+        double turnSpeed = (robotAngleToTarget/360) * movementSpeed;
 
-
+        robot.moveSpeed = movementSpeed;
+        robot.turnSpeed = turnSpeed;
 
     }
 }
