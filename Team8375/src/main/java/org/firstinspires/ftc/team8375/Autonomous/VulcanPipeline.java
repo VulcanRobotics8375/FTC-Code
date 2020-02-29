@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.team8375.Robot.FullBot;
 import org.firstinspires.ftc.team8375.SkystoneDetector;
 import org.firstinspires.ftc.team8375.Subsystems.VulcanPID;
@@ -27,6 +28,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 /**
  * VulcanPipeline -- LinearOpMode that stores all of our auton methods. Used just like a normal linearOpMode, extend it and use while(OpmodeIsActive) loop.
@@ -47,7 +49,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
     protected boolean autoArmDone;
 
     protected FullBot robot;
-    private ElapsedTime stoneTime = new ElapsedTime();
+    private ElapsedTime timeout = new ElapsedTime();
     protected ElapsedTime armTime = new ElapsedTime();
     private VulcanPIDCoefficients turnCoefficients = new VulcanPIDCoefficients(0.5, 0.6, 1);
     private VulcanPIDCoefficients moveCoefficients = new VulcanPIDCoefficients(-1, -1, -1, 5);
@@ -120,7 +122,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
         phoneCam.openCameraDevice();
         detector = new SkystoneDetector();
         phoneCam.setPipeline(detector);
-        phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPSIDE_DOWN);
+        phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_LEFT);
     }
 
     public abstract void runOpMode();
@@ -180,7 +182,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
         double inchesTravelled = 0;
         while (!(round(inchesTravelled, 1) < inches + 0.2 && round(inchesTravelled, 1) > inches - 0.2)) {
             inchesTravelled = (robot.drivetrain.getPosition() / 537.6) * wheelSize;
-            pid(5, 0.6, 1.4, 7, inchesTravelled, inches);
+            pid(6.8, 0.7, 1.5, 7, inchesTravelled, inches);
             robot.drivetrain.movePercent(speed, -pidOut);
             telemetry.addData("pos", robot.drivetrain.getPosition());
             telemetry.addData("inches", inchesTravelled);
@@ -191,6 +193,12 @@ public abstract class VulcanPipeline extends LinearOpMode {
 //            }
             if(isStopRequested())
                 return;
+            if(Math.abs(inches - inchesTravelled) > 1) {
+                timeout.reset();
+            } else if(timeout.time(TimeUnit.MILLISECONDS) > 500) {
+                return;
+            }
+
         }
         step++;
         robot.drivetrain.setPowers(0, 0);
@@ -237,10 +245,11 @@ public abstract class VulcanPipeline extends LinearOpMode {
         previousError = error;
 
         if (Math.abs(error) < 5) {
-            pidOut = Range.clip(pidOut, -50, 50);
+            pidOut = Range.clip(pidOut, -80, 80);
         } else {
             pidOut = Range.clip(pidOut, -100, 100);
         }
+
         sleep(iterationTime);
     }
 
@@ -295,7 +304,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
         derivative = 0;
 
         while (Math.ceil(robot.drivetrain.getImuAngle()) != heading) {
-            pid(1.5, 1.4, 1, 7, heading, true);
+            pid(1.5, 1.2, 1.8, 7, heading, true);
             robot.drivetrain.turnPercent(speed, pidOut);
             telemetry.addData("angle", robot.drivetrain.getImuAngle());
             telemetry.update();
