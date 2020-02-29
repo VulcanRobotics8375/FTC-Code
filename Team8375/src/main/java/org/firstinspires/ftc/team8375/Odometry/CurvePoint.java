@@ -45,4 +45,9 @@ public class CurvePoint {
     public Point toPoint() {
         return new Point(x, y);
     }
+
+    public void setPoint(Point point) {
+        x = point.x;
+        y = point.y;
+    }
 }

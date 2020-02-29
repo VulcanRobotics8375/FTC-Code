@@ -15,8 +15,14 @@ import static java.lang.Math.*;
 
 public class Movement {
 
+    public static void followCurve(ArrayList<CurvePoint> allPoints, double followAngle, Tracker robot) {
+        CurvePoint followPoint = getFollowPointPath(allPoints, followAngle, robot);
+
+        runToPosition(followPoint.toPoint(), followPoint.moveSpeed, robot);
+    }
+
     public static CurvePoint getFollowPointPath(ArrayList<CurvePoint> pathPoints, double followRadius, Tracker robot) {
-        CurvePoint followPoint = new CurvePoint(pathPoints.get(0);
+        CurvePoint followPoint = new CurvePoint(pathPoints.get(0));
 
         for(int i = 0; i < pathPoints.size(); i++) {
             CurvePoint startLine = pathPoints.get(i);
@@ -26,10 +32,15 @@ public class Movement {
             //to iterate to the smallest value, we need a big number to start to avoid any complications
             double closestAngle = Double.MAX_VALUE;
             for (Point intersection:circleIntersections) {
-                double angle = atan2()
+                double angle = atan2(intersection.y - robot.y, intersection.x - robot.x);
+                double deltaAngle = abs(wrapAngle(angle - robot.getIntegratedHeading()));
+                if(deltaAngle < closestAngle) {
+                    closestAngle = deltaAngle;
+                    followPoint.setPoint(intersection);
+                }
             }
         }
-
+        return followPoint;
     }
 
     public static void runToPosition(Point point, double movementSpeed, Tracker robot) {
