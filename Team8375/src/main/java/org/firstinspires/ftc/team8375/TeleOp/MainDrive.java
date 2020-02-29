@@ -75,7 +75,7 @@ public class MainDrive extends OpMode {
                 //turn
                 -gamepad1.right_stick_x,
                 //slow mode
-                slowMode()
+                gamepad1.left_bumper
             );
 
         robot.arm.run(
@@ -158,10 +158,6 @@ public class MainDrive extends OpMode {
             return true;
         else
             return false;
-    }
-
-    private boolean slowMode() {
-        return gamepad1.left_trigger > 0;
     }
 
     @Override
