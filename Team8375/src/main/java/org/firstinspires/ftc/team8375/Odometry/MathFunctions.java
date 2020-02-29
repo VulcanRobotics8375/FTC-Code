@@ -26,22 +26,42 @@ public class MathFunctions {
     public static ArrayList<Point> LineCircleIntersect(Point circleCenter, double radius, Point linePoint1, Point linePoint2) {
 
         double m1 = (linePoint2.y - linePoint1.y) / (linePoint2.x - linePoint1.x);
-
         double y1 = linePoint1.y - circleCenter.y;
 
-        double quadraticA = 1.0 + Math.pow(m1, 2);
-        double quadraticB = (2.0 * m1 * y1);
-        double quadraticC = Math.pow(radius, 2) + Math.pow(y1, 2);
+        double quadraticA = -1.0 - Math.pow(m1, 2);
+        double quadraticB = (-2.0 * m1 * y1);
+        double quadraticC = Math.pow(radius, 2) - Math.pow(y1, 2);
+
+        ArrayList<Point> points = new ArrayList<>();
 
         try {
 
+            double xRoot1 = (-quadraticB + Math.sqrt(Math.pow(quadraticB, 2) - (4.0 * quadraticA * quadraticC))) / (2.0 * quadraticA);
+            double yRoot1 = (m1 * xRoot1) + y1;
 
+            xRoot1 += circleCenter.x;
+            yRoot1 += circleCenter.y;
+
+            double minX = Math.min(linePoint1.x, linePoint2.x);
+            double maxX = Math.max(linePoint1.x, linePoint2.x);
+
+            if(xRoot1 > minX && xRoot1 < maxX) {
+                points.add(new Point(xRoot1, yRoot1));
+            }
+
+            double xRoot2 = (-quadraticB - Math.sqrt(Math.pow(quadraticB, 2) - (4.0 * quadraticA * quadraticC))) / (2.0 * quadraticA);
+            double yRoot2 = (m1 * xRoot2) + y1;
+
+            xRoot2 += circleCenter.x;
+            yRoot2 += circleCenter.y;
+
+            if(xRoot2 > minX && xRoot2 < maxX) {
+                points.add(new Point(xRoot2, yRoot2));
+            }
 
         } catch (Exception e) {
 
         }
-
-        ArrayList<Point> points = new ArrayList<>();
 
         return points;
     }

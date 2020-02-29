@@ -8,10 +8,29 @@
 
 package org.firstinspires.ftc.team8375.Odometry;
 
+import java.util.ArrayList;
+
 import static org.firstinspires.ftc.team8375.Odometry.MathFunctions.*;
 import static java.lang.Math.*;
 
 public class Movement {
+
+    public static CurvePoint getFollowPointPath(ArrayList<CurvePoint> pathPoints, double followRadius, Tracker robot) {
+        CurvePoint followPoint = new CurvePoint(pathPoints.get(0);
+
+        for(int i = 0; i < pathPoints.size(); i++) {
+            CurvePoint startLine = pathPoints.get(i);
+            CurvePoint endLine = pathPoints.get(i + 1);
+            ArrayList<Point> circleIntersections = LineCircleIntersect(new Point(robot.x, robot.y), followRadius, startLine.toPoint(), endLine.toPoint());
+
+            //to iterate to the smallest value, we need a big number to start to avoid any complications
+            double closestAngle = Double.MAX_VALUE;
+            for (Point intersection:circleIntersections) {
+                double angle = atan2()
+            }
+        }
+
+    }
 
     public static void runToPosition(Point point, double movementSpeed, Tracker robot) {
 
