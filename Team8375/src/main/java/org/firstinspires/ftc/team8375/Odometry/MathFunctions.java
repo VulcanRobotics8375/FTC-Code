@@ -8,6 +8,8 @@
 
 package org.firstinspires.ftc.team8375.Odometry;
 
+import java.util.ArrayList;
+
 public class MathFunctions {
 
     public static double wrapAngle(double angle) {
@@ -19,6 +21,29 @@ public class MathFunctions {
         }
 
         return angle;
+    }
+
+    public static ArrayList<Point> LineCircleIntersect(Point circleCenter, double radius, Point linePoint1, Point linePoint2) {
+
+        double m1 = (linePoint2.y - linePoint1.y) / (linePoint2.x - linePoint1.x);
+
+        double y1 = linePoint1.y - circleCenter.y;
+
+        double quadraticA = 1.0 + Math.pow(m1, 2);
+        double quadraticB = (2.0 * m1 * y1);
+        double quadraticC = Math.pow(radius, 2) + Math.pow(y1, 2);
+
+        try {
+
+
+
+        } catch (Exception e) {
+
+        }
+
+        ArrayList<Point> points = new ArrayList<>();
+
+        return points;
     }
 
 
