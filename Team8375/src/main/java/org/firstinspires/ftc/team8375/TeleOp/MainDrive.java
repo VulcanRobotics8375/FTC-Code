@@ -88,7 +88,7 @@ public class MainDrive extends OpMode {
                 //half flip
                 gamepad2.x,
                 //claw
-                claw(),
+                gamepad2.left_bumper,
                 //up button
                 gamepad2.dpad_up,
                 //reset
@@ -149,15 +149,6 @@ public class MainDrive extends OpMode {
             return 1;
         else
             return 0;
-    }
-
-    private boolean claw() {
-        if(gamepad2.left_bumper)
-            return true;
-        else if(robot.foundation.getCapStonePos() < 0)
-            return true;
-        else
-            return false;
     }
 
     @Override
