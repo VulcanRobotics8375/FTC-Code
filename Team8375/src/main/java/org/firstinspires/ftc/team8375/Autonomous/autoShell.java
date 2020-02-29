@@ -33,7 +33,6 @@ public class autoShell extends VulcanPipeline {
 
                 isDone = true;
             }
-            hold();
         }
 
         robot.stopAll(robot.subsystems);
