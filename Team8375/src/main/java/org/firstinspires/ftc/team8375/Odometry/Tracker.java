@@ -50,7 +50,7 @@ public class Tracker extends Thread {
             try {
                 Thread.sleep(iterationTime / 1000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Thread.currentThread().interrupt();
             }
         }
     }
