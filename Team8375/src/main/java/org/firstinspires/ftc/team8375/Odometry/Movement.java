@@ -48,8 +48,6 @@ public class Movement {
         double relativeYDistanceToPoint = point.y - robot.y;
         double relativeXDistanceToPoint = point.x - robot.x;
 
-        double relativeDistanceToPoint = hypot(relativeXDistanceToPoint, relativeYDistanceToPoint);
-
         double absoluteAngleToTarget = atan2(relativeYDistanceToPoint, relativeXDistanceToPoint);
 
         double robotAngleToTarget = wrapAngle(absoluteAngleToTarget - robot.getIntegratedHeading());
