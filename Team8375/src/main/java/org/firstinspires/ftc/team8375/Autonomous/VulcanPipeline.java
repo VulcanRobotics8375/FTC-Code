@@ -60,21 +60,6 @@ public abstract class VulcanPipeline extends LinearOpMode {
     protected OpenCvCamera phoneCam;
     protected SkystoneDetector detector;
 
-    protected Thread deployArm = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            deployAutoArm();
-        }
-    });
-
-    protected Thread releaseArm = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            releaseAutoArm();
-        }
-    });
-//    protected AutoArmThread autoArmThread;
-
     protected boolean isDone = false;
     protected boolean async;
 
@@ -333,44 +318,6 @@ public abstract class VulcanPipeline extends LinearOpMode {
         } else if (detector.getScreenPosition().x > dataParser.parseInt(prop, "detector.pos2")) {
             i = 3;
         }
-    }
-
-    public synchronized void deployAutoArm() {
-        synchronized (this) {
-            autoArmDone = false;
-            robot.autoArm.flip.setPosition(130 / 180.0);
-            robot.autoArm.claw.setPosition(1);
-            robot.autoArm.setLiftPower(1);
-            sleep(1700);
-            robot.autoArm.flip.setPosition(135 / 180.0);
-            robot.autoArm.setClawPos(90);
-            sleep(400);
-            robot.autoArm.setLiftPower(-1);
-            robot.autoArm.setFlipPos(58);
-            autoArmDone = true;
-        }
-    }
-
-    public synchronized void releaseAutoArm() {
-        synchronized (this) {
-            autoArmDone = false;
-            robot.autoArm.setClawPos(90);
-            robot.autoArm.setFlipPos(115);
-            sleep(500);
-            robot.autoArm.setClawPos(135);
-            sleep(400);
-            robot.autoArm.setClawPos(90);
-            robot.autoArm.setFlipPos(52);
-            robot.autoArm.setLiftPower(-1);
-            sleep(100);
-            autoArmDone = true;
-        }
-    }
-
-    public void retractAutoArm() {
-        robot.autoArm.setLiftTime(-1, 1600);
-        robot.autoArm.setFlipPos(45);
-        robot.autoArm.setClawPos(90);
     }
 
     public void newThread(Runnable r) {

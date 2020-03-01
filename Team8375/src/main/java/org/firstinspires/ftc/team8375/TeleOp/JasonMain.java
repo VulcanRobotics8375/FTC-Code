@@ -11,15 +11,14 @@ package org.firstinspires.ftc.team8375.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.team8375.Robot.FullBot;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-@TeleOp(name = "MainDrive", group = "competition")
-public class MainDrive extends OpMode {
+@TeleOp(name = "JasonMain", group = "competition")
+public class JasonMain extends OpMode {
     private FullBot robot;
     private boolean buttonPressed;
     private int inverse = 1;
@@ -71,13 +70,11 @@ public class MainDrive extends OpMode {
         robot.autoArm.setFlipPos(53);
 
 
-        robot.drivetrain.tankDrive(
+        robot.drivetrain.JasonWangTankDrive(
                 //forward
                 -gamepad1.left_stick_y,
                 //turn
-                -gamepad1.right_stick_x,
-                //slow mode
-                gamepad1.left_bumper
+                -gamepad1.right_stick_x
             );
 
         robot.arm.run(

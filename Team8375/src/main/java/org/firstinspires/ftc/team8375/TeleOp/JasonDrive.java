@@ -6,28 +6,27 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.team8375.Robot;
+package org.firstinspires.ftc.team8375.TeleOp;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import org.firstinspires.ftc.team8375.Subsystems.*;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-public class FullBot extends Robot {
-    //list of subsystems
-    public Arm arm = new Arm();
-    public Drivetrain drivetrain = new Drivetrain();
-    public Foundation foundation = new Foundation();
-    public Intake intake = new Intake();
+import org.firstinspires.ftc.team8375.Robot.FullBot;
 
-    public FullBot(HardwareMap hwMap) {
-        //add all the subsystems to the subsystems List<>
-        subsystems.add(arm);
-        subsystems.add(drivetrain);
-        subsystems.add(foundation);
-        subsystems.add(intake);
-        
-        //run the subsystem foreach loop to initialize all subsystems
-        createAll(hwMap, subsystems);
+@TeleOp(name="Jason Drive", group = "test")
+public class JasonDrive extends OpMode {
+    protected FullBot robot;
 
+    public void init() {
+        robot = new FullBot(hardwareMap);
+        robot.drivetrain.init();
     }
+
+    public void start() {}
+
+    public void loop() {
+        robot.drivetrain.JasonWangTankDrive(-gamepad1.right_stick_y, -gamepad1.left_stick_y);
+    }
+
 
 }

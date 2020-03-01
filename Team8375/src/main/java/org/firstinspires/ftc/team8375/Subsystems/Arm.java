@@ -30,6 +30,8 @@ public class Arm extends Subsystem {
 
         lift_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lift_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lift_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lift_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lift_left.setDirection(DcMotorSimple.Direction.REVERSE);

@@ -255,6 +255,15 @@ public class Drivetrain extends Subsystem {
         br.setPower(Range.clip(this.movePower - this.turnPower, -1.0, 1.0));
     }
 
+    public void JasonWangTankDrive(double leftPower, double rightPower) {
+
+        fl.setPower(leftPower);
+        bl.setPower(leftPower);
+        fr.setPower(rightPower);
+        br.setPower(rightPower);
+
+    }
+
     public void drive(float movePower, float turnPower) {
 
         this.movePower = movePower;
