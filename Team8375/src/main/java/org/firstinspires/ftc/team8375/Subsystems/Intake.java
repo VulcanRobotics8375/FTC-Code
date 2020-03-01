@@ -8,22 +8,14 @@
 
 package org.firstinspires.ftc.team8375.Subsystems;
 
-import android.content.Context;
-
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.team8375.dataParser;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -34,7 +26,7 @@ public class Intake extends Subsystem {
     //motors
     private DcMotor intake_left;
     private DcMotor intake_right;
-    Rev2mDistanceSensor irSensor;
+    private Rev2mDistanceSensor irSensor;
     private double intakePower;
     private boolean stoneIn = false;
 
