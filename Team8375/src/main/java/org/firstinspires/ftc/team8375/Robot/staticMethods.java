@@ -8,11 +8,96 @@
 
 package org.firstinspires.ftc.team8375.Robot;
 
+import com.qualcomm.robotcore.hardware.Servo;
+
 /**
  * for all static methods we use throughout our code.
  *  import static org.firstinspires.ftc.team8375.Robot.staticMethods.*;
  */
 
 public  class staticMethods {
+
+
+    /**
+     * @param s The Servo you are setting the position of. This works statically because you only need the pointers of the servo for it to work anyway
+     * @param angle angle of the servo in degrees, assumes 180.0
+     */
+    public static void setServoAngleDegrees(Servo s, double angle) {
+        if(angle != 0) {
+            s.setPosition(angle / 180.0);
+        } else {
+            s.setPosition(angle);
+        }
+    }
+
+
+    /**
+     * @param s the servo that is being affected.
+     * @param angle the desired angle.
+     * @param maxAngle the max angle of the servo, for REV servos that can have weird limits.
+     */
+    public static void setServoAngleCustom(Servo s, double angle, double maxAngle) {
+        if(angle != 0) {
+            s.setPosition(angle / maxAngle);
+        } else {
+            s.setPosition(angle);
+        }
+    }
+
+
+    /**
+     * rounds decimal numbers.
+     * @param value the number you want to round.
+     * @param precision the number of decimals in the output.
+     * @return returns value with the number of decimals set by precision.
+     */
+    public static double round(double value, int precision) {
+        int scale = (int) Math.pow(10, precision);
+        return (double) Math.round(value * scale) / scale;
+    }
+
+
+    /**
+     * @param ticks number of ticks.
+     * @param ticksPerRev number of ticks per revolution the encoder is.
+     *                    neverest 20's-- 537.6
+     * @return returns number of revolutions based off of ticks and ticksPerRev.
+     */
+    public static double encoderTicksToRevolutions(double ticks, double ticksPerRev) {
+        return ticks / ticksPerRev;
+    }
+
+    public static double revolutionsToInchesFromDiameter(double revolutions, double wheelDiameter) {
+        return revolutions * (wheelDiameter * Math.PI);
+    }
+
+    public static double encoderTicksToInchesFromDiameter(double ticks, double ticksPerRev, double wheelDiameter) {
+        double revolutions = encoderTicksToRevolutions(ticks, ticksPerRev);
+        return revolutionsToInchesFromDiameter(revolutions, wheelDiameter);
+    }
+
+    public static double revolutionsToInchesFromCircumference(double revolutions, double wheelCircumference) {
+        return revolutions * (wheelCircumference);
+    }
+
+    public static double encoderTicksToInchesFromCircumference(double ticks, double ticksPerRev, double wheelCircumference) {
+        double revolutions = encoderTicksToRevolutions(ticks, ticksPerRev);
+        return revolutionsToInchesFromCircumference(revolutions, wheelCircumference);
+    }
+
+    public static void newThread(Runnable r) {
+        Thread t = new Thread(r);
+        t.start();
+    }
+
+    public static void joinThread(Thread thread) {
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            thread.interrupt();
+        }
+    }
+
+
 
 }

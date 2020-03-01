@@ -189,11 +189,19 @@ public class Arm extends Subsystem {
         }
     }
 
+    public void setClawPos(double pos) {
+        claw.setPosition(pos);
+    }
+
     public double getLiftLeftPos() {
         return lift_left.getCurrentPosition();
     }
     public double getLiftRightPos() {
         return lift_right.getCurrentPosition();
+    }
+
+    public void setExtendPower(double v) {
+        extend.setPower(v);
     }
 
     //TODO add more debugging stuff

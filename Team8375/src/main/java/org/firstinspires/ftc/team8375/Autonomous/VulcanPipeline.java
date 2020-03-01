@@ -193,7 +193,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
 //            }
             if(isStopRequested())
                 return;
-            if(Math.abs(inches - inchesTravelled) > 1) {
+            if(Math.abs(inches - inchesTravelled) > 1.5) {
                 timeout.reset();
             } else if(timeout.time(TimeUnit.MILLISECONDS) > 500) {
                 return;
@@ -245,7 +245,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
         previousError = error;
 
         if (Math.abs(error) < 5) {
-            pidOut = Range.clip(pidOut, -80, 80);
+            pidOut = Range.clip(pidOut, -60, 60);
         } else {
             pidOut = Range.clip(pidOut, -100, 100);
         }
@@ -399,11 +399,19 @@ public abstract class VulcanPipeline extends LinearOpMode {
 
     }
 
+    public static void joinThread(Thread t) {
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            t.interrupt();
+        }
+
+    }
+
     private static double round(double value, int precision) {
         int scale = (int) Math.pow(10, precision);
         return (double) Math.round(value * scale) / scale;
     }
-
 
     public driveType getDriveMode() {
         return driveMode;
