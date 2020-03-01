@@ -21,13 +21,14 @@ import static org.firstinspires.ftc.team8375.dataParser.*;
  *   @see VulcanPipeline
 */
 
-@Autonomous(name = "norcal red", group = "group")
+@Autonomous(name = "norcal blue", group = "group")
 public class NORCAL_Blue extends VulcanPipeline {
 
     @Override
     public void runOpMode() {
         initialize();
         initVision();
+        //move seek back once done with debugging
         seek();
         telemetry.addData("stone pos", returnInt());
         telemetry.addData("stone x", detector.getScreenPosition().x);
@@ -46,7 +47,7 @@ public class NORCAL_Blue extends VulcanPipeline {
                         Thread s = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                robot.arm.runToPosition(400, isStopRequested());
+                                robot.arm.runToPosition(400, 0.5, isStopRequested());
                             }
                         });
                         s.start();
@@ -70,7 +71,7 @@ public class NORCAL_Blue extends VulcanPipeline {
                         Thread d = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                robot.arm.runToPosition(0, isStopRequested());
+                                robot.arm.runToPosition(0, 0.5, isStopRequested());
                             }
                         });
                         d.start();

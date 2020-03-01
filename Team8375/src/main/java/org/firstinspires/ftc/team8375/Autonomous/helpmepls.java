@@ -31,9 +31,9 @@ public class helpmepls extends VulcanPipeline {
 //                move(-25, 50);
 //                turn(-90, 80);
 
-                turnSmall(90, 50);
-                move(25, 50);
-
+//                turnSmall(90, 50);
+//                move(25, 50);
+//                robot.arm.runToPosition(1000, 0.5, isStopRequested());
 //                move(50, 50);
 //                move(-55, 50);
 //                move(2, 100);

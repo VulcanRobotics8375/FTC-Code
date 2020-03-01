@@ -170,20 +170,17 @@ public class Arm extends Subsystem {
         extend.setPower(this.extendPower);
     }
 
-    public void runToPosition(int pos, boolean stopRequested) {
+    public void runToPosition(int pos, double power, boolean stopRequested) {
         lift_left.setTargetPosition(pos);
         lift_right.setTargetPosition(pos);
         lift_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         lift_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift_left.setPower(power);
+        lift_right.setPower(power);
         while(lift_left.isBusy() || lift_right.isBusy()) {
             if(stopRequested)
                 return;
         }
-    }
-
-    public void setRunMode(DcMotor.RunMode runMode) {
-        lift_left.setMode(runMode);
-        lift_right.setMode(runMode);
     }
 
     public void setServoAngle(Servo servo, double angle) {
