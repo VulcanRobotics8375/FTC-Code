@@ -14,13 +14,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import static org.firstinspires.ftc.team8375.dataParser.*;
 
-/**
-*   Sample Autonomous program:
-*   Copy this opMode, rename it and remove the @Disabled tag
-*   and everything should work.
- *   @see VulcanPipeline
-*/
-
 @Autonomous(name = "norcal blue", group = "group")
 public class NORCAL_Blue extends VulcanPipeline {
 
