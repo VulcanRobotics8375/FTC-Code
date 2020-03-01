@@ -304,7 +304,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
         derivative = 0;
 
         while (Math.ceil(robot.drivetrain.getImuAngle()) != heading) {
-            pid(1.5, 1.2, 1.8, 7, heading, true);
+            pid(1.5, 1.2, 1.4, 7, heading, true);
             robot.drivetrain.turnPercent(speed, pidOut);
             telemetry.addData("angle", robot.drivetrain.getImuAngle());
             telemetry.update();
