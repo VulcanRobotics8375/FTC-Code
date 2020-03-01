@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.*;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.team8375.dataParser;
+import static org.firstinspires.ftc.team8375.dataParser.*;
 
 import java.util.concurrent.TimeUnit;
 
@@ -34,7 +34,7 @@ public class Arm extends Subsystem {
         lift_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lift_left.setDirection(DcMotorSimple.Direction.REVERSE);
         lift_right.setDirection(DcMotorSimple.Direction.FORWARD);
-        liftHighLimit = dataParser.parseDouble(prop, "arm.liftHigh") - dataParser.parseDouble(prop, "arm.limitRange");
+        liftHighLimit = parseDouble(prop, "arm.liftHigh") - parseDouble(prop, "arm.limitRange");
         clawOn = 1;
         flipOn = 1;
     }
@@ -55,9 +55,9 @@ public class Arm extends Subsystem {
         }
         if(!upButton && this.upButton) {
             if(!lift_left.isBusy() && !lift_right.isBusy()) {
-                if (liftLeftPos < dataParser.parseDouble(prop, "arm.intakePos") && liftRightPos < dataParser.parseDouble(prop, "arm.intakePos")) {
-                    lift_left.setTargetPosition(dataParser.parseInt(prop, "arm.intakePos"));
-                    lift_right.setTargetPosition(dataParser.parseInt(prop, "arm.intakePos"));
+                if (liftLeftPos < parseDouble(prop, "arm.intakePos") && liftRightPos < parseDouble(prop, "arm.intakePos")) {
+                    lift_left.setTargetPosition(parseInt(prop, "arm.intakePos"));
+                    lift_right.setTargetPosition(parseInt(prop, "arm.intakePos"));
 
                     lift_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     lift_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -108,22 +108,22 @@ public class Arm extends Subsystem {
 
             if (liftPower > 0 && liftLeftPos >= liftHighLimit) {
 
-                this.liftLeftPower = (dataParser.parseDouble(prop, "arm.liftHigh") - liftLeftPos) / dataParser.parseDouble(prop, "arm.limitRange") * liftPower;
+                this.liftLeftPower = (parseDouble(prop, "arm.liftHigh") - liftLeftPos) / parseDouble(prop, "arm.limitRange") * liftPower;
 
-            } else if (liftPower < 0 && liftLeftPos < dataParser.parseDouble(prop, "arm.limitRange")) {
+            } else if (liftPower < 0 && liftLeftPos < parseDouble(prop, "arm.limitRange")) {
 
-                this.liftLeftPower = (liftLeftPos / dataParser.parseDouble(prop, "arm.limitRange")) * liftPower;
+                this.liftLeftPower = (liftLeftPos / parseDouble(prop, "arm.limitRange")) * liftPower;
 
             } else {
                 this.liftLeftPower = liftPower;
             }
             if(liftPower > 0 && liftRightPos >= liftHighLimit) {
 
-                this.liftRightPower = ((dataParser.parseDouble(prop, "arm.liftHigh") - liftRightPos) / dataParser.parseDouble(prop, "arm.limitRange")) * liftPower;
+                this.liftRightPower = ((parseDouble(prop, "arm.liftHigh") - liftRightPos) / parseDouble(prop, "arm.limitRange")) * liftPower;
 
-            } else if(liftPower < 0 && liftRightPos < dataParser.parseDouble(prop, "arm.limitRange")) {
+            } else if(liftPower < 0 && liftRightPos < parseDouble(prop, "arm.limitRange")) {
 
-                this.liftRightPower = (liftRightPos / dataParser.parseDouble(prop, "arm.limitRange")) * liftPower;
+                this.liftRightPower = (liftRightPos / parseDouble(prop, "arm.limitRange")) * liftPower;
 
             } else {
                 this.liftRightPower = liftPower;
@@ -141,18 +141,18 @@ public class Arm extends Subsystem {
         }
 
         if(clawOn > 0) {
-            setServoAngle(claw, dataParser.parseDouble(prop, "arm.clawOut"));
+            setServoAngle(claw, parseDouble(prop, "arm.clawOut"));
         } else if(clawOn < 0) {
-            setServoAngle(claw, dataParser.parseDouble(prop, "arm.clawIn"));
+            setServoAngle(claw, parseDouble(prop, "arm.clawIn"));
             if(liftLeftPower < 0 && liftRightPower < 0) {
                 liftLeftPower *= 0.4;
                 liftRightPower *= 0.4;
             }
         }
         if(flipOn < 0) {
-            adjustPos = dataParser.parseDouble(prop, "arm.adjustOut") + flipPos;
+            adjustPos = parseDouble(prop, "arm.adjustOut") + flipPos;
         } else if(flipOn > 0) {
-            adjustPos = dataParser.parseDouble(prop, "arm.adjustPos") + flipPos;
+            adjustPos = parseDouble(prop, "arm.adjustPos") + flipPos;
         }
 
         if(reset && !this.reset) {
@@ -168,6 +168,22 @@ public class Arm extends Subsystem {
         lift_left.setPower(this.liftLeftPower);
         lift_right.setPower(this.liftRightPower);
         extend.setPower(this.extendPower);
+    }
+
+    public void runToPosition(int pos, boolean stopRequested) {
+        lift_left.setTargetPosition(pos);
+        lift_right.setTargetPosition(pos);
+        lift_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        while(lift_left.isBusy() || lift_right.isBusy()) {
+            if(stopRequested)
+                return;
+        }
+    }
+
+    public void setRunMode(DcMotor.RunMode runMode) {
+        lift_left.setMode(runMode);
+        lift_right.setMode(runMode);
     }
 
     public void setServoAngle(Servo servo, double angle) {

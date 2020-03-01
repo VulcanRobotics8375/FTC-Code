@@ -16,8 +16,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.team8375.dataParser;
+import static org.firstinspires.ftc.team8375.dataParser.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -171,7 +170,7 @@ public class Drivetrain extends Subsystem {
     }
 
     public void tankDrive(float movePower, float turnPower, boolean slowModeButton) {
-        divisor = (dataParser.parseDouble(prop, "drivetrain.accSpeed")/1.07)*((0.62*Math.pow(dataParser.parseDouble(prop, "drivetrain.accSpeed"), 2))+0.45);
+        divisor = (parseDouble(prop, "drivetrain.accSpeed")/1.07)*((0.62*Math.pow(parseDouble(prop, "drivetrain.accSpeed"), 2))+0.45);
         // modifies the controller input for a more natural feel
         // graph for acceleration curve - https://www.desmos.com/calculator/gdwizzld3f
 //        this.movePower = (movePower/1.07)*((0.62*Math.pow(movePower, 2))+0.45);
@@ -243,10 +242,10 @@ public class Drivetrain extends Subsystem {
 
         //set powers
         if(slowModeButton) {
-            this.movePower *= dataParser.parseDouble(prop, "drivetrain.slowSpeed");
-            this.turnPower *= dataParser.parseDouble(prop, "drivetrain.slowSpeed");
+            this.movePower *= parseDouble(prop, "drivetrain.slowSpeed");
+            this.turnPower *= parseDouble(prop, "drivetrain.slowSpeed");
         } else {
-            this.turnPower *= dataParser.parseDouble(prop, "drivetrain.turnSpeed");
+            this.turnPower *= parseDouble(prop, "drivetrain.turnSpeed");
         }
 
 
@@ -273,8 +272,8 @@ public class Drivetrain extends Subsystem {
 
     public void moveIn(double inches, double speed, double turn) {
 
-        double wheelSize = (dataParser.parseDouble(prop, "drivetrain.wheelDiameter")/25.4) * Math.PI;
-        int targetPos = (int) Math.round((inches/wheelSize) * dataParser.parseDouble(prop, "drivetrain.tpr"));
+        double wheelSize = (parseDouble(prop, "drivetrain.wheelDiameter")/25.4) * Math.PI;
+        int targetPos = (int) Math.round((inches/wheelSize) * parseDouble(prop, "drivetrain.tpr"));
 
         setTargetPos(targetPos);
 

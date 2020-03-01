@@ -47,6 +47,7 @@ public class MainDrive extends OpMode {
         telemetry.addLine("robot loaded");
         robot.drivetrain.init();
         telemetry.update();
+
     }
 
 
@@ -68,6 +69,7 @@ public class MainDrive extends OpMode {
             trigger = 0;
         }
         robot.autoArm.setFlipPos(53);
+
 
         robot.drivetrain.tankDrive(
                 //forward
@@ -127,21 +129,21 @@ public class MainDrive extends OpMode {
         //Telemetry
 
         //Drivetrain
-        telemetry.addData("front Left", robot.drivetrain.getPositionFl());
-        telemetry.addData("front Right", robot.drivetrain.getPositionFr());
-        telemetry.addData("back Left", robot.drivetrain.getPositionBl());
-        telemetry.addData("back Right", robot.drivetrain.getPositionBr());
-
-        //Arm
-        telemetry.addData("liftLeft", robot.arm.getLiftLeftPos());
-        telemetry.addData("liftRight", robot.arm.getLiftRightPos());
-
-        telemetry.addData("ir sensor", robot.intake.getIRDistance(DistanceUnit.CM));
-
-        telemetry.addData("dataStream test", prop.getProperty("arm.theta"));
-        telemetry.addData("Runtime", getRuntime());
-
-        telemetry.update();
+//        telemetry.addData("front Left", robot.drivetrain.getPositionFl());
+//        telemetry.addData("front Right", robot.drivetrain.getPositionFr());
+//        telemetry.addData("back Left", robot.drivetrain.getPositionBl());
+//        telemetry.addData("back Right", robot.drivetrain.getPositionBr());
+//
+//        //Arm
+//        telemetry.addData("liftLeft", robot.arm.getLiftLeftPos());
+//        telemetry.addData("liftRight", robot.arm.getLiftRightPos());
+//
+//        telemetry.addData("ir sensor", robot.intake.getIRDistance(DistanceUnit.CM));
+//
+//        telemetry.addData("dataStream test", prop.getProperty("arm.theta"));
+//        telemetry.addData("Runtime", getRuntime());
+//
+//        telemetry.update();
     }
 
     private double intakeToggle() {

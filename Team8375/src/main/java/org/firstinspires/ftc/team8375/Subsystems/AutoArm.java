@@ -8,17 +8,12 @@
 
 package org.firstinspires.ftc.team8375.Subsystems;
 
-import android.content.Context;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+import static org.firstinspires.ftc.team8375.dataParser.*;
 
 public class AutoArm extends Subsystem {
 

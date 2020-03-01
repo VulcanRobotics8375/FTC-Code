@@ -10,6 +10,7 @@ package org.firstinspires.ftc.team8375.Subsystems;
 
 
 import com.qualcomm.robotcore.hardware.Servo;
+import static org.firstinspires.ftc.team8375.dataParser.*;
 
 public class Foundation extends Subsystem {
     private Servo foundationLeft;
@@ -36,9 +37,9 @@ public class Foundation extends Subsystem {
             this.button = false;
         }
         if(capStonePos > 0) {
-            capStone.setPosition(Double.parseDouble(prop.getProperty("foundation.capStoneIn")));
+            capStone.setPosition(parseDouble(prop, "foundation.capStoneIn"));
         } else {
-            capStone.setPosition(Double.parseDouble(prop.getProperty("foundation.capStoneOut")));
+            capStone.setPosition(parseDouble(prop, ("foundation.capStoneOut")));
         }
     }
 
