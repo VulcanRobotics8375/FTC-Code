@@ -54,7 +54,7 @@ public class NORCAL_Blue extends VulcanPipeline {
     }
 
     void case1() {
-        move(30, 50);
+        move(31, 50);
         turnSmall(25, 75);
         Thread s = new Thread(new Runnable() {
             @Override
@@ -77,9 +77,9 @@ public class NORCAL_Blue extends VulcanPipeline {
         robot.intake.setPowers(0.6);
         sleepOpMode(500);
         move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 9, 50);
-        robot.drivetrain.setPowers(0.3, 0);
+        robot.drivetrain.setPowers(0.4, 0);
         sleep(100);
-        robot.drivetrain.setPowers(-0.3, 0);
+        robot.drivetrain.setPowers(-0.4, 0);
         sleep(150);
         robot.drivetrain.setPowers(0, 0);
         Thread d = new Thread(new Runnable() {
@@ -90,7 +90,7 @@ public class NORCAL_Blue extends VulcanPipeline {
             }
         });
         d.start();
-        turnSmall(90, 50);
+        turnSmall(95, 55);
         joinThread(s);
         robot.arm.setClawPos(parseDouble(prop, "arm.clawIn") / 180.0);
         Thread u = new Thread(new Runnable() {
@@ -99,133 +99,68 @@ public class NORCAL_Blue extends VulcanPipeline {
                 robot.arm.runToPosition(300, 0.5, isStopRequested());
             }
         });
-        move(75, 40);
+        move(65, 40);
         joinThread(d);
         u.start();
         sleep(200);
         robot.arm.setExtendPower(-1.0);
-        turnSmall(180, 50);
-        move(-4, 50);
+        turnSmall(270, 50);
         robot.arm.setClawPos(parseDouble(prop, "arm.clawOut") / 180.0);
         robot.arm.setExtendPower(1.0);
-        move(-4, 50);
-        joinThread(u);
         Thread reset = new Thread(new Runnable() {
             @Override
             public void run() {
                 robot.arm.runToPosition(0, 0.5, isStopRequested());
             }
         });
+        joinThread(u);
         reset.start();
-        robot.foundation.setFoundationMoveAngle(0);
-        sleep(750);
-        move(29, 70);
-        robot.foundation.setFoundationMoveAngle(180);
+        move(81, 40);
+        Thread up = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                robot.arm.runToPosition(700, 0.5, isStopRequested());
+            }
+        });
+        up.start();
+        turnSmall(300, 70);
+        currentPos1 = robot.drivetrain.getPosition();
+        while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
+
+            robot.drivetrain.setPowers(0.4, 0);
+            robot.intake.setPowers(0.7);
+            if(isStopRequested())
+                return;
+        }
+        robot.drivetrain.setPowers(0, 0);
+        currentPos2 = robot.drivetrain.getPosition();
         sleep(500);
-        turnSmall(90, 60);
-        move(-40, 50);
+        robot.intake.setPowers(0.6);
+        sleepOpMode(500);
+        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI), 50);
+        robot.drivetrain.setPowers(0.4, 0);
+        sleep(100);
+        robot.drivetrain.setPowers(-0.4, 0);
+        sleep(150);
+        robot.drivetrain.setPowers(0, 0);
+        Thread e = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                sleep(200);
+                robot.arm.runToPosition(0, 0.5, isStopRequested());
+            }
+        });
+        e.start();
+        turnSmall(270, 50);
+        move(-81, 40);
+
 
     }
     void case2() {
-        move(30, 50);
-        Thread g = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                robot.arm.runToPosition(700, 0.5, isStopRequested());
-            }
-        });
-        g.start();
-        double currentPos1 = robot.drivetrain.getPosition();
-        while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
 
-            robot.drivetrain.setPowers(0.4, 0);
-            robot.intake.setPowers(0.7);
-            if(isStopRequested())
-                return;
-        }
-        robot.drivetrain.setPowers(0, 0);
-        double currentPos2 = robot.drivetrain.getPosition();
-        sleep(500);
-        robot.intake.setPowers(0.6);
-        sleepOpMode(500);
-        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 9, 50);
-        robot.drivetrain.setPowers(0.3, 0);
-        sleep(100);
-        robot.drivetrain.setPowers(-0.3, 0);
-        sleep(150);
-        robot.drivetrain.setPowers(0, 0);
     }
     void case3() {
-        move(30, 50);
-        turnSmall(-25, 75);
-        Thread s = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                robot.arm.runToPosition(700, 0.5, isStopRequested());
-            }
-        });
-        s.start();
-        double currentPos1 = robot.drivetrain.getPosition();
-        while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
 
-            robot.drivetrain.setPowers(0.4, 0);
-            robot.intake.setPowers(0.7);
-            if(isStopRequested())
-                return;
-        }
-        robot.drivetrain.setPowers(0, 0);
-        double currentPos2 = robot.drivetrain.getPosition();
-        sleep(500);
-        robot.intake.setPowers(0.6);
-        sleepOpMode(500);
-        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 9, 50);
-        robot.drivetrain.setPowers(0.3, 0);
-        sleep(100);
-        robot.drivetrain.setPowers(-0.3, 0);
-        sleep(150);
-        robot.drivetrain.setPowers(0, 0);
-        Thread d = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                sleep(200);
-                robot.arm.runToPosition(0, 0.5, isStopRequested());
-            }
-        });
-        d.start();
-        turnSmall(90, 50);
-        joinThread(s);
-        robot.arm.setClawPos(parseDouble(prop, "arm.clawIn") / 180.0);
-        Thread u = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                robot.arm.runToPosition(300, 0.5, isStopRequested());
-            }
-        });
-        move(75, 40);
-        joinThread(d);
-        u.start();
-        sleep(200);
-        robot.arm.setExtendPower(-1.0);
-        turnSmall(180, 50);
-        move(-4, 50);
-        robot.arm.setClawPos(parseDouble(prop, "arm.clawOut") / 180.0);
-        robot.arm.setExtendPower(1.0);
-        move(-4, 50);
-        joinThread(u);
-        Thread reset = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                robot.arm.runToPosition(0, 0.5, isStopRequested());
-            }
-        });
-        reset.start();
-        robot.foundation.setFoundationMoveAngle(0);
-        sleep(750);
-        move(29, 70);
-        robot.foundation.setFoundationMoveAngle(180);
-        sleep(500);
-        turnSmall(90, 60);
-        move(-40, 50);
     }
 
     public void async() {}

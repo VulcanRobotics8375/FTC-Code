@@ -16,6 +16,7 @@ public class Foundation extends Subsystem {
     private Servo foundationLeft;
     private Servo foundationRight;
     private Servo capStone;
+    private boolean override;
     int capStonePos = 1;
     private boolean button;
 
@@ -28,7 +29,8 @@ public class Foundation extends Subsystem {
         capStone = hwMap.get(Servo.class, "capStone");
     }
 
-    public void deployCapstone(boolean button) {
+    public void deployCapstone(boolean button, boolean override) {
+        double capPosition;
         if(button && !this.button) {
             capStonePos *= -1;
             this.button = true;
@@ -37,10 +39,22 @@ public class Foundation extends Subsystem {
             this.button = false;
         }
         if(capStonePos > 0) {
-            capStone.setPosition(parseDouble(prop, "foundation.capStoneIn"));
+            capPosition = parseDouble(prop, "foundation.capStoneIn");
         } else {
-            capStone.setPosition(parseDouble(prop, ("foundation.capStoneOut")));
+            capPosition = parseDouble(prop, "foundation.capStoneOut");
         }
+        if(override && !this.override) {
+            if(capPosition == parseDouble(prop, "foundation.capStoneIn")) {
+                capPosition = 1;
+            } else if(capPosition == parseDouble(prop, "foundation.capStoneOut")){
+                capPosition = 0;
+            }
+            this.override = true;
+        }
+        if(!override && this.override) {
+            this.override = false;
+        }
+        capStone.setPosition(capPosition);
     }
 
     public void setFoundationMoveAngle(double angle) {

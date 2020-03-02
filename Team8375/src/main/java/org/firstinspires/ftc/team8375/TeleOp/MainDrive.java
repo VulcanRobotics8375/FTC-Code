@@ -53,7 +53,6 @@ public class MainDrive extends OpMode {
 
     @Override
     public void init_loop() {
-        robot.autoArm.setFlipPos(53);
     }
 
     @Override
@@ -68,7 +67,6 @@ public class MainDrive extends OpMode {
         } else {
             trigger = 0;
         }
-        robot.autoArm.setFlipPos(53);
 
 
         robot.drivetrain.tankDrive(
@@ -110,7 +108,7 @@ public class MainDrive extends OpMode {
             robot.foundation.setFoundationMoveAngle(Double.parseDouble(prop.getProperty("foundation.retracted")));
         }
 
-        robot.foundation.deployCapstone(gamepad2.dpad_left);
+        robot.foundation.deployCapstone(gamepad2.dpad_left, gamepad1.a);
 
 //        if(gamepad1.left_bumper && !buttonPressed) {
 //            inverse *= -1;
@@ -119,12 +117,6 @@ public class MainDrive extends OpMode {
 //        else if(buttonPressed && !gamepad1.left_bumper) {
 //            buttonPressed = false;
 //        }
-
-        if(inverse > 0) {
-            robot.autoArm.setClawPos(0);
-        } else if(inverse < 0) {
-            robot.autoArm.setClawPos(90);
-        }
 
         //Telemetry
 
