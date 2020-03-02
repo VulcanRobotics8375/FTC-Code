@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class MathFunctions {
 
-    public static double wrapAngle(double angle) {
+    static double wrapAngle(double angle) {
         while(angle < -180) {
             angle += 360;
         }
