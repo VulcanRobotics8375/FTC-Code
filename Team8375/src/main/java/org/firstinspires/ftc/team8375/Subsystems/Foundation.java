@@ -18,6 +18,7 @@ public class Foundation extends Subsystem {
     private Servo capStone;
     private boolean override;
     int capStonePos = 1;
+    int overridePos = 1;
     private boolean button;
 
     public Foundation() {}
@@ -44,15 +45,18 @@ public class Foundation extends Subsystem {
             capPosition = parseDouble(prop, "foundation.capStoneOut");
         }
         if(override && !this.override) {
+            overridePos *= -1;
+            this.override = true;
+        }
+        if(!override && this.override) {
+            this.override = false;
+        }
+        if(overridePos < 0) {
             if(capPosition == parseDouble(prop, "foundation.capStoneIn")) {
                 capPosition = 1;
             } else if(capPosition == parseDouble(prop, "foundation.capStoneOut")){
                 capPosition = 0;
             }
-            this.override = true;
-        }
-        if(!override && this.override) {
-            this.override = false;
         }
         capStone.setPosition(capPosition);
     }
