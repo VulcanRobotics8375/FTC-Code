@@ -135,7 +135,7 @@ public class NORCAL_Blue extends VulcanPipeline {
         turnSmall(90, 50);
         move(45, 40);
         robot.intake.setPowers(-1.0);
-        move(-55, 40);
+        move(-60, 40);
         robot.intake.setPowers(0);
         turnSmall(-30, 50);
         currentPos1 = robot.drivetrain.getPosition();
@@ -154,7 +154,7 @@ public class NORCAL_Blue extends VulcanPipeline {
         move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12, 50);
         robot.drivetrain.setPowers(0, 0);
         turnSmall(90, 50);
-        move(51, 40);
+        move(60, 40);
         robot.intake.setPowers(-1.0);
         move(-16, 50);
 
@@ -165,7 +165,45 @@ public class NORCAL_Blue extends VulcanPipeline {
      * case 3
      */
     void case3() {
+        move(32, 50);
+        turnSmall(-30, 75);
+        double currentPos1 = robot.drivetrain.getPosition();
+        while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
 
+            robot.drivetrain.setPowers(0.4, 0);
+            robot.intake.setPowers(0.7);
+            if(isStopRequested())
+                return;
+        }
+        robot.drivetrain.setPowers(0, 0);
+        double currentPos2 = robot.drivetrain.getPosition();
+        sleep(500);
+        robot.intake.setPowers(0);
+        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12.5, 50);
+        turnSmall(90, 50);
+        move(45, 40);
+        robot.intake.setPowers(-1.0);
+        move(-68, 40);
+        robot.intake.setPowers(0);
+        turnSmall(-30, 50);
+        currentPos1 = robot.drivetrain.getPosition();
+        while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
+
+            robot.drivetrain.setPowers(0.4, 0);
+            robot.intake.setPowers(0.7);
+            if(isStopRequested())
+                return;
+        }
+        robot.drivetrain.setPowers(0, 0);
+        currentPos2 = robot.drivetrain.getPosition();
+        sleep(500);
+        robot.intake.setPowers(0);
+        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12, 50);
+        robot.drivetrain.setPowers(0, 0);
+        turnSmall(90, 50);
+        move(68, 40);
+        robot.intake.setPowers(-1.0);
+        move(-16, 50);
     }
 
     public void async() {}
