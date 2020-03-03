@@ -25,7 +25,6 @@ public class Movement {
         CurvePoint followPoint = new CurvePoint(pathPoints.get(0));
 
         //to iterate to the smallest value, we need a big number to start to avoid any complications
-        double closestAngle = Double.MAX_VALUE;
 
 
         for(int i = 0; i < pathPoints.size(); i++) {
@@ -34,6 +33,7 @@ public class Movement {
             ArrayList<Point> circleIntersections = LineCircleIntersect(new Point(robot.x, robot.y), followRadius,
                                                                         startLine.toPoint(), endLine.toPoint());
 
+            double closestAngle = Double.MAX_VALUE;
             for (Point intersection:circleIntersections) {
                 double angle = atan2(intersection.y - robot.y, intersection.x - robot.x);
                 double deltaAngle = abs(wrapAngle(angle - robot.getIntegratedHeading()));
