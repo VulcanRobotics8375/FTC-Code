@@ -22,17 +22,26 @@ public class NORCAL_Blue extends VulcanPipeline {
         initialize();
         initVision();
         //move seek back once done with debugging
-        seek();
         telemetry.addData("stone pos", returnInt());
         telemetry.addData("stone x", detector.getScreenPosition().x);
         telemetry.addData("stone y", detector.getScreenPosition().y);
         telemetry.update();
         waitForStart();
         while(opModeIsActive()) {
+            seek();
             if(!isDone) {
 
                 //instructions go here
-
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while(opModeIsActive()) {
+                            robot.foundation.deployCapstone(false, false);
+                            if (isStopRequested())
+                                return;
+                        }
+                    }
+                });
                 switch (returnInt()) {
                     case 1:
                         case1();
@@ -47,22 +56,22 @@ public class NORCAL_Blue extends VulcanPipeline {
 
                 isDone = true;
             }
+
+            telemetry.addData("pos", returnInt());
+            telemetry.update();
         }
 
         robot.stopAll(robot.subsystems);
 
     }
 
+
+    /**
+     * case 1
+     */
     void case1() {
-        move(31, 50);
-        turnSmall(25, 75);
-        Thread s = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                robot.arm.runToPosition(700, 0.5, isStopRequested());
-            }
-        });
-        s.start();
+        move(32, 50);
+        turnSmall(30, 75);
         double currentPos1 = robot.drivetrain.getPosition();
         while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
 
@@ -74,56 +83,14 @@ public class NORCAL_Blue extends VulcanPipeline {
         robot.drivetrain.setPowers(0, 0);
         double currentPos2 = robot.drivetrain.getPosition();
         sleep(500);
-        robot.intake.setPowers(0.6);
-        sleepOpMode(500);
-        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 9, 50);
-        robot.drivetrain.setPowers(0.4, 0);
-        sleep(100);
-        robot.drivetrain.setPowers(-0.4, 0);
-        sleep(150);
-        robot.drivetrain.setPowers(0, 0);
-        Thread d = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                sleep(200);
-                robot.arm.runToPosition(0, 0.5, isStopRequested());
-            }
-        });
-        d.start();
-        turnSmall(95, 55);
-        joinThread(s);
-        robot.arm.setClawPos(parseDouble(prop, "arm.clawIn") / 180.0);
-        Thread u = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                robot.arm.runToPosition(300, 0.5, isStopRequested());
-            }
-        });
-        move(65, 40);
-        joinThread(d);
-        u.start();
-        sleep(200);
-        robot.arm.setExtendPower(-1.0);
-        turnSmall(270, 50);
-        robot.arm.setClawPos(parseDouble(prop, "arm.clawOut") / 180.0);
-        robot.arm.setExtendPower(1.0);
-        Thread reset = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                robot.arm.runToPosition(0, 0.5, isStopRequested());
-            }
-        });
-        joinThread(u);
-        reset.start();
-        move(81, 40);
-        Thread up = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                robot.arm.runToPosition(700, 0.5, isStopRequested());
-            }
-        });
-        up.start();
-        turnSmall(300, 70);
+        robot.intake.setPowers(0);
+        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12.5, 50);
+        turnSmall(90, 50);
+        move(45, 40);
+        robot.intake.setPowers(-1.0);
+        move(-51, 40);
+        robot.intake.setPowers(0);
+        turnSmall(-30, 50);
         currentPos1 = robot.drivetrain.getPosition();
         while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
 
@@ -135,30 +102,68 @@ public class NORCAL_Blue extends VulcanPipeline {
         robot.drivetrain.setPowers(0, 0);
         currentPos2 = robot.drivetrain.getPosition();
         sleep(500);
-        robot.intake.setPowers(0.6);
-        sleepOpMode(500);
-        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI), 50);
-        robot.drivetrain.setPowers(0.4, 0);
-        sleep(100);
-        robot.drivetrain.setPowers(-0.4, 0);
-        sleep(150);
+        robot.intake.setPowers(0);
+        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12, 50);
         robot.drivetrain.setPowers(0, 0);
-        Thread e = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                sleep(200);
-                robot.arm.runToPosition(0, 0.5, isStopRequested());
-            }
-        });
-        e.start();
-        turnSmall(270, 50);
-        move(-81, 40);
-
+        turnSmall(90, 50);
+        move(51, 40);
+        robot.intake.setPowers(-1.0);
+        move(-16, 50);
 
     }
+
+
+    /**
+     * case 2
+     */
     void case2() {
+        move(32, 50);
+        double currentPos1 = robot.drivetrain.getPosition();
+        while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
+
+            robot.drivetrain.setPowers(0.4, 0);
+            robot.intake.setPowers(0.7);
+            if(isStopRequested())
+                return;
+        }
+        robot.drivetrain.setPowers(0, 0);
+        double currentPos2 = robot.drivetrain.getPosition();
+        sleep(500);
+        robot.intake.setPowers(0);
+        sleep(500);
+        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12.5, 50);
+        turnSmall(90, 50);
+        move(45, 40);
+        robot.intake.setPowers(-1.0);
+        move(-55, 40);
+        robot.intake.setPowers(0);
+        turnSmall(-30, 50);
+        currentPos1 = robot.drivetrain.getPosition();
+        while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
+
+            robot.drivetrain.setPowers(0.4, 0);
+            robot.intake.setPowers(0.7);
+            if(isStopRequested())
+                return;
+        }
+        robot.drivetrain.setPowers(0, 0);
+        currentPos2 = robot.drivetrain.getPosition();
+        sleep(500);
+        robot.intake.setPowers(0);
+        sleep(500);
+        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12, 50);
+        robot.drivetrain.setPowers(0, 0);
+        turnSmall(90, 50);
+        move(51, 40);
+        robot.intake.setPowers(-1.0);
+        move(-16, 50);
 
     }
+
+
+    /**
+     * case 3
+     */
     void case3() {
 
     }

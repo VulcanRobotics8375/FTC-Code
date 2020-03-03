@@ -58,7 +58,7 @@ public class visionTest extends LinearOpMode {
         detector = new SkystoneDetector();
         phoneCam.setPipeline(detector);
 
-        phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPSIDE_DOWN);
+        phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_LEFT);
         waitForStart();
 
 

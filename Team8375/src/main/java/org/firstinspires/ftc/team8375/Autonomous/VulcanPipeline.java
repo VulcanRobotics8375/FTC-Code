@@ -176,13 +176,13 @@ public abstract class VulcanPipeline extends LinearOpMode {
 //            if(async) {
 //                async();
 //            }
-            if(isStopRequested())
-                return;
             if(Math.abs(inches - inchesTravelled) > 1.5) {
                 timeout.reset();
             } else if(timeout.time(TimeUnit.MILLISECONDS) > 500) {
                 return;
             }
+            if(isStopRequested())
+                return;
 
         }
         step++;
@@ -288,7 +288,7 @@ public abstract class VulcanPipeline extends LinearOpMode {
         pidOut = 0;
         derivative = 0;
 
-        while (Math.ceil(robot.drivetrain.getImuAngle()) != heading) {
+        while (Math.round(robot.drivetrain.getImuAngle()) != heading) {
             pid(1.5, 1.2, 1.8, 7, heading, true);
             robot.drivetrain.turnPercent(speed, pidOut);
             telemetry.addData("angle", robot.drivetrain.getImuAngle());
@@ -296,6 +296,11 @@ public abstract class VulcanPipeline extends LinearOpMode {
 //            if(async) {
 //                async();
 //            }
+            if(Math.abs(heading - robot.drivetrain.getImuAngle()) > 2) {
+                timeout.reset();
+            } else if(timeout.time(TimeUnit.MILLISECONDS) > 500) {
+                return;
+            }
             if(isStopRequested())
                 return;
         }
