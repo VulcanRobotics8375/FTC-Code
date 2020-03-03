@@ -27,7 +27,8 @@ public class Movement {
         for(int i = 0; i < pathPoints.size(); i++) {
             CurvePoint startLine = pathPoints.get(i);
             CurvePoint endLine = pathPoints.get(i + 1);
-            ArrayList<Point> circleIntersections = LineCircleIntersect(new Point(robot.x, robot.y), followRadius, startLine.toPoint(), endLine.toPoint());
+            ArrayList<Point> circleIntersections = LineCircleIntersect(new Point(robot.x, robot.y), followRadius,
+                                                                        startLine.toPoint(), endLine.toPoint());
 
             //to iterate to the smallest value, we need a big number to start to avoid any complications
             double closestAngle = Double.MAX_VALUE;
