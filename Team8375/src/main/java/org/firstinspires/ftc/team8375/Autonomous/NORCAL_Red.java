@@ -8,7 +8,199 @@
 
 package org.firstinspires.ftc.team8375.Autonomous;
 
-public class NORCAL_Red {
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+public class NORCAL_Red extends VulcanPipeline {
+
+    @Override
+    public void runOpMode() {
+        initialize();
+        initVision();
+        //move seek back once done with debugging
+        telemetry.addData("stone pos", returnInt());
+        telemetry.addData("stone x", detector.getScreenPosition().x);
+        telemetry.addData("stone y", detector.getScreenPosition().y);
+        telemetry.update();
+        waitForStart();
+        while(opModeIsActive()) {
+            seek();
+            if(!isDone) {
+
+                //instructions go here
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while(opModeIsActive()) {
+                            robot.foundation.deployCapstone(false, false);
+                            if (isStopRequested())
+                                return;
+                        }
+                    }
+                });
+                switch (returnInt()) {
+                    case 1:
+                        case1();
+                        return;
+                    case 2:
+                        case2();
+                        return;
+                    case 3:
+                        case3();
+                        return;
+                }
+
+                isDone = true;
+            }
+
+            telemetry.addData("pos", returnInt());
+            telemetry.update();
+        }
+
+        robot.stopAll(robot.subsystems);
+
+    }
+
+
+    /**
+     * case 1
+     */
+    void case1() {
+        move(32, 50);
+        turnSmall(-30, 75);
+        double currentPos1 = robot.drivetrain.getPosition();
+        while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
+
+            robot.drivetrain.setPowers(0.4, 0);
+            robot.intake.setPowers(0.7);
+            if(isStopRequested())
+                return;
+        }
+        robot.drivetrain.setPowers(0, 0);
+        double currentPos2 = robot.drivetrain.getPosition();
+        sleep(500);
+        robot.intake.setPowers(0);
+        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12.5, 50);
+        turnSmall(-90, 50);
+        move(45, 40);
+        robot.intake.setPowers(-1.0);
+        move(-51, 40);
+        robot.intake.setPowers(0);
+        turnSmall(30, 50);
+        currentPos1 = robot.drivetrain.getPosition();
+        while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
+
+            robot.drivetrain.setPowers(0.4, 0);
+            robot.intake.setPowers(0.7);
+            if(isStopRequested())
+                return;
+        }
+        robot.drivetrain.setPowers(0, 0);
+        currentPos2 = robot.drivetrain.getPosition();
+        sleep(500);
+        robot.intake.setPowers(0);
+        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12, 50);
+        robot.drivetrain.setPowers(0, 0);
+        turnSmall(-90, 50);
+        move(51, 40);
+        robot.intake.setPowers(-1.0);
+        move(-16, 50);
+
+    }
+
+
+    /**
+     * case 2
+     */
+    void case2() {
+        move(32, 50);
+        double currentPos1 = robot.drivetrain.getPosition();
+        while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
+
+            robot.drivetrain.setPowers(0.4, 0);
+            robot.intake.setPowers(0.7);
+            if(isStopRequested())
+                return;
+        }
+        robot.drivetrain.setPowers(0, 0);
+        double currentPos2 = robot.drivetrain.getPosition();
+        sleep(500);
+        robot.intake.setPowers(0);
+        sleep(500);
+        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12.5, 50);
+        turnSmall(-90, 50);
+        move(45, 40);
+        robot.intake.setPowers(-1.0);
+        move(-60, 40);
+        robot.intake.setPowers(0);
+        turnSmall(30, 50);
+        currentPos1 = robot.drivetrain.getPosition();
+        while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
+
+            robot.drivetrain.setPowers(0.4, 0);
+            robot.intake.setPowers(0.7);
+            if(isStopRequested())
+                return;
+        }
+        robot.drivetrain.setPowers(0, 0);
+        currentPos2 = robot.drivetrain.getPosition();
+        sleep(500);
+        robot.intake.setPowers(0);
+        sleep(500);
+        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12, 50);
+        robot.drivetrain.setPowers(0, 0);
+        turnSmall(-90, 50);
+        move(60, 40);
+        robot.intake.setPowers(-1.0);
+        move(-16, 50);
+
+    }
+
+
+    /**
+     * case 3
+     */
+    void case3() {
+        move(32, 50);
+        turnSmall(30, 75);
+        double currentPos1 = robot.drivetrain.getPosition();
+        while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
+
+            robot.drivetrain.setPowers(0.4, 0);
+            robot.intake.setPowers(0.7);
+            if(isStopRequested())
+                return;
+        }
+        robot.drivetrain.setPowers(0, 0);
+        double currentPos2 = robot.drivetrain.getPosition();
+        sleep(500);
+        robot.intake.setPowers(0);
+        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12.5, 50);
+        turnSmall(-90, 50);
+        move(45, 40);
+        robot.intake.setPowers(-1.0);
+        move(-68, 40);
+        robot.intake.setPowers(0);
+        turnSmall(30, 50);
+        currentPos1 = robot.drivetrain.getPosition();
+        while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
+
+            robot.drivetrain.setPowers(0.4, 0);
+            robot.intake.setPowers(0.7);
+            if(isStopRequested())
+                return;
+        }
+        robot.drivetrain.setPowers(0, 0);
+        currentPos2 = robot.drivetrain.getPosition();
+        sleep(500);
+        robot.intake.setPowers(0);
+        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12, 50);
+        robot.drivetrain.setPowers(0, 0);
+        turnSmall(-90, 50);
+        move(68, 40);
+        robot.intake.setPowers(-1.0);
+        move(-16, 50);
+    }
+
+    public void async() {}
 
 }
