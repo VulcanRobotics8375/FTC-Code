@@ -88,9 +88,9 @@ public class NORCAL_Blue extends VulcanPipeline {
         turnSmall(90, 50);
         move(45, 40);
         robot.intake.setPowers(-1.0);
-        move(-51, 40);
+        move(-56, 40);
         robot.intake.setPowers(0);
-        turnSmall(-30, 50);
+        turnSmall(-10, 50);
         currentPos1 = robot.drivetrain.getPosition();
         while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
 
@@ -106,7 +106,7 @@ public class NORCAL_Blue extends VulcanPipeline {
         move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12, 50);
         robot.drivetrain.setPowers(0, 0);
         turnSmall(90, 50);
-        move(51, 40);
+        move(56, 40);
         robot.intake.setPowers(-1.0);
         move(-16, 50);
 
@@ -135,9 +135,9 @@ public class NORCAL_Blue extends VulcanPipeline {
         turnSmall(90, 50);
         move(45, 40);
         robot.intake.setPowers(-1.0);
-        move(-60, 40);
+        move(-66, 40);
         robot.intake.setPowers(0);
-        turnSmall(-30, 50);
+        turnSmall(-10, 50);
         currentPos1 = robot.drivetrain.getPosition();
         while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
 
@@ -154,7 +154,7 @@ public class NORCAL_Blue extends VulcanPipeline {
         move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12, 50);
         robot.drivetrain.setPowers(0, 0);
         turnSmall(90, 50);
-        move(60, 40);
+        move(66, 40);
         robot.intake.setPowers(-1.0);
         move(-16, 50);
 
@@ -183,7 +183,7 @@ public class NORCAL_Blue extends VulcanPipeline {
         turnSmall(90, 50);
         move(45, 40);
         robot.intake.setPowers(-1.0);
-        move(-68, 40);
+        move(-72, 40);
         robot.intake.setPowers(0);
         turnSmall(-30, 50);
         currentPos1 = robot.drivetrain.getPosition();
@@ -201,7 +201,7 @@ public class NORCAL_Blue extends VulcanPipeline {
         move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12, 50);
         robot.drivetrain.setPowers(0, 0);
         turnSmall(90, 50);
-        move(68, 40);
+        move(72, 40);
         robot.intake.setPowers(-1.0);
         move(-16, 50);
     }

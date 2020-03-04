@@ -169,9 +169,8 @@ public abstract class VulcanPipeline extends LinearOpMode {
             inchesTravelled = (robot.drivetrain.getPosition() / 537.6) * wheelSize;
             pid(6.8, 0.7, 1.5, 7, inchesTravelled, inches);
             robot.drivetrain.movePercent(speed, -pidOut);
-            telemetry.addData("pos", robot.drivetrain.getPosition());
-            telemetry.addData("inches", inchesTravelled);
-            telemetry.addData("output", pidOut);
+            telemetry.addData("posLeft", robot.drivetrain.getPositionBr());
+            telemetry.addData("posRight", robot.drivetrain.getPositionBl());
             telemetry.update();
 //            if(async) {
 //                async();
