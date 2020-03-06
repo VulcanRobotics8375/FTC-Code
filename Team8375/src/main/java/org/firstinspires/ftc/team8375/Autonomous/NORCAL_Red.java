@@ -9,13 +9,11 @@
 package org.firstinspires.ftc.team8375.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import static org.firstinspires.ftc.team8375.dataParser.*;
 
-@Autonomous(name = "norcal blue", group = "group")
-public class NORCAL_Blue extends VulcanPipeline {
+@Autonomous(name = "norcal red", group = "group")
+public class NORCAL_Red extends VulcanPipeline {
 
     @Override
     public void runOpMode() {
@@ -44,13 +42,13 @@ public class NORCAL_Blue extends VulcanPipeline {
                 });
                 switch (returnInt()) {
                     case 1:
-                        case1();
+                        case3();
                         return;
                     case 2:
                         case2();
                         return;
                     case 3:
-                        case3();
+                        case1();
                         return;
                 }
 
@@ -71,7 +69,7 @@ public class NORCAL_Blue extends VulcanPipeline {
      */
     void case1() {
         move(32, 50);
-        turnSmall(30, 75);
+        turnSmall(-30, 75);
         robot.drivetrain.setPowers(0, 0);
         double currentPos1 = robot.drivetrain.getPosition();
         while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
@@ -86,12 +84,12 @@ public class NORCAL_Blue extends VulcanPipeline {
         sleep(500);
         robot.intake.setPowers(0);
         move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12.5, 50);
-        turnSmall(90, 50);
+        turnSmall(-90, 50);
         move(45, 40);
         robot.intake.setPowers(-1.0);
         move(-56, 40);
         robot.intake.setPowers(0);
-        turnSmall(-10, 50);
+        turnSmall(10, 50);
         currentPos1 = robot.drivetrain.getPosition();
         while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
 
@@ -106,7 +104,7 @@ public class NORCAL_Blue extends VulcanPipeline {
         robot.intake.setPowers(0);
         move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12, 50);
         robot.drivetrain.setPowers(0, 0);
-        turnSmall(90, 50);
+        turnSmall(-90, 50);
         move(56, 40);
         robot.intake.setPowers(-1.0);
         move(-16, 50);
@@ -119,7 +117,7 @@ public class NORCAL_Blue extends VulcanPipeline {
      */
     void case2() {
         move(32, 50);
-        turnSmall(-5, 80);
+        turnSmall(5, 80);
         robot.drivetrain.setPowers(0, 0);
         double currentPos1 = robot.drivetrain.getPosition();
         while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
@@ -135,12 +133,12 @@ public class NORCAL_Blue extends VulcanPipeline {
         robot.intake.setPowers(0);
         sleep(500);
         move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12.5, 50);
-        turnSmall(90, 50);
+        turnSmall(-90, 50);
         move(45, 40);
         robot.intake.setPowers(-1.0);
         move(-65, 40);
         robot.intake.setPowers(0);
-        turnSmall(-10, 50);
+        turnSmall(10, 50);
         currentPos1 = robot.drivetrain.getPosition();
         while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
 
@@ -156,7 +154,7 @@ public class NORCAL_Blue extends VulcanPipeline {
         sleep(500);
         move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12, 50);
         robot.drivetrain.setPowers(0, 0);
-        turnSmall(90, 50);
+        turnSmall(-90, 50);
         move(65, 40);
         robot.intake.setPowers(-1.0);
         move(-16, 50);
@@ -169,7 +167,7 @@ public class NORCAL_Blue extends VulcanPipeline {
      */
     void case3() {
         move(10, 50);
-        turnSmall(-25, 70);
+        turnSmall(25, 70);
         move(20, 50);
         turnSmall(0, 70);
         robot.drivetrain.setPowers(0, 0);
@@ -186,12 +184,12 @@ public class NORCAL_Blue extends VulcanPipeline {
         sleep(500);
         robot.intake.setPowers(0);
         move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 13, 50);
-        turnSmall(90, 50);
+        turnSmall(-90, 50);
         move(55, 40);
         robot.intake.setPowers(-1.0);
         move(-74, 40);
         robot.intake.setPowers(0);
-        turnSmall(-10, 50);
+        turnSmall(10, 50);
         currentPos1 = robot.drivetrain.getPosition();
         while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
 
@@ -206,7 +204,7 @@ public class NORCAL_Blue extends VulcanPipeline {
         robot.intake.setPowers(0);
         move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12, 50);
         robot.drivetrain.setPowers(0, 0);
-        turnSmall(90, 50);
+        turnSmall(-90, 50);
         move(72, 40);
         robot.intake.setPowers(-1.0);
         move(-16, 50);

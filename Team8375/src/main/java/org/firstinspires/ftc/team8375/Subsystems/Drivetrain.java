@@ -142,12 +142,12 @@ public class Drivetrain extends Subsystem {
 //
 //        }
 //
-        if(turn == 0) {
+//        if(turn == 0) {
 //            targetAngle = getImuAngle();
 //            turnPower = pid.run(0.001, 0, 0, 10, targetAngle);
-        } else {
-            targetAngle = getImuAngle();
-        }
+//        } else {
+//            targetAngle = getImuAngle();
+//        }
 
         double[] v = {
                 vd * Math.sin(theta) - turnPower,

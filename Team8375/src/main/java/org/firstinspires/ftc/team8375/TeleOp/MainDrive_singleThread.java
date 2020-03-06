@@ -11,15 +11,14 @@ package org.firstinspires.ftc.team8375.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.team8375.Robot.FullBot;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-@TeleOp(name = "MainDrive", group = "competition")
-public class MainDrive extends OpMode {
+@TeleOp(name = "MainDrive-one thread", group = "competition")
+public class MainDrive_singleThread extends OpMode {
     private FullBot robot;
     private boolean buttonPressed;
     private int inverse = 1;
@@ -27,71 +26,6 @@ public class MainDrive extends OpMode {
     private Properties prop;
     boolean stopRequested;
     boolean started;
-
-    private Thread drivetrain = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            while(started) {
-
-                robot.drivetrain.tankDrive(
-                        //forward
-                        -gamepad1.left_stick_y,
-                        //turn
-                        -gamepad1.right_stick_x,
-                        //slow mode
-                        gamepad1.left_bumper
-                );
-
-                if(stopRequested)
-                    return;
-            }
-        }
-    });
-
-    private Thread arm = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            while (started) {
-                robot.arm.run(
-                        //lift
-                        -gamepad2.left_stick_y,
-                        //extend
-                        gamepad2.right_stick_y,
-                        //adjust
-                        trigger,
-                        //half flip
-                        gamepad2.x,
-                        //claw
-                        gamepad2.left_bumper,
-                        //up button
-                        false,
-                        //reset
-                        gamepad2.y
-                );
-
-                if(stopRequested)
-                    return;
-            }
-        }
-    });
-
-    private Thread intake = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            while (started) {
-                robot.intake.run(
-                        //reverse
-                        gamepad2.a,
-                        //toggle
-                        intakeToggle()
-                );
-
-                if(stopRequested)
-                    return;
-            }
-        }
-    });
-
 
     @Override
     public void init() {
@@ -124,9 +58,6 @@ public class MainDrive extends OpMode {
     @Override
     public void start() {
         started = true;
-        drivetrain.start();
-        arm.start();
-        intake.start();
     }
 
     @Override
@@ -138,6 +69,39 @@ public class MainDrive extends OpMode {
         } else {
             trigger = 0;
         }
+
+        robot.drivetrain.tankDrive(
+                //forward
+                -gamepad1.left_stick_y,
+                //turn
+                -gamepad1.right_stick_x,
+                //slow mode
+                gamepad1.left_bumper
+        );
+
+        robot.arm.run(
+                //lift
+                -gamepad2.left_stick_y,
+                //extend
+                gamepad2.right_stick_y,
+                //adjust
+                trigger,
+                //half flip
+                gamepad2.x,
+                //claw
+                gamepad2.left_bumper,
+                //up button
+                false,
+                //reset
+                gamepad2.y
+        );
+
+        robot.intake.run(
+                //reverse
+                gamepad2.a,
+                //toggle
+                intakeToggle()
+        );
 
         if(gamepad1.right_bumper) {
             robot.foundation.setFoundationMoveAngle(Double.parseDouble(prop.getProperty("foundation.deployed")));

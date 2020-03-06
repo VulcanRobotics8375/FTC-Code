@@ -6,19 +6,28 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.team8375.Robot;
+package org.firstinspires.ftc.team8375.TeleOp;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.team8375.Subsystems.Drivetrain;
+import org.firstinspires.ftc.team8375.Robot.*;
 
-public class MecanumBase extends Robot {
-    public Drivetrain drivetrain = new Drivetrain();
+@TeleOp(name = "mecanum", group = "yeet")
+public class MecanumDrive extends OpMode {
 
-    public MecanumBase(HardwareMap hwMap) {
-        subsystems.add(drivetrain);
+    public MecanumBase robot;
 
-        createAll(hwMap, subsystems);
+    public void init() {
+        robot = new MecanumBase(hardwareMap);
+        robot.drivetrain.init();
+
+    }
+
+    public void start() {}
+
+    public void loop() {
+        robot.drivetrain.mecanumDrive(gamepad1.left_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, 1);
     }
 
 }
