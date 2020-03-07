@@ -71,7 +71,7 @@ public class NORCAL_Blue extends VulcanPipeline {
      */
     void case1() {
         move(32, 50);
-        turnSmall(30, 75);
+        turnSmall(30, 80);
         robot.drivetrain.setPowers(0, 0);
         double currentPos1 = robot.drivetrain.getPosition();
         while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
@@ -85,7 +85,7 @@ public class NORCAL_Blue extends VulcanPipeline {
         double currentPos2 = robot.drivetrain.getPosition();
         sleep(500);
         robot.intake.setPowers(0);
-        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12.5, 50);
+        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 11, 50);
         turnSmall(90, 50);
         move(45, 40);
         robot.intake.setPowers(-1.0);
@@ -104,7 +104,7 @@ public class NORCAL_Blue extends VulcanPipeline {
         currentPos2 = robot.drivetrain.getPosition();
         sleep(500);
         robot.intake.setPowers(0);
-        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12, 50);
+        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 11, 50);
         robot.drivetrain.setPowers(0, 0);
         turnSmall(90, 50);
         move(56, 40);
@@ -119,7 +119,7 @@ public class NORCAL_Blue extends VulcanPipeline {
      */
     void case2() {
         move(32, 50);
-        turnSmall(-5, 80);
+        turnSmall(-5, 90);
         robot.drivetrain.setPowers(0, 0);
         double currentPos1 = robot.drivetrain.getPosition();
         while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
@@ -134,13 +134,13 @@ public class NORCAL_Blue extends VulcanPipeline {
         sleep(500);
         robot.intake.setPowers(0);
         sleep(500);
-        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12.5, 50);
+        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 11, 50);
         turnSmall(90, 50);
         move(45, 40);
         robot.intake.setPowers(-1.0);
         move(-65, 40);
         robot.intake.setPowers(0);
-        turnSmall(-10, 50);
+        turnSmall(-15, 50);
         currentPos1 = robot.drivetrain.getPosition();
         while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
 
@@ -154,7 +154,7 @@ public class NORCAL_Blue extends VulcanPipeline {
         sleep(500);
         robot.intake.setPowers(0);
         sleep(500);
-        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12, 50);
+        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 8, 50);
         robot.drivetrain.setPowers(0, 0);
         turnSmall(90, 50);
         move(65, 40);
@@ -169,9 +169,9 @@ public class NORCAL_Blue extends VulcanPipeline {
      */
     void case3() {
         move(10, 50);
-        turnSmall(-25, 70);
+        turnSmall(-25, 80);
         move(20, 50);
-        turnSmall(0, 70);
+        turnSmall(0, 80);
         robot.drivetrain.setPowers(0, 0);
         double currentPos1 = robot.drivetrain.getPosition();
         while(robot.intake.getIRDistance(DistanceUnit.CM) > 15) {
@@ -183,13 +183,13 @@ public class NORCAL_Blue extends VulcanPipeline {
         }
         robot.drivetrain.setPowers(0, 0);
         double currentPos2 = robot.drivetrain.getPosition();
-        sleep(500);
+        sleep(750);
         robot.intake.setPowers(0);
-        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 13, 50);
+        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 11, 50);
         turnSmall(90, 50);
         move(55, 40);
         robot.intake.setPowers(-1.0);
-        move(-74, 40);
+        move(-72, 40);
         robot.intake.setPowers(0);
         turnSmall(-10, 50);
         currentPos1 = robot.drivetrain.getPosition();
@@ -204,7 +204,7 @@ public class NORCAL_Blue extends VulcanPipeline {
         currentPos2 = robot.drivetrain.getPosition();
         sleep(500);
         robot.intake.setPowers(0);
-        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 12, 50);
+        move((((currentPos2 - currentPos1) * -1.0)/537.6) * ((100.0 / 25.4) * Math.PI) - 11, 50);
         robot.drivetrain.setPowers(0, 0);
         turnSmall(90, 50);
         move(72, 40);

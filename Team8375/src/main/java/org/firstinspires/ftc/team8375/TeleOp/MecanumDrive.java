@@ -27,7 +27,7 @@ public class MecanumDrive extends OpMode {
     public void start() {}
 
     public void loop() {
-        robot.drivetrain.mecanumDrive(gamepad1.left_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, 1);
+        robot.drivetrain.mecanumDrive(-gamepad1.left_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x, 1);
     }
 
 }
