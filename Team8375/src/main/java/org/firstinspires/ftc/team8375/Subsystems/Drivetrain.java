@@ -169,6 +169,28 @@ public class Drivetrain extends Subsystem {
         bl.setPower(motorOut[3]);
     }
 
+    public void fieldCentricMecanumDrive(double forward, double strafe, double turn) {
+        double joystickPower = Math.hypot(forward, strafe);
+        double joystickAngle = Math.atan2(forward, strafe);
+
+        double relativeAngleToField = Math.toRadians(getImuAngle());
+
+        double relativeAngleToJoystick = relativeAngleToField + joystickAngle;
+
+        double[] motorPower = {
+                joystickPower * Math.sin(relativeAngleToJoystick - (Math.PI / 4)) - turn,
+                joystickPower * Math.sin(relativeAngleToJoystick + (Math.PI / 4)) + turn,
+                joystickPower * Math.sin(relativeAngleToJoystick + (Math.PI / 4)) - turn,
+                joystickPower * Math.sin(relativeAngleToJoystick - (Math.PI / 4)) + turn,
+        };
+
+        fr.setPower(motorPower[0]);
+        fl.setPower(motorPower[1]);
+        br.setPower(motorPower[2]);
+        bl.setPower(motorPower[3]);
+
+    }
+
     public void tankDrive(float movePower, float turnPower, boolean slowModeButton) {
         divisor = (parseDouble(prop, "drivetrain.accSpeed")/1.07)*((0.62*Math.pow(parseDouble(prop, "drivetrain.accSpeed"), 2))+0.45);
         // modifies the controller input for a more natural feel
