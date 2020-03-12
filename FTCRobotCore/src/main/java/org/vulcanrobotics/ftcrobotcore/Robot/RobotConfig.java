@@ -23,6 +23,10 @@ public class RobotConfig {
     /**
      * main method for RobotConfig, i'll add default configs later
      */
-    public RobotConfig(List<DcMotor> motors, MotorOrder motorOrder, JoystickAcceleration joystickAcceleration) {}
+    public RobotConfig(List<DcMotor> motors, MotorOrder motorOrder, JoystickAcceleration joystickAcceleration) {
+        this.motors = motors;
+        this.motorOrder = motorOrder;
+        this.joystickAcceleration = joystickAcceleration;
+    }
 
 }

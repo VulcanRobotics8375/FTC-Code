@@ -6,20 +6,31 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-//
-// build.gradle in TeamCode
-//
-// Most of the definitions for building your module reside in a common, shared
-// file 'build.common.gradle'. Being factored in this way makes it easier to
-// integrate updates to the FTC into your code. If you really need to customize
-// the build definitions, you can place those customizations in this file, but
-// please think carefully as to whether such customizations are really necessary
-// before doing so.
-// Custom definitions may go here
-// Include common definitions from above.
-apply from: '../build.common.gradle'
-dependencies {
-    implementation project(':FTCRobotCore')
+package org.firstinspires.ftc.team8375.TeleOp;
+
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
+public class robotCoreTest extends OpMode {
+
+
+    @Override
+    public void init(){
+
+    }
+
+    @Override
+    public void init_loop(){
+
+    }
+
+    @Override
+    public void start(){
+
+    }
+
+    @Override
+    public void loop(){
+
+    }
 
 }
-

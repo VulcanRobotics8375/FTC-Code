@@ -17,7 +17,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public  class staticMethods {
 
-
     /**
      * @param s The Servo you are setting the position of. This works statically because you only need the pointers of the servo for it to work anyway
      * @param angle angle of the servo in degrees, assumes 180.0
