@@ -6,24 +6,36 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.team8375.Examples;
+package org.vulcanrobotics.ftcrobotcore.Subsystem;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
-@Disabled
-@Autonomous(name = "LinearOpModeExample", group = "example")
-public class linearOpModeExample extends LinearOpMode {
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
-    public void runOpMode() {
+public abstract class Subsystem {
+    public HardwareMap hwMap;
+    public Properties constants;
 
-        //init code
+    public abstract void create();
 
-        while(opModeIsActive()) {
+    public abstract void stop();
 
-            //loop code
+    public Subsystem() {
+        try {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            InputStream input = loader.getResourceAsStream("constants.properties");
+            if(input != null) {
+                constants = new Properties();
+                constants.load(input);
+            } else {
 
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
+
     }
+
 }

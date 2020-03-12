@@ -10,8 +10,16 @@ package org.vulcanrobotics.ftcrobotcore.Robot;
 
 public class RobotConfigException extends Exception {
 
+    public RobotConfigException() {
+        super();
+    }
+
     public RobotConfigException(String s) {
         super(s);
+    }
+
+    public RobotConfigException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

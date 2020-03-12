@@ -1,8 +1,6 @@
 # FTCRobotCore
-<!-- Place this tag where you want the button to render. -->
-<a class="github-button" href="https://github.com/vulcanrobotics" data-color-scheme="no-preference: light; light: light; dark: dark;" data-show-count="true" aria-label="Follow @vulcanrobotics on GitHub">Follow @vulcanrobotics</a><!-- Place this tag where you want the button to render. -->
-<a class="github-button" href="https://github.com/vulcanrobotics/FTCRobotCore/subscription" data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-eye" data-show-count="true" aria-label="Watch vulcanrobotics/FTCRobotCore on GitHub">Watch</a><!-- Place this tag where you want the button to render. -->
-<a class="github-button" href="https://github.com/vulcanrobotics/FTCRobotCore/fork" data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-repo-forked" data-show-count="true" aria-label="Fork vulcanrobotics/FTCRobotCore on GitHub">Fork</a>
+[![](https://jitpack.io/v/vulcanroboticsteam/FTCRobotCore.svg)](https://jitpack.io/#vulcanroboticsteam/FTCRobotCore)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/vulcanroboticsteam/FTCRobotCore/issues)
 <br>
 an FTC library to make things less confusing. Currently in development, no releases expected until late 2020
 

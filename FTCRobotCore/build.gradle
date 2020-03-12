@@ -19,7 +19,7 @@ repositories {
         dirs '../libs'
     }
 }
-//apply from: '../build.common.gradle'
+apply from: 'build.release.gradle'
 dependencies {
 }
 

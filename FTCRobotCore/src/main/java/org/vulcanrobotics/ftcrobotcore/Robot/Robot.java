@@ -8,14 +8,39 @@
 
 package org.vulcanrobotics.ftcrobotcore.Robot;
 
-public class Robot {
-    public static double movement_x;
-    public static double movement_y;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
-    public static double movePower;
-    public static double turnPower;
+import org.vulcanrobotics.ftcrobotcore.Subsystem.Subsystem;
 
+import java.util.ArrayList;
+import java.util.List;
 
+public abstract class Robot {
+    public List<Subsystem> subsystems = new ArrayList<>();
+
+    public Robot() {}
+
+    public void createAll(HardwareMap hwMap, List<Subsystem> subsystems) {
+        for (Subsystem sub : subsystems) {
+            sub.hwMap = hwMap;
+            sub.create();
+        }
+    }
+
+    public void create(HardwareMap hwMap, Subsystem subsystem) {
+        subsystem.hwMap = hwMap;
+        subsystem.create();
+    }
+
+    public void stopAll(List<Subsystem> subsystems) {
+        for (Subsystem sub : subsystems) {
+            sub.stop();
+        }
+    }
+
+    public void stop(Subsystem subsystem) {
+        subsystem.stop();
+    }
 
 
 }

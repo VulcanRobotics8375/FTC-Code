@@ -6,17 +6,9 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.team8375.Robot;
+package org.vulcanrobotics.ftcrobotcore.Robot.wheels;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
-public class RobotBase extends Robot {
-    //initialize subsystems
-    //ex: Drivetrain drivetrain = new Drivetrain();
-    public RobotBase(HardwareMap hwMap) {
-        //add subsystem to subsystem list
-        //ex: subsystems.add(drivetrain);
-
-        createAll(hwMap, subsystems);
-    }
+public enum WheelType {
+    HOLONOMIC,
+    DIFFERENTIAL
 }

@@ -6,47 +6,26 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.team8375;
+package org.vulcanrobotics.ftcrobotcore.Robot.wheels;
 
-import java.util.Properties;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 
-public class dataParser {
+public class WheelAttributes {
+    public double radius;
+    public WheelType wheelType;
+    public double rollers;
+    public double rollerAngle;
 
-    public static boolean parseBool(Properties p, String s) {
-
-    boolean b = Boolean.parseBoolean(p.getProperty(s));
-    return b;
+    public WheelAttributes() {
 
     }
 
-    public static int parseInt(Properties p, String s) {
-        int i = Integer.parseInt(p.getProperty(s));
-        return i;
-    }
+    public WheelAttributes(double radius, WheelType wheelType, double rollers, double rollerAngle) {
 
-    public static double parseDouble(Properties p, String s) {
-        double d = Double.parseDouble(p.getProperty(s));
-        return d;
-    }
-
-    public static float parseFLoat(Properties p, String s) {
-        float f = Float.parseFloat(p.getProperty(s));
-        return f;
-    }
-
-    public static byte parseByte(Properties p, String s) {
-        byte b = Byte.parseByte(p.getProperty(s));
-        return b;
-    }
-
-    public static short parseShort(Properties p, String s) {
-        short S = Short.parseShort(p.getProperty(s));
-        return S;
-    }
-
-    public static long parseLong(Properties p, String s) {
-        long l = Long.parseLong(p.getProperty(s));
-        return l;
+        this.radius = radius;
+        this.wheelType = wheelType;
+        this.rollers = rollers;
+        this.rollerAngle = rollerAngle;
     }
 
 }

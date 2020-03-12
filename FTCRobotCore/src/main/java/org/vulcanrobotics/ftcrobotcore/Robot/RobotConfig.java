@@ -8,25 +8,16 @@
 
 package org.vulcanrobotics.ftcrobotcore.Robot;
 
-
-import com.qualcomm.robotcore.hardware.DcMotor;
-
+import org.vulcanrobotics.ftcrobotcore.Robot.wheels.WheelAttributes;
 import org.vulcanrobotics.ftcrobotcore.algorithms.holonomics.JoystickAcceleration;
 
-import java.util.List;
+public interface RobotConfig {
+    int motorNum = 4;
+    WheelAttributes wheels = new WheelAttributes();
+    JoystickAcceleration joystickAcceleration = null;
 
-public class RobotConfig {
-    public List<DcMotor> motors;
-    public MotorOrder motorOrder;
-    public JoystickAcceleration joystickAcceleration;
+    void configure();
 
-    /**
-     * main method for RobotConfig, i'll add default configs later
-     */
-    public RobotConfig(List<DcMotor> motors, MotorOrder motorOrder, JoystickAcceleration joystickAcceleration) {
-        this.motors = motors;
-        this.motorOrder = motorOrder;
-        this.joystickAcceleration = joystickAcceleration;
-    }
+
 
 }
