@@ -6,11 +6,26 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.vulcanrobotics.ftcrobotcore.algorithms.holonomics;
+package org.vulcanrobotics.ftcrobotcore;
 
-public enum JoystickAcceleration {
-    LINEAR,
-    CUBIC,
-    NON_LINEAR
+import org.vulcanrobotics.ftcrobotcore.Robot.RobotConfigException;
+
+public class CoreLibException extends Exception {
+
+    public CoreLibException(){
+        super();
+    }
+
+    public CoreLibException(String s){
+        super(s);
+    }
+
+    public CoreLibException(String message, Throwable cause){
+        super(message, cause);
+    }
+
+    public CoreLibException(Throwable cause) {
+        super(cause);
+    }
 
 }

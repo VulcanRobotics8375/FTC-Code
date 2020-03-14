@@ -9,14 +9,21 @@
 package org.vulcanrobotics.ftcrobotcore.Robot;
 
 import org.vulcanrobotics.ftcrobotcore.Robot.wheels.WheelAttributes;
-import org.vulcanrobotics.ftcrobotcore.algorithms.holonomics.JoystickAcceleration;
+import org.vulcanrobotics.ftcrobotcore.algorithms.JoystickAcceleration;
 
-public interface RobotConfig {
-    int motorNum = 4;
-    WheelAttributes wheels = new WheelAttributes();
-    JoystickAcceleration joystickAcceleration = null;
+public abstract class RobotConfig {
+    public WheelAttributes wheels = new WheelAttributes();
+    public JoystickAcceleration joystickAcceleration = null;
 
-    void configure();
+    public abstract void configure();
+
+    public RobotConfig() {}
+
+    public RobotConfig(WheelAttributes wheels, JoystickAcceleration joystickAcceleration) {
+
+        this.wheels = wheels;
+        this.joystickAcceleration = joystickAcceleration;
+    }
 
 
 

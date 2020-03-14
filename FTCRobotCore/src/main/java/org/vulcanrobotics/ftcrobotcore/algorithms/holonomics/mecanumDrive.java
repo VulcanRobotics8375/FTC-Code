@@ -8,14 +8,16 @@
 
 package org.vulcanrobotics.ftcrobotcore.algorithms.holonomics;
 
+import org.vulcanrobotics.ftcrobotcore.Robot.Robot;
 import org.vulcanrobotics.ftcrobotcore.Robot.RobotConfig;
 import org.vulcanrobotics.ftcrobotcore.Robot.RobotConfigException;
+import org.vulcanrobotics.ftcrobotcore.algorithms.JoystickAcceleration;
 
 public class mecanumDrive {
-    private RobotConfig robotConfig;
+    private Robot robot;
 
-    public mecanumDrive(RobotConfig robotConfig) {
-        this.robotConfig = robotConfig;
+    public mecanumDrive(Robot robot) {
+        this.robot = robot;
     }
 
     public double[] standardMecanumDriveController(double forward, double strafe, double turnPower, double multiplier) throws RobotConfigException {
@@ -30,21 +32,21 @@ public class mecanumDrive {
                 vd * Math.sin(theta) + turnPower
         };
 
-        if(robotConfig.joystickAcceleration == JoystickAcceleration.NON_LINEAR)
+        if(robot.config.joystickAcceleration == JoystickAcceleration.NON_LINEAR)
             return new double[]{
                     multiplier * (v[0] / 1.07) * ((0.62 * Math.pow(v[0], 2)) + 0.45),
                     multiplier * (v[1] / 1.07) * ((0.62 * Math.pow(v[1], 2)) + 0.45),
                     multiplier * (v[2] / 1.07) * ((0.62 * Math.pow(v[2], 2)) + 0.45),
                     multiplier * (v[3] / 1.07) * ((0.62 * Math.pow(v[3], 2)) + 0.45)
             };
-        else if(robotConfig.joystickAcceleration == JoystickAcceleration.CUBIC)
+        else if(robot.config.joystickAcceleration == JoystickAcceleration.CUBIC)
             return new double[]{
                     multiplier * Math.pow(v[0], 3),
                     multiplier * Math.pow(v[1], 3),
                     multiplier * Math.pow(v[2], 3),
                     multiplier * Math.pow(v[3], 3)
             };
-        else if(robotConfig.joystickAcceleration == JoystickAcceleration.LINEAR)
+        else if(robot.config.joystickAcceleration == JoystickAcceleration.LINEAR)
             return new double[]{
                     multiplier * v[0],
                     multiplier * v[1],
@@ -53,7 +55,7 @@ public class mecanumDrive {
 
             };
         else
-            throw new RobotConfigException("no joystick acceleration entered in robotConfig" + robotConfig.toString());
+            throw new RobotConfigException("no joystick acceleration entered in robotConfig" + robot.config.toString());
     }
 
     public double[] FieldCentricMecanumDrive(double forward, double strafe, double turn, double startAngle, double currentAngle, double multiplier) throws RobotConfigException {
@@ -64,21 +66,21 @@ public class mecanumDrive {
 
         double relativeAngleToJoystick = relativeAngleToField + joystickAngle;
 
-        if(robotConfig.joystickAcceleration == JoystickAcceleration.LINEAR)
+        if(robot.config.joystickAcceleration == JoystickAcceleration.LINEAR)
             return new double[]{
                     joystickPower * Math.sin(relativeAngleToJoystick - (Math.PI / 4)) - turn,
                     joystickPower * Math.sin(relativeAngleToJoystick + (Math.PI / 4)) + turn,
                     joystickPower * Math.sin(relativeAngleToJoystick + (Math.PI / 4)) - turn,
                     joystickPower * Math.sin(relativeAngleToJoystick - (Math.PI / 4)) + turn,
             };
-        else if(robotConfig.joystickAcceleration == JoystickAcceleration.CUBIC)
+        else if(robot.config.joystickAcceleration == JoystickAcceleration.CUBIC)
             return new double[]{
                     Math.pow(joystickPower * Math.sin(relativeAngleToJoystick - (Math.PI / 4)) - turn, 3),
                     Math.pow(joystickPower * Math.sin(relativeAngleToJoystick + (Math.PI / 4)) + turn, 3),
                     Math.pow(joystickPower * Math.sin(relativeAngleToJoystick + (Math.PI / 4)) - turn, 3),
                     Math.pow(joystickPower * Math.sin(relativeAngleToJoystick - (Math.PI / 4)) + turn, 3)
             };
-        else if(robotConfig.joystickAcceleration == JoystickAcceleration.NON_LINEAR)
+        else if(robot.config.joystickAcceleration == JoystickAcceleration.NON_LINEAR)
             return new double[]{
                     ((joystickPower * Math.sin(relativeAngleToJoystick - (Math.PI / 4)) - turn) / 1.07) * ((0.62 * Math.pow(joystickPower * Math.sin(relativeAngleToJoystick - (Math.PI / 4)) - turn, 2)) + 0.45),
                     ((joystickPower * Math.sin(relativeAngleToJoystick + (Math.PI / 4)) + turn) / 1.07) * ((0.62 * Math.pow(joystickPower * Math.sin(relativeAngleToJoystick + (Math.PI / 4)) + turn, 2)) + 0.45),
@@ -86,7 +88,7 @@ public class mecanumDrive {
                     ((joystickPower * Math.sin(relativeAngleToJoystick - (Math.PI / 4)) + turn) / 1.07) * ((0.62 * Math.pow(joystickPower * Math.sin(relativeAngleToJoystick - (Math.PI / 4)) + turn, 2)) + 0.45)
             };
         else
-            throw new RobotConfigException("no joystick acceleration entered in robotConfig" + robotConfig.toString());
+            throw new RobotConfigException("no joystick acceleration entered in robotConfig" + robot.config.toString());
 
     }
 

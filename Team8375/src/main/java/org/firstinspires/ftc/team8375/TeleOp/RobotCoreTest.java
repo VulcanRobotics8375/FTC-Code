@@ -6,42 +6,19 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.vulcanrobotics.ftcrobotcore.Robot;
+package org.firstinspires.ftc.team8375.TeleOp;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.vulcanrobotics.ftcrobotcore.Subsystem.Subsystem;
+public class RobotCoreTest extends OpMode {
 
-import java.util.ArrayList;
-import java.util.List;
+    @Override
+    public void init() {
 
-public abstract class Robot {
-    public List<Subsystem> subsystems = new ArrayList<>();
-    public RobotConfig config;
-
-    public Robot() {}
-
-    public void createAll(HardwareMap hwMap, List<Subsystem> subsystems) {
-        for (Subsystem sub : subsystems) {
-            sub.hwMap = hwMap;
-            sub.create();
-        }
     }
 
-    public void create(HardwareMap hwMap, Subsystem subsystem) {
-        subsystem.hwMap = hwMap;
-        subsystem.create();
+    @Override
+    public void loop() {
+
     }
-
-    public void stopAll(List<Subsystem> subsystems) {
-        for (Subsystem sub : subsystems) {
-            sub.stop();
-        }
-    }
-
-    public void stop(Subsystem subsystem) {
-        subsystem.stop();
-    }
-
-
 }

@@ -1,2 +1,3 @@
-include ':FtcRobotController', ':FTCRobotCore'
+include ':FtcRobotController'
 include ':Team8375'
+include ':FTCRobotCore'

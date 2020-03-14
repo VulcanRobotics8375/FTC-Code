@@ -6,42 +6,32 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.vulcanrobotics.ftcrobotcore.Robot;
+package org.vulcanrobotics.ftcrobotcore.pid;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Range;
 
-import org.vulcanrobotics.ftcrobotcore.Subsystem.Subsystem;
+public class PIDController {
+    public double Kp = 0;
+    public double Ki = 0;
+    public double Kd = 0;
 
-import java.util.ArrayList;
-import java.util.List;
+    public double input;
+    public double target;
+    private double error;
+    private double previousError;
+    private double integral;
+    private double derivative;
 
-public abstract class Robot {
-    public List<Subsystem> subsystems = new ArrayList<>();
-    public RobotConfig config;
+    public double run(double Kp, double Ki, double Kd, double input, double target) {
+        double output;
 
-    public Robot() {}
+        error = input - target;
 
-    public void createAll(HardwareMap hwMap, List<Subsystem> subsystems) {
-        for (Subsystem sub : subsystems) {
-            sub.hwMap = hwMap;
-            sub.create();
-        }
+
+
+
     }
 
-    public void create(HardwareMap hwMap, Subsystem subsystem) {
-        subsystem.hwMap = hwMap;
-        subsystem.create();
-    }
-
-    public void stopAll(List<Subsystem> subsystems) {
-        for (Subsystem sub : subsystems) {
-            sub.stop();
-        }
-    }
-
-    public void stop(Subsystem subsystem) {
-        subsystem.stop();
-    }
 
 
 }
