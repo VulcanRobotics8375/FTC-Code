@@ -8,6 +8,8 @@
 
 package org.vulcanrobotics.ftcrobotcore.Robot;
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
 import org.vulcanrobotics.ftcrobotcore.Subsystem.Subsystem;
 
 import java.util.ArrayList;
