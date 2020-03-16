@@ -9,12 +9,18 @@
 package org.vulcanrobotics.ftcrobotcore.Robot;
 
 public class Robot {
-    public static double movement_x;
-    public static double movement_y;
 
+    //for holonomic
+    public static double xPower;
+    public static double yPower;
+
+    //for non holonomic
     public static double movePower;
     public static double turnPower;
 
+    //for true differential
+    public static double leftPower;
+    public static double rightPower;
 
 
 
