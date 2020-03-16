@@ -8,8 +8,6 @@
 
 package org.vulcanrobotics.ftcrobotcore;
 
-import org.vulcanrobotics.ftcrobotcore.Robot.RobotConfigException;
-
 public class CoreLibException extends Exception {
 
     public CoreLibException(){

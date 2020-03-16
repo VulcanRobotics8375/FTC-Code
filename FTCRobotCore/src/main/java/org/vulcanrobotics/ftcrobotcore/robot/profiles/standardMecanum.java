@@ -6,36 +6,21 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.vulcanrobotics.ftcrobotcore.Subsystem;
+package org.vulcanrobotics.ftcrobotcore.robot.profiles;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import org.vulcanrobotics.ftcrobotcore.robot.wheels.WheelType;
+import org.vulcanrobotics.ftcrobotcore.algorithms.JoystickAcceleration;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import static org.vulcanrobotics.ftcrobotcore.robot.RobotConfig.*;
 
-public abstract class Subsystem {
-    public HardwareMap hwMap;
-    public Properties constants;
-
-    public abstract void create();
-
-    public abstract void stop();
-
-    public Subsystem() {
-        try {
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            InputStream input = loader.getResourceAsStream("constants.properties");
-            if(input != null) {
-                constants = new Properties();
-                constants.load(input);
-            } else {
-
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
+public class standardMecanum {
+    public static void initialize() {
+        //4 inches in mm
+        wheelAttributes.radius = 101.6;
+        wheelAttributes.wheelType = WheelType.HOLONOMIC;
+        wheelAttributes.rollerAngle = Math.PI / 4.0;
+        joystickAcceleration = JoystickAcceleration.LINEAR;
     }
+
 
 }
