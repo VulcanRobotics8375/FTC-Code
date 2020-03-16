@@ -8,28 +8,55 @@
 
 package org.vulcanrobotics.ftcrobotcore.pid;
 
-import com.qualcomm.robotcore.util.Range;
-
 public class PIDController {
-    public double Kp = 0;
-    public double Ki = 0;
-    public double Kd = 0;
 
-    public double input;
-    public double target;
-    private double error;
-    private double previousError;
-    private double integral;
-    private double derivative;
+    public static double Kp;
+    public static double Ki;
+    public static double Kd;
+    public static long iteration_time;
 
-    public double run(double Kp, double Ki, double Kd, double input, double target) {
-        double output;
+    private static double error;
+    private static double lastError;
+    private static double integral;
+    private static double derivative;
+
+    public static double run(double Kp, double Ki, double Kd, double input, double target){
 
         error = input - target;
 
+        //trapezoidal rule
+        integral += ((error - lastError) / 2.0) * (iteration_time / 1000.0);
+        derivative = error - lastError;
+        lastError = error;
 
+        try{
+            Thread.sleep(iteration_time);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return Kp * error + Ki * integral + Kd * derivative;
 
+    }
 
+    public static double run(double input, double target){
+
+        error = input - target;
+        integral += ((error - lastError) / 2.0) * (iteration_time / 1000.0);
+        derivative = error - lastError;
+
+        try{
+            Thread.sleep(iteration_time);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return Kp * error + Ki * integral + Kd * derivative;
+    }
+
+    public void reset() {
+        error = 0;
+        integral = 0;
+        derivative = 0;
     }
 
 

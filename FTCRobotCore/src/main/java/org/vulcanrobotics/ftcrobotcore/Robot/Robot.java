@@ -17,7 +17,6 @@ import java.util.List;
 
 public abstract class Robot {
     public List<Subsystem> subsystems = new ArrayList<>();
-    public RobotConfig config;
 
     public Robot() {}
 

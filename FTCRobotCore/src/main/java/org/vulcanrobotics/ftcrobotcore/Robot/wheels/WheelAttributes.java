@@ -28,4 +28,12 @@ public class WheelAttributes {
         this.rollerAngle = rollerAngle;
     }
 
+    public void copyTo(WheelAttributes wheelAttributes) {
+        wheelAttributes.radius = this.radius;
+        wheelAttributes.wheelType = this.wheelType;
+        wheelAttributes.rollers = this.rollers;
+        wheelAttributes.rollerAngle = this.rollerAngle;
+
+    }
+
 }
