@@ -9,29 +9,40 @@
 package org.vulcanrobotics.ftcrobotcore.loop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.vulcanrobotics.ftcrobotcore.MotionLogger;
 
+@TeleOp(name = "motion logger", group = "RobotCoreLib")
 public class MotionLoggerOpMode extends OpMode {
-    private MotionLogger logger;
+    private MotionLogger logger1;
+    private MotionLogger logger2;
     private int n = 0;
 
     @Override
     public void init() {
-        logger = new MotionLogger();
+        logger1 = new MotionLogger();
+        logger2 = new MotionLogger();
 
     }
 
     @Override
     public void loop() {
 
-        logger.saveGamepadState(n, gamepad1);
-        n++;
+        //loop stuff here
 
+        updateMotionLogger();
     }
 
     @Override
     public void stop() {
-        logger.copyGamepadArrayToJSON("moveset.json");
+        logger1.copyGamepadArrayToJSON("moveset1.json");
+        logger2.copyGamepadArrayToJSON("moveset2.json");
+    }
+
+    private void updateMotionLogger() {
+        logger1.saveGamepadState(n, gamepad1);
+        logger2.saveGamepadState(n, gamepad2);
+        n++;
     }
 }

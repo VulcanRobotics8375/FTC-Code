@@ -6,25 +6,41 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.vulcanrobotics.ftcrobotcore.robot;
+package org.vulcanrobotics.ftcrobotcore.loop;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-public class Robot extends RobotCore {
+import org.vulcanrobotics.ftcrobotcore.MotionLogger;
 
-    public void initialize(HardwareMap hwMap) {
-        front_right = hwMap.dcMotor.get("front_right");
-        front_left = hwMap.dcMotor.get("front_left");
-        back_right = hwMap.dcMotor.get("back_right");
-        back_left = hwMap.dcMotor.get("back_left");
-        imu = hwMap.get(BNO055IMU.class, "imu");
-        imu.initialize(RobotConfig.IMUParameters);
-        while (true) {
-            if (imu.isGyroCalibrated()) break;
-        }
+@Autonomous(name = "Run Motion Log", group = "RobotCoreLib")
+public class MotionLogRunner extends OpMode {
+    private MotionLogger logger1;
+    private MotionLogger logger2;
+    private int n = 0;
+
+    @Override
+    public void init() {
+        logger1 = new MotionLogger();
+        logger2 = new MotionLogger();
+        logger1.loadGamepadArrayFromJSON("moveset1.json");
+        logger2.loadGamepadArrayFromJSON("moveset2.json");
 
     }
 
+    @Override
+    public void loop() {
 
+
+        n++;
+
+    }
+
+    public void getGamepad1Value(String key) {
+        logger1.getValue(n, key);
+    }
+
+    public void getGamepad2Value(String key){
+        logger2.getValue(n, key);
+    }
 }
