@@ -8,9 +8,6 @@
 
 package org.vulcanrobotics.ftcrobotcore;
 
-
-import android.util.Log;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qualcomm.robotcore.hardware.Gamepad;
