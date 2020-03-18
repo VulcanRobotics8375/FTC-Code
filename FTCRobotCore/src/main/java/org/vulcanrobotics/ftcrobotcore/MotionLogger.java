@@ -23,12 +23,9 @@ import static org.vulcanrobotics.ftcrobotcore.telemetry.TelemetryHandler.telemet
 
 public class MotionLogger {
 
-    Gamepad gamepad;
-    public HashMap<Integer, HashMap<String, Object>> gamepadArray = new HashMap<>();
+    private HashMap<Integer, HashMap<String, Object>> gamepadArray = new HashMap<>();
 
-    public MotionLogger(Gamepad gamepad) {
-        this.gamepad = gamepad;
-    }
+    public MotionLogger() {}
 
     public void saveGamepadState(int step, Gamepad gamepad){
         gamepadArray.put(step, CoreGamepad.toHashMap(gamepad));
