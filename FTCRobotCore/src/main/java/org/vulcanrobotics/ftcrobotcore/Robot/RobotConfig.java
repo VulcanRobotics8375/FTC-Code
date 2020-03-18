@@ -8,13 +8,18 @@
 
 package org.vulcanrobotics.ftcrobotcore.robot;
 
-import org.vulcanrobotics.ftcrobotcore.robot.wheels.WheelAttributes;
-import org.vulcanrobotics.ftcrobotcore.algorithms.JoystickAcceleration;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 
-public class RobotConfig {
+import org.vulcanrobotics.ftcrobotcore.robot.wheels.WheelAttributes;
+import org.vulcanrobotics.ftcrobotcore.teleop.JoystickAcceleration;
+
+public abstract class RobotConfig {
     public static WheelAttributes wheelAttributes;
     public static JoystickAcceleration joystickAcceleration;
+    public static double robotAngleOffset;
+    public static BNO055IMU.Parameters IMUParameters;
 
+    public abstract void initialize();
 
 
 }

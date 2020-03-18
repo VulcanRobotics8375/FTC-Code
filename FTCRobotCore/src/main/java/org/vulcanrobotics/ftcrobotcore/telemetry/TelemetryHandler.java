@@ -6,11 +6,31 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.vulcanrobotics.ftcrobotcore.algorithms;
+package org.vulcanrobotics.ftcrobotcore.telemetry;
 
-public enum JoystickAcceleration {
-    LINEAR,
-    CUBIC,
-    NON_LINEAR
+import com.qualcomm.robotcore.robocol.TelemetryMessage;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+public class TelemetryHandler{
+
+    public static Telemetry telemetry;
+
+    public TelemetryHandler() {
+        Thread telemetryThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                updateTelemetry();
+            }
+        });
+        telemetryThread.start();
+    }
+
+    public static void updateTelemetry() {
+        telemetry.update();
+    }
+
+
+
 
 }

@@ -8,26 +8,20 @@
 
 package org.firstinspires.ftc.team8375.TeleOp;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
-import org.vulcanrobotics.ftcrobotcore.robot.RobotConfigException;
+import org.vulcanrobotics.ftcrobotcore.loop.Loop;
 import org.vulcanrobotics.ftcrobotcore.robot.profiles.standardMecanum;
-import static org.vulcanrobotics.ftcrobotcore.algorithms.holonomics.mecanumDrive.*;
+import static org.vulcanrobotics.ftcrobotcore.teleop.holonomics.mecanumDrive.*;
 
-public class RobotCoreTest extends OpMode {
+public class RobotCoreTest extends Loop {
 
     @Override
-    public void init() {
-        standardMecanum.initialize();
+    public void initOpMode() {
+
     }
 
     @Override
-    public void loop() {
-        try {
-            standardMecanumDriveController(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, 1);
-        } catch (RobotConfigException e) {
-            e.printStackTrace();
-        }
+    public void coreLoop() {
+        standardMecanumDriveController(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, 1);
 
     }
 }

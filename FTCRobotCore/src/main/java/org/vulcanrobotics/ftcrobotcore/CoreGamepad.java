@@ -6,28 +6,33 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.vulcanrobotics.ftcrobotcore.robot.profiles;
+package org.vulcanrobotics.ftcrobotcore;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.vulcanrobotics.ftcrobotcore.robot.RobotConfig;
-import org.vulcanrobotics.ftcrobotcore.robot.wheels.WheelType;
-import org.vulcanrobotics.ftcrobotcore.teleop.JoystickAcceleration;
+import java.util.HashMap;
 
-public class standardMecanum extends RobotConfig {
+public class CoreGamepad {
 
-    public void initialize() {
-        //4 inches in mm
-        wheelAttributes.radius = 101.6;
-        wheelAttributes.wheelType = WheelType.HOLONOMIC;
-        wheelAttributes.rollerAngle = Math.PI / 4.0;
-        joystickAcceleration = JoystickAcceleration.LINEAR;
-        robotAngleOffset = 0;
-        IMUParameters.mode = BNO055IMU.SensorMode.IMU;
-        IMUParameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        IMUParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        IMUParameters.loggingEnabled = false;
+    public static HashMap<String, Object> toHashMap(Gamepad gamepad) {
+        HashMap<String, Object> map = new HashMap<>();
+
+        map.put("id", gamepad.id);
+        map.put("lx", gamepad.left_stick_x);
+        map.put("ly", gamepad.left_stick_y);
+        map.put("rx", gamepad.right_stick_x);
+        map.put("ry", gamepad.right_stick_y);
+        map.put("lt", gamepad.left_trigger);
+        map.put("rt", gamepad.right_trigger);
+        map.put("a", gamepad.a);
+        map.put("b", gamepad.b);
+        map.put("x", gamepad.x);
+        map.put("y", gamepad.y);
+        map.put("left_bumper", gamepad.left_bumper);
+        map.put("right_bumper", gamepad.right_bumper);
+        map.put("right_stick_button", gamepad.right_stick_button);
+        map.put("left_stick_button", gamepad.left_stick_button);
+
+        return map;
     }
-
-
 }
