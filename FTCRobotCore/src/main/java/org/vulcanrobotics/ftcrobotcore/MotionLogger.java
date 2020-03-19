@@ -72,8 +72,8 @@ public class MotionLogger {
         }
     }
 
-    public void getValue(int n, String key) {
-        Objects.requireNonNull(gamepadArray.get(n)).get(key);
+    public Object getValue(int n, String key) {
+        return Objects.requireNonNull(gamepadArray.get(n)).get(key);
     }
 
 }

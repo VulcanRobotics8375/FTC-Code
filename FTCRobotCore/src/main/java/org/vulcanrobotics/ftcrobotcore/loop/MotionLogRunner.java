@@ -14,33 +14,32 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.vulcanrobotics.ftcrobotcore.MotionLogger;
 
 @Autonomous(name = "Run Motion Log", group = "RobotCoreLib")
-public class MotionLogRunner extends OpMode {
+public abstract class MotionLogRunner extends Loop {
     private MotionLogger logger1;
     private MotionLogger logger2;
     private int n = 0;
 
     @Override
     public void init() {
+        coreInit();
+
         logger1 = new MotionLogger();
         logger2 = new MotionLogger();
         logger1.loadGamepadArrayFromJSON("moveset1.json");
         logger2.loadGamepadArrayFromJSON("moveset2.json");
-
     }
 
     @Override
     public void loop() {
-
+        coreLoop();
 
         n++;
-
     }
 
-    public void getGamepad1Value(String key) {
-        logger1.getValue(n, key);
+    public Object gamepad1(String key) {
+        return logger1.getValue(n, key);
     }
-
-    public void getGamepad2Value(String key){
-        logger2.getValue(n, key);
+    public Object gamepad2(String key){
+        return logger2.getValue(n, key);
     }
 }

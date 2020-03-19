@@ -9,21 +9,30 @@
 package org.vulcanrobotics.ftcrobotcore.loop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.vulcanrobotics.ftcrobotcore.telemetry.TelemetryHandler;
 
 public abstract class Loop extends OpMode {
-    protected TelemetryHandler telemetryHandler;
+
 
     @Override
     public void init(){
-        initOpMode();
-        //TODO robotCoreLib setup stuff here
+        coreInit();
+        TelemetryHandler.updateTelemetry();
 
     }
 
+    @Override
+    public void init_loop(){
+        coreInitLoop();
+
+    }
+
+    @Override
+    public void start(){
+        coreStart();
+
+    }
 
     @Override
     public void loop() {
@@ -33,7 +42,16 @@ public abstract class Loop extends OpMode {
 
     }
 
-    public abstract void initOpMode();
+    @Override
+    public void stop(){
+        coreStop();
+
+    }
+
+    public abstract void coreInit();
     public abstract void coreLoop();
+    public void coreStart(){}
+    public void coreStop(){}
+    public void coreInitLoop(){}
 
 }

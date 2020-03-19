@@ -14,20 +14,21 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class TelemetryHandler{
 
-    public static Telemetry telemetry;
-
-    public TelemetryHandler() {
-        Thread telemetryThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                updateTelemetry();
-            }
-        });
-        telemetryThread.start();
-    }
+    public static Telemetry externalTelemetry;
 
     public static void updateTelemetry() {
-        telemetry.update();
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                externalTelemetry.update();
+            }
+        });
+        try {
+            t.join();
+        } catch (InterruptedException e){
+            e.printStackTrace();
+        }
+
     }
 
 

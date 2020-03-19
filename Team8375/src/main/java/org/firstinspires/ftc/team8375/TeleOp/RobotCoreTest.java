@@ -13,15 +13,12 @@ import org.vulcanrobotics.ftcrobotcore.robot.profiles.standardMecanum;
 import static org.vulcanrobotics.ftcrobotcore.teleop.holonomics.mecanumDrive.*;
 
 public class RobotCoreTest extends Loop {
-
     @Override
-    public void initOpMode() {
-
+    public void coreInit() {
     }
 
     @Override
     public void coreLoop() {
-        standardMecanumDriveController(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, 1);
 
     }
 }
