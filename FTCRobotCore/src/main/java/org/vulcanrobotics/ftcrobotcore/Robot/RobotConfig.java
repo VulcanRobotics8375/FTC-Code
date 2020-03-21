@@ -14,6 +14,7 @@ import org.vulcanrobotics.ftcrobotcore.robot.wheels.WheelAttributes;
 import org.vulcanrobotics.ftcrobotcore.teleop.JoystickAcceleration;
 
 public abstract class RobotConfig {
+    public static DriveType driveType;
     public static WheelAttributes wheelAttributes;
     public static JoystickAcceleration joystickAcceleration;
     public static double robotAngleOffset;

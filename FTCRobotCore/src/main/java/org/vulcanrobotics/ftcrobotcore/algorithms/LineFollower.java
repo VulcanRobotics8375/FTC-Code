@@ -6,15 +6,30 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.vulcanrobotics.ftcrobotcore.robot;
+package org.vulcanrobotics.ftcrobotcore.algorithms;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import org.vulcanrobotics.ftcrobotcore.robot.Robot;
+import org.vulcanrobotics.ftcrobotcore.robot.RobotConfig;
 
-public abstract class RobotCore {
+import java.util.ArrayList;
 
-    protected static DcMotor front_right, front_left, back_right, back_left;
+public class LineFollower {
 
-    protected static BNO055IMU imu;
+    public LineFollower() {}
+
+    public static void followLine(ArrayList<Point> path, double speed, double desiredAngle) {
+
+
+
+    }
+
+    private void followLineMecanum(ArrayList<Point> path, double speed, double desiredAngle){
+
+    }
+
+    private void followLineTankDrive(ArrayList<Point> path, double speed){
+
+    }
+
 
 }

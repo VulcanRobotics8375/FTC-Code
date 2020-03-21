@@ -13,7 +13,17 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Robot extends RobotCore {
 
-    public void initialize(HardwareMap hwMap) {
+    public static HardwareMap hwMap;
+
+    public static double movement_x = 0;
+    public static double movement_y = 0;
+
+    public static double movePower = 0;
+    public static double turnPower = 0;
+
+    public static double strafePower = 0;
+
+    public static void initialize() {
         front_right = hwMap.dcMotor.get("front_right");
         front_left = hwMap.dcMotor.get("front_left");
         back_right = hwMap.dcMotor.get("back_right");
@@ -24,6 +34,17 @@ public class Robot extends RobotCore {
             if (imu.isGyroCalibrated()) break;
         }
 
+    }
+
+
+    public void run(){
+        if(RobotConfig.driveType == DriveType.TANK){
+
+        }
+
+        if(RobotConfig.driveType == DriveType.HOLONOMIC){
+
+        }
     }
 
 

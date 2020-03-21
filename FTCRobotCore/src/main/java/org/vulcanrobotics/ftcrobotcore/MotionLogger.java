@@ -63,6 +63,8 @@ public class MotionLogger {
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
+
+                //cleanup code to prevent mem leaks
                 if (fis != null)
                     try {
                         fis.close();

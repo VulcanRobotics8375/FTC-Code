@@ -8,13 +8,8 @@
 
 package org.vulcanrobotics.ftcrobotcore.robot;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.hardware.DcMotor;
-
-public abstract class RobotCore {
-
-    protected static DcMotor front_right, front_left, back_right, back_left;
-
-    protected static BNO055IMU imu;
+public enum DriveType {
+    HOLONOMIC,
+    TANK
 
 }

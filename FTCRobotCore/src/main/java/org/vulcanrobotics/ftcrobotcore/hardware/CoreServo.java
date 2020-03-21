@@ -6,15 +6,36 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.vulcanrobotics.ftcrobotcore.robot;
+package org.vulcanrobotics.ftcrobotcore.hardware;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
 
-public abstract class RobotCore {
+import org.vulcanrobotics.ftcrobotcore.robot.Robot;
 
-    protected static DcMotor front_right, front_left, back_right, back_left;
+public class CoreServo {
+    private Servo servo;
+    private CRServo crServo;
 
-    protected static BNO055IMU imu;
+    double maxPosition;
+    double minPosition;
+    double maxAngle = Math.PI;
+
+    public CoreServo(String name){
+
+        servo = Robot.hwMap.get(Servo.class, name);
+    }
+
+    public CoreServo(String name, boolean continuous){
+        if(continuous){
+            crServo = Robot.hwMap.get(CRServo.class, name);
+        } else{
+            servo = Robot.hwMap.get(Servo.class, name);
+        }
+    }
+
+    public void setAngle(double angle){
+        servo.setPosition(angle / maxAngle);
+    }
 
 }
