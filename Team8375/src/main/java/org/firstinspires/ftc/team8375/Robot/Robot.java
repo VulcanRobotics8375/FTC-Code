@@ -19,6 +19,8 @@ import java.util.List;
 public abstract class Robot {
     public List<Subsystem> subsystems = new ArrayList<>();
 
+    int a;
+
     public Robot() {}
 
     public void createAll(HardwareMap hwMap, List<Subsystem> subsystems) {
