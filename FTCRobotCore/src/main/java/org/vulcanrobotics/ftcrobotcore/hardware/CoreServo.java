@@ -11,7 +11,7 @@ package org.vulcanrobotics.ftcrobotcore.hardware;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.vulcanrobotics.ftcrobotcore.robot.Robot;
+import org.vulcanrobotics.ftcrobotcore.Robot.Robot;
 
 public class CoreServo {
     private Servo servo;

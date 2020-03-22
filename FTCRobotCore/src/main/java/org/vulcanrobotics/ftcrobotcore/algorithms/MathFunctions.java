@@ -8,40 +8,16 @@
 
 package org.vulcanrobotics.ftcrobotcore.algorithms;
 
-
-import org.vulcanrobotics.ftcrobotcore.Robot.DriveType;
-import org.vulcanrobotics.ftcrobotcore.Robot.Robot;
-import org.vulcanrobotics.ftcrobotcore.Robot.RobotConfig;
-import org.vulcanrobotics.ftcrobotcore.Robot.RobotConfigException;
-
-import java.util.ArrayList;
-
-public class LineFollower {
-
-    public LineFollower() {}
-
-    public static void followLine(ArrayList<Point> path, double speed, double desiredAngle) throws RobotConfigException {
-        if(RobotConfig.driveType == DriveType.HOLONOMIC) {
-            followLineMecanum(path, speed, desiredAngle);
-        } else if(RobotConfig.driveType == DriveType.TANK) {
-            followLineTankDrive(path, speed);
+public class MathFunctions {
+    public static double wrapAngle(double angle) {
+        while(angle < -180) {
+            angle += 360;
         }
-        else {
-            throw new RobotConfigException("choose a driveType in RobotConfig");
+        while(angle > 180) {
+            angle -= 360;
         }
 
-
-    }
-
-    private static void followLineMecanum(ArrayList<Point> path, double speed, double desiredAngle){
-//        double error = MathFunctions.wrapAngle(getCurrentLineSegmentAngle(path) - Robot.angle);
-
-
-
-    }
-
-    private static void followLineTankDrive(ArrayList<Point> path, double speed){
-
+        return angle;
     }
 
 

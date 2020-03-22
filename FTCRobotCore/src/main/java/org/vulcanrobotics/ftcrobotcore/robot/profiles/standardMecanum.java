@@ -6,12 +6,12 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.vulcanrobotics.ftcrobotcore.robot.profiles;
+package org.vulcanrobotics.ftcrobotcore.Robot.profiles;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 
-import org.vulcanrobotics.ftcrobotcore.robot.RobotConfig;
-import org.vulcanrobotics.ftcrobotcore.robot.wheels.WheelType;
+import org.vulcanrobotics.ftcrobotcore.Robot.RobotConfig;
+import org.vulcanrobotics.ftcrobotcore.Robot.wheels.WheelType;
 import org.vulcanrobotics.ftcrobotcore.teleop.JoystickAcceleration;
 
 public class standardMecanum extends RobotConfig {

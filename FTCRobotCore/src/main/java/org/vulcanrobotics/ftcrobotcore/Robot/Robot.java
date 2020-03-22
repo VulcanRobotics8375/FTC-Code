@@ -6,7 +6,7 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.vulcanrobotics.ftcrobotcore.robot;
+package org.vulcanrobotics.ftcrobotcore.Robot;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -14,6 +14,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Robot extends RobotCore {
 
     public static HardwareMap hwMap;
+
+    public static double x;
+    public static double y;
+
+    public static double angle;
 
     public static double movement_x = 0;
     public static double movement_y = 0;
@@ -45,6 +50,8 @@ public class Robot extends RobotCore {
         if(RobotConfig.driveType == DriveType.HOLONOMIC){
 
         }
+
+
     }
 
 
