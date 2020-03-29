@@ -28,23 +28,21 @@ public class dylanLimitCode extends OpMode {
     private double liftPos;
     private double slowdownRange = lowSlowDownPoint - lowLimit;
     private double distanceFromLimit;
-    private void slowdown(double liftPos, double slowdownRange, double slowdownPoint, double limit){
-        
-    }
-
-    public void create(){
-        lift = hwMap.DcMotor.get("lift");
-        claw = hwMap.servo.get("claw");
-        //hwMap isn't working, I'm pretending it is
+    private double slowdownFactor;
+    private double slowdown(double liftPos, double slowdownRange, double input, double limit){
+        distanceFromLimit = Math.abs(limit - liftPos);
+        slowdownFactor = distanceFromLimit/slowdownRange;
+        return(input*slowdownFactor);
     }
 
     @Override
     public void init() {
         //initialization code
+        lift = hardwareMap.dcMotor.get("lift");
+        claw = hardwareMap.servo.get("claw");
         lift.setDirection(DcMotorSimple.Direction.FORWARD);
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        create();
     }
 
     @Override
@@ -66,7 +64,16 @@ public class dylanLimitCode extends OpMode {
             lift.setPower(inputPower);
         }
         if(liftPos < lowSlowDownPoint && liftPos > lowLimit){
-
+            lift.setPower(slowdown(liftPos, slowdownRange, inputPower, lowLimit));
+        }
+        if (liftPos > highSlowDownPoint && liftPos < highLimit) {
+            lift.setPower(slowdown(liftPos, slowdownRange, inputPower, highLimit));
+        }
+        if (liftPos <= lowLimit){
+            lift.setPower(0.1);
+        }
+        if (liftPos >= highLimit){
+            lift.setPower(-0.1);
         }
 
     }
