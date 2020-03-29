@@ -20,24 +20,24 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class dylanLimitCode extends OpMode {
     private DcMotor lift;
     private Servo claw;
-    private double inputPower, lowLimit;
-    private double highLimit = 10000;
-    private double slowdownDistance = 500;
+
+    private final double highLimit = 10000;
+    private final double slowdownDistance = 500;
+
+    private double inputPower, lowLimit, liftPos;
+
     private double highSlowDownPoint = highLimit - slowdownDistance;
     private double lowSlowDownPoint = lowLimit + slowdownDistance;
-    private double liftPos;
     private double slowdownRange = lowSlowDownPoint - lowLimit;
-    private double distanceFromLimit;
-    private double slowdownFactor;
-    private double slowdown(double liftPos, double slowdownRange, double input, double limit){
-        distanceFromLimit = Math.abs(limit - liftPos);
-        slowdownFactor = distanceFromLimit/slowdownRange;
-        return(input*slowdownFactor);
+
+    private double slowdown(double input, double liftPos, double limit, double slowdownRange){
+        double distanceFromLimit = Math.abs(limit - liftPos);
+        double slowdownFactor = distanceFromLimit / slowdownRange;
+        return(input* slowdownFactor);
     }
 
     @Override
     public void init() {
-        //initialization code
         lift = hardwareMap.dcMotor.get("lift");
         claw = hardwareMap.servo.get("claw");
         lift.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -47,12 +47,10 @@ public class dylanLimitCode extends OpMode {
 
     @Override
     public void init_loop() {
-        //optional
     }
 
     @Override
     public void start() {
-        //runs once when the start button is pressed
     }
 
     @Override
@@ -63,18 +61,11 @@ public class dylanLimitCode extends OpMode {
         if(liftPos > lowSlowDownPoint && liftPos < highSlowDownPoint) {
             lift.setPower(inputPower);
         }
-        if(liftPos < lowSlowDownPoint && liftPos > lowLimit){
-            lift.setPower(slowdown(liftPos, slowdownRange, inputPower, lowLimit));
+        if(liftPos < lowSlowDownPoint){
+            lift.setPower(slowdown(inputPower, liftPos, lowLimit, slowdownRange));
         }
-        if (liftPos > highSlowDownPoint && liftPos < highLimit) {
-            lift.setPower(slowdown(liftPos, slowdownRange, inputPower, highLimit));
+        if (liftPos > highSlowDownPoint) {
+            lift.setPower(slowdown(inputPower, liftPos, highLimit, slowdownRange));
         }
-        if (liftPos <= lowLimit){
-            lift.setPower(0.1);
-        }
-        if (liftPos >= highLimit){
-            lift.setPower(-0.1);
-        }
-
     }
 }
