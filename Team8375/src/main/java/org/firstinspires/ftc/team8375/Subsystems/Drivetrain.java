@@ -463,6 +463,26 @@ public class Drivetrain extends Subsystem {
 
     }
 
+    public void runMotorWithLimit(double power, int limitPoint, double limitRange) {
+        if(power > 0 && fl.getCurrentPosition() >= limitPoint - limitRange) {
+
+            fl.setPower(((limitPoint - fl.getCurrentPosition()) / limitRange) * power);
+
+        } else {
+            fl.setPower(power);
+        }
+
+        if(power < 0 && fl.getCurrentPosition() <= limitRange){
+
+            fl.setPower((fl.getCurrentPosition() / limitRange) * power);
+
+        } else {
+            fl.setPower(power);
+        }
+
+
+    }
+
     public void setTargetPos(int pos) {
         fl.setTargetPosition(pos);
         fr.setTargetPosition(pos);
