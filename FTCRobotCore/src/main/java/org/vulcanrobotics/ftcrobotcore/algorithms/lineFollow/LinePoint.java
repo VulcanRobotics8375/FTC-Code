@@ -6,43 +6,41 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.vulcanrobotics.ftcrobotcore.algorithms;
+package org.vulcanrobotics.ftcrobotcore.algorithms.lineFollow;
+
+import org.vulcanrobotics.ftcrobotcore.algorithms.Point;
+
+public class LinePoint {
+
+    public double x;
+    public double y;
+    public double speed;
+    public double maxTurnSpeed;
+    public double weight;
 
 
-import org.vulcanrobotics.ftcrobotcore.Robot.DriveType;
-import org.vulcanrobotics.ftcrobotcore.Robot.Robot;
-import org.vulcanrobotics.ftcrobotcore.Robot.RobotConfig;
-import org.vulcanrobotics.ftcrobotcore.Robot.RobotConfigException;
+    public LinePoint(Point point, double speed, double maxTurnSpeed, double weight) {
+        this.x = point.x;
+        this.y = point.y;
+        this.speed = speed;
+        this.maxTurnSpeed = maxTurnSpeed;
+        this.weight = weight;
+    }
 
-import java.util.ArrayList;
+    public LinePoint(){}
 
-public class LineFollower {
 
-    public LineFollower() {}
-
-    public static void followLine(ArrayList<Point> path, double speed, double desiredAngle) throws RobotConfigException {
-        if(RobotConfig.driveType == DriveType.HOLONOMIC) {
-            followLineMecanum(path, speed, desiredAngle);
-        } else if(RobotConfig.driveType == DriveType.TANK) {
-            followLineTankDrive(path, speed);
-        }
-        else {
-            throw new RobotConfigException("choose a driveType in RobotConfig");
-        }
-
+    public void setPoint(LinePoint point) {
+        this.x = point.x;
+        this.y = point.y;
+        this.speed = point.speed;
+        this.maxTurnSpeed = point.maxTurnSpeed;
+        this.weight = point.weight;
 
     }
 
-    private static void followLineMecanum(ArrayList<Point> path, double speed, double desiredAngle){
-//        double error = MathFunctions.wrapAngle(getCurrentLineSegmentAngle(path) - Robot.angle);
+    public Point toPoint(){
 
-
-
+        return new Point(x, y);
     }
-
-    private static void followLineTankDrive(ArrayList<Point> path, double speed){
-
-    }
-
-
 }
