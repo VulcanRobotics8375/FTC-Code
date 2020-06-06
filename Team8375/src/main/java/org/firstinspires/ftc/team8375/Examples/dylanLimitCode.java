@@ -21,10 +21,12 @@ public class dylanLimitCode extends OpMode {
     private DcMotor lift;
     private Servo claw;
 
-    private final double highLimit = 10000;
-    private final double slowdownDistance = 500;
+    private final int highLimit = 10000;
+    private final int slowdownDistance = 500;
 
     private double inputPower, lowLimit, liftPos;
+
+    private boolean clawbutton;
 
     private double highSlowDownPoint = highLimit - slowdownDistance;
     private double lowSlowDownPoint = lowLimit + slowdownDistance;
@@ -35,7 +37,21 @@ public class dylanLimitCode extends OpMode {
         double slowdownFactor = distanceFromLimit / slowdownRange;
         return(input* slowdownFactor);
     }
-
+    private void openClaw(){
+        claw.setPosition(90);
+    }
+    private void closeClaw(){
+        claw.setPosition(0);
+    }
+    private void yeet(){
+        while(liftPos < highSlowDownPoint){
+            lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            lift.setTargetPosition(highLimit);
+        }
+        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lift.setPower(0);
+        openClaw();
+    }
     @Override
     public void init() {
         lift = hardwareMap.dcMotor.get("lift");
@@ -55,6 +71,7 @@ public class dylanLimitCode extends OpMode {
 
     @Override
     public void loop() {
+        //limit code
         inputPower = gamepad2.left_stick_y;
         liftPos = lift.getCurrentPosition();
 
@@ -66,6 +83,18 @@ public class dylanLimitCode extends OpMode {
         }
         if (liftPos > highSlowDownPoint) {
             lift.setPower(slowdown(inputPower, liftPos, highLimit, slowdownRange));
+        }
+        //claw code
+        clawbutton = gamepad2.x;
+        if (clawbutton = true){
+            openClaw();
+        }
+        else{
+            closeClaw();
+        }
+        //yeet code
+        if (gamepad2.y = true){
+            yeet();
         }
     }
 }
