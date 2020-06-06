@@ -37,12 +37,8 @@ public class dylanLimitCode extends OpMode {
         double slowdownFactor = distanceFromLimit / slowdownRange;
         return(input* slowdownFactor);
     }
-    private void openClaw(){
-        claw.setPosition(90);
-    }
-    private void closeClaw(){
-        claw.setPosition(0);
-    }
+    private void openClaw(){claw.setPosition(90);}
+    private void closeClaw(){claw.setPosition(0);}
     private void yeet(){
         while(liftPos < highSlowDownPoint){
             lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -86,12 +82,8 @@ public class dylanLimitCode extends OpMode {
         }
         //claw code
         clawbutton = gamepad2.x;
-        if (clawbutton = true){
-            openClaw();
-        }
-        else{
-            closeClaw();
-        }
+        if (clawbutton = true){openClaw();}
+        else{closeClaw();}
         //yeet code
         if (gamepad2.y = true){
             yeet();
