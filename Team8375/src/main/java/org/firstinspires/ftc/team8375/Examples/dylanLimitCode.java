@@ -24,8 +24,8 @@ public class dylanLimitCode extends OpMode {
     private final int highLimit = 10000;
     private final int slowdownDistance = 500;
 
-    private double inputPower, lowLimit, liftPos;
-
+    private double inputPower, liftPos;
+    private int lowLimit = 0;
     private boolean clawbutton;
 
     private double highSlowDownPoint = highLimit - slowdownDistance;
